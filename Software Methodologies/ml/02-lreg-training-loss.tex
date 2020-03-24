@@ -1,0 +1,90 @@
+\documentclass[../ml.tex]{subfiles}
+
+\begin{document}
+
+\subsection{Linear Regression}
+
+\textbf{Linear Regression} - A method of finding the straight line or hyperplane that best fits a set of points.
+
+\begin{center}
+\begin{math}
+    \hat{y} = b + w_1 x_1 + w_2 x_2 + w_3 x_3 + ... + w_n x_n
+\end{math}
+\end{center}
+Where:
+
+$\hat{y}$ \hspace{1cm} The predicted label. 
+
+$b$ \hspace{1cm} The bias ($y$-intercept) often referred to as $w_0$
+
+$w_i$ \hspace{1cm} The weight of feature $i$
+
+$x_i$ \hspace{1cm} The $i$th feature of the input
+\\
+
+This could be written more concisely as:
+
+\begin{center}
+$\hat{y} = \mathbf{\theta}\cdot \mathbf{x}$
+\end{center}
+Where:
+
+$\mathbf{\theta}$ \hspace{1cm} The model's parameter vector, containing the bias and weights
+
+$\mathbf{x}$ \hspace{1cm} The instance's feature vector, containing all features.
+\\
+
+In order to train a Linear Regression model we update the weights so the line best fits the training data.
+
+\subsection{Loss}
+
+But how do we know how well our model fits the training data?
+
+\textbf{Loss} - How good the model is at predicting any given example or, the penalty for a bad prediction.
+
+\textbf{Empirical Risk Minimisation} - The process of examining many examples and attempting to find a model that minimises loss.
+
+The goal of training is to find a set of weights and biases so that, on average, they have low loss across all examples.
+\\
+
+One example of a loss function is Mean Square Error (MSE):
+
+\begin{center}
+\begin{math}
+    MSE = \frac{1}{N} \sum_{(x,y) \in D} (y - \hat{y})^2 
+\end{math}
+\end{center}
+Where:
+
+$(x,y)$ \hspace{1cm} An example where $x$ is a set of features and $y$ is the label.
+
+$\hat{y}$ \hspace{1cm} The prediction of the model based on input $x$
+
+$D$ \hspace{1cm} The dataset containing many labelled examples.
+
+$N$ \hspace{1cm} The number of examples in D
+\\
+
+\subsection{Reducing Loss}
+
+The derivative of $(y-\hat{y})^2$ with respect to the weights tells us how loss changes for a given example. We repeatedly take small steps in the direction that minimises loss. This strategy is known as Gradient Descent. We move the weights in the direction of the negative of the gradient. (We wish to move down-hill in the "landscape")
+
+For a convex problem (think bowl shaped) weights can start anywhere. This may not be true for other problems.
+\\
+
+We could compute gradients over the entire dataset on each step, but this is often unnecessary. It is often better to compute the gradient on a small subset of examples in each step.
+
+\textbf{Stochastic Gradient Descent} - One example at a time
+
+\textbf{Mini-Batch Gradient Descent} - Batches of examples where loss \& gradients are averaged over each batch.
+\\
+
+This strategy repeats iteratively until the model converges.
+\\
+
+We often multiply the gradients by some learning rate in order to make incremental steps. Too small of a learning rate can lead to convergence taking a long time. Too high of learning rate leads to weights forever overshooting the minimum.
+\\
+
+An alternative to Gradient Descent when using a Linear Regression model is to use the Normal Equation to directly compute the minimum result. This is only useful for when the number of examples can fit into memory and the number of features is small, as complexity rises with number of features quickly.
+
+\end{document}

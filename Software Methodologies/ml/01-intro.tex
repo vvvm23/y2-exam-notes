@@ -1,0 +1,86 @@
+\documentclass[../ai.tex]{subfiles}
+
+\begin{document}
+
+\subsection{What is Machine Learning?}
+
+\textit{ML is a "field of study that gives computers the ability to learn without being explicitly programmed".} \\
+
+A more engineering-oriented answer would be:
+\textit{A computer program is said to learn from experience E with respect to some task T} and some performance measure P, if its performance on T, as measured by P, improves with experience E.
+
+So, a well defined learning task is given by $<P,T,E>$.\\
+
+ML will allow you to do three things:
+
+\begin{itemize}
+    \item to reduce time spent programming
+    \item to customise a product, making it better for specific users
+    \item to solve problems that you have no idea how to do by hand
+\end{itemize}
+\rule[0.1in]{\textwidth}{0.4pt}
+
+\subsection{Machine Learning Life-cycle}
+A high level overview of the "Machine Learning Life-cycle" is as follows:
+
+\begin{itemize}
+    \item Gathering Data
+    \item Preparing Data
+    \item Choosing Models
+    \item Training Models
+    \item Evaluating Models
+    \item Hyper-parameter tuning
+    \item Prediction
+\end{itemize}
+\rule[0.1in]{\textwidth}{0.4pt}
+
+\subsection{Types of Machine Learning Systems}
+
+\textbf{Supervised Learning }- To learn the mapping between a set of inputs and outputs.
+
+\textit{A typical supervised learning task is classification, the mapping of an input to a set of classes.}
+
+\textit{Another typical task is regression, the mapping of inputs to a set of numeric values}
+
+\textit{When preparing data for these systems, we have to provide labelled data data.}
+\\
+
+\textbf{Unsupervised Learning} - To learn the hidden pattens from a set of inputs.
+
+\textit{In these systems, the training data is unlabeled. The system will try to learn without a teacher.}
+
+\textit{The goal is to find hidden patterns among data. This could be helpful for targeting content to certain groups on a website.}
+
+\textit{This can be used in tasks such as visualisation of data, dimensionality reduction and anomaly detection.}
+\\
+
+\textbf{Semi-supervised learning} - A system that can deal with partially labeled training data.
+
+\textit{Most semi-supervised algorithms are combinations of unsupervised and supervised algorithms.}
+
+\textit{An example is Google Photos, which can identify the same person across multiple photos. When a label (a name) is provided it can now identify the group by this label.}
+\\
+
+\textbf{Reinforcement Learning} - A system that relies on positive or negative feedback to reinforce good behaviours.
+
+\textit{The learning system, called an agent, observes the environment, selects and then performs an action based on its policy and then receives a reward in return.}
+
+\textit{A high reward for good behaviour and a low reward for bad behaviour. A RL algorithm just aims to maximise its rewards by playing the game repeatedly.}
+
+\textit{An example of this type of algorithm is DeepMind's AlphaGo Zero and AlphaStar programs that play Go and Starcraft respectively at Grandmaster level.}
+\rule[0.1in]{\textwidth}{0.4pt}
+
+\subsection{Key ML Terminology}
+
+\begin{itemize}
+    \item \textbf{Label} - The variable we are predicting (typically represented as $y$)
+    \item \textbf{Feature} - The input variables that describe out data. (typically represented as the set $X$)
+    \item \textbf{Example} - A particular instance of data
+    \item \textbf{Labelled Example} - An example in the form $(x,y)$ used to train a model.
+    \item \textbf{Unlabelled Example} - An example in the form $(x, ?)$ used for making predictions on new data.
+    \item \textbf{Model} - Maps examples to predict labels defined by internal parameters which are learned.
+    \item \textbf{Training} - Creating or Learning a model.
+    \item \textbf{Inference} - Applying the trained model to unlabelled examples.
+\end{itemize}
+
+\end{document}
