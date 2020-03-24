@@ -1,0 +1,72 @@
+\documentclass[ ../ml.tex ]{ subfiles }
+
+\begin{document}
+
+\subsection{Cost Functions}
+
+A cost function $J$ describes how well the current response surface $h(x)$ (over all $x$ in the dataset.) fits the available data.
+
+Smaller values of the cost function correspond to a better fit. The goal of Machine Learning is to construct $h(x)$ such that $J$ is minimised.
+
+We usually interpret $h(x)$ as the predicted reponse in regression models.
+\\
+
+Some examples of cost functions:
+
+\begin{itemize}
+    \item \textbf{Least Squares Deviation Cost}
+        \subitem $J(y_i, h(x_i)) = \frac{1}{n} \sum^{n}_{i=1} \frac{( y_i - h(x_i) )^2}{r_i}$
+        \subitem Struggles with outliers.
+    \item \textbf{Least Absolute Deviation Cost}
+        \subitem $J(y_i, h(x_i)) = \frac{1}{n} \sum^{n}_{i=1} \frac{|y_i - h(x_i)|}{r_i}$
+        \subitem More robust to outliers
+        \subitem Computationally more difficult.
+    \item \textbf{Huber-M Cost}
+        \subitem Combines best qualities of the above two functions.
+\end{itemize}
+
+\subsection{Binary Classifier}
+
+The observed response $y$ can only take two possible values. One positive and one negative. 
+
+We must first define the relationship between $h(x)$ and $y$ (as in, the mapping of $x$ to $y$)
+
+Then create a decision rule:
+
+\begin{center}
+\begin{math}
+    \hat{y} = 
+        \begin{cases}
+            +, & h(x) \geq t \\
+            -, & \text{otherwise}
+        \end{cases}
+\end{math}
+\end{center}
+
+Where $t$ is some threshold value. This decision rule gives the model a "yes/no" behaviour.
+
+\subsection{Performance Measures}
+
+We can use a confusion matrix (matrix of predicted and real classes) to see how well the model performs for a given threshold. 
+
+\textit{This will be a matrix of true/false positive/negatives}
+\\
+
+This allows us to calculate precision and recall (sensitivity).
+
+\begin{center}
+    Precision: $ \frac{tp}{tp + fp} $ \hspace{1cm} Recall: $ \frac{tp}{tp + fn}  $
+\end{center}
+\\
+
+Another measure is Specificity:
+
+\begin{center}
+    Specificity: $ \frac{tn}{tn + fp} $
+\end{center}
+
+Using Specificity and Recall we can plot a ROC curve over all threshold values.
+
+\textit{Evaluate all examples and create confusion matrix. Then use values to plot the curve. Pick the threshold that strikes the best balance between Sensitivity and Specificity}
+
+\end{document}
