@@ -1,0 +1,54 @@
+\documentclass[../ml.tex]{subfiles}
+
+\begin{document}
+    
+\subsection{Generalisation}
+
+In practise, how can we make sure that our models don't overfit? In other words, how can we be sure it performs well on unseen data once we have trained the model, as we have only seen data in the training set.
+\\
+
+How do we know our model is good?
+
+\begin{itemize}
+    \item \textbf{Theoretically} - Based on ideas of measuring model simplicity / complexity
+    \item \textbf{Intuition} - Formalisation of Ockham's Razor principle. The less complex a model is, the more likely a good empirical result is.
+    \item \textbf{Empirically} - Using a sample of data as a test set that is independent of the train set. Good performance on this test set is an indicator of good performance on new data in general.
+\end{itemize}
+
+\subsection{Training \& Test Set}
+
+The large the training set the better the model will be able to learn.
+
+The larger the test set the better we will be able to have confidence in our evaluation.
+
+In any case, we must ensure the test set much be large enough to yield statistically meaningful results and is representative of the whole dataset, for example by having a good distribution of labels.
+\\
+
+Another option is to have three sets, a training, validation and test set. We first remove the test set and then split the remaining data into training and validation. We train multiple combinations of training and validation and pick the model that does the best of the validation set. We then confirm the result on the test set.
+
+\subsection{Representation}
+
+A machine learning model can't directly take most input examples as most models require a vector input. Therefore, we must create a representation of the data before training the model on it. This may also involve picking only a set of features that represent the data best.
+\\
+
+Data can either be numerical or categorical.
+\\
+
+\textbf{Numerical} - Data that is some numeric value
+\begin{itemize}
+    \item \textit{We can directly use these values if they are in the correct range, else we may apply standardisation or scaling to the values.}
+
+    \item \textit{Alternatively, we can create categorical features for each range of numerical features to create "buckets". (Bucketing)}
+\end{itemize}
+\\
+
+\textbf{Categorical} - Features that consist of a finite set of categories.
+
+\begin{itemize}
+    \item For a small vocabulary, consider using the raw value.
+    \item Hashing can be used for a larger vocabulary to reduce the size of the vocabulary.
+    \item Alternatively, we can use embedding to convert categories into a vector embedding. This can either be dense vectors or sparse (in the case of one-hot encoding.)
+    \item We can combine categories across different features by performing feature crossing. We create an outer product of the possible categories and create a new true/false feature for each one. (For example, two features each with 5 categories when crossed produces 25 new features.)
+\end{itemize}
+
+\end{document}
