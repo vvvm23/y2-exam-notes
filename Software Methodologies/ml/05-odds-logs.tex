@@ -4,5 +4,36 @@
 
 \subsection{Odds}
 
+Odds are a numerical expression, expressed as a pair of numbers. Odds for reflects the likelihood that an event will take place. Conversely for odds against.
+
+\textbf{Odds are not probabilities!}
+\\
+
+Odds are in the range $[0, +\inf)$ and so will be biased towards the upper range. This asymmetry makes it difficult to compare odds of success and odds of failure. Taking the log of the odds solves this problem by making everything symmetrical.
+
+The odds are the ratio of something happening to something not happening. 
+
+\begin{center}
+    Odds: $ \frac{p}{1-p} $ \hspace{1cm} Logit Function: $ log(\frac{p}{1-p}) $
+\end{center}
+
+\subsection{Odds Ratios}
+
+We can use ratios of odds to determine if there is a relationship between features. For example, the odds that someone has cancer, give that they have a mutated gene. A larger values means that one feature is a good predictor of another. In other words, it quantifies the strength of the association between two events.
+
+\subsection{Logistic Regression}
+
+Logistic Regression is similar to Linear Regression in the sense that it predicts True/False. Instead though, it fits an "S" shaped logistic curve. The curve is strictly between 0 and 1.
+
+We use Maximum Likelihood to optimise the curve to fit the data the best. The steps for this are as follows:
+
+\begin{itemize}
+    \item Project original data points onto a candidate line. This gives each sample a candidate log(odds) value.
+    \item Then transform the candidate log(odds) to candidate probabilities using:
+        \subitem $ p = \frac{e^{log(\text{odds})}}{1 + e^{\text{odds}}} $ Sigmoid!
+        \subitem \textit{Inverse of logit function (?)}
+    \item Now, calculate the likelihood that the event will happen and will not happen for the positive and negative examples respectively.
+    \item Adjust the curve in order to maximum this likelihood.
+\end{itemize}
 
 \end{document}
