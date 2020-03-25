@@ -1,0 +1,67 @@
+\documentclass[../ml.tex]{subfiles}
+
+\begin{document}
+\subsection{Hard Margin Support Vector Machine}
+
+In geometry, a hyperplane is a subspace whose dimension is one less that its ambient space. (For example, the hyper plane of a 3d enviroment would be a 2d plane). The ambient space is defined as the Hilbert Space ($H$)
+
+Hyperplanes are a linear decision surface that can be used to separate and classify data points.
+\\
+
+Given training data $(x_i, y_i)$ for $i = 1, ..., N$ with $x_i \in\mathbb{R} $and $y_i \in {-1, +1}$ we will learn a classifier $f(x)$ such that:
+
+\begin{center}
+\begin{math}
+    f(x_i) = 
+        \begin{cases}
+            \geq 0, & y_i = +1 \\
+            < 0, & y_i = -1
+        \end{cases}
+\end{math}
+\end{center}
+\\
+
+One issue with pure hyperplane solutions is that there is no notion of an optimal solution as many planes can fit the training data well, but may not fit new data well. Therefore, we must pick the hyperplane with the largest margin between training examples in order to maximise the chance of performing well on unseen data. 
+
+\textit{We can think of an SVM classifier as fitting the widest possible street between the classes, known as large margin classification. We aim to seperate the classes and also stay as far away from the closest training instance as possible.}
+
+Note that adding more training instances "off the street" will not change the decision boundary at all. It is fully determined (or "supported") by the instances located on the edge of the street, known as support vectors.
+\\
+
+Some definitions:
+\\
+
+\textbf{Separating Hyperplane}- A hyperplane of the Hilbert Space $\mathbb{H}_{w,b}$ parameterized by $w \in \mathbb{R}^d$ and $b \in \mathbb{R}$that separates the data. 
+
+\textit{We assume the data is linearly separable, that is, there exists a $w$ and $b$ such that $y_i(w^T x + b = 0) > 0, i = 1, ..., m$}
+
+\textit{In simple terms, in negative examples $y_i$ will be negative and so should the prediction, making it more than $0$. Similar for positive examples.}We do not allow data to fall on the hyper plane exactly.
+\\
+
+\textbf{Distance}- The distance of a point $x$ from a hyperplane $\mathbb{H}_{w,b}$ is: $p_x(w,b) = \frac{|w^T x + b|}{||w||}$  
+
+\textbf{Margin}- If the hyperplane separates the training set we define its margin as the minimum distance over all points in the training set.
+\\
+
+Hard margin only works if the data is linearly separable. It is also quite sensitive to outliers. We need a more flexible solution.
+
+
+\subsection{Soft Margin Support Vector Machines}
+
+We introduce slack variables to relax the separation constrains. This still means it will try to limit margin violations (examples that end up in the middle or wrong side of the street) while also allowing some flexibility for examples that cross the boundary to still be classified.
+\\
+
+We control the balance between keeping the margin as large as possible while limiting margin violations by controlling a parameter $C$. Small $C$ allows constraints to be easily ignored, hence results in a large margin. Large $C$ makes constraints hard to ignore, resulting in a narrow margin. $C = \infty$ results in a hard margin problem.
+
+\subsection{Non-Linear Separable SVM}
+
+Although linear SVM classifiers are efficient, many datasets are not even close to being linearly separable. We can alleviate this by creating new polynomial features. In some cases this can make the data separable.
+\\
+
+\textbf{Feature Space} - The resulting set of features once the polynomial transformations have been applied.
+
+\textbf{Feature Vector} - The resulting vector once the original feature vector has been transformed.
+
+\textbf{Feature Map} - The function used to transform the feature vectors.
+
+\end{document}
