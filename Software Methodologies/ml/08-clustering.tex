@@ -84,6 +84,33 @@ To initialise, first select one data point at random to be the first centre. The
 
 \subsection{Silhouette Analysis}
 
+We can estimate the number of clusters required for a given dataset by performing Silhouette Analysis.  This is simply observing the separation distance between the resulting clusters.
+
+An instance's silhouette coefficient is equal to $(b-a)/max(a,b)$ where $a$ is the mean distance to other instances in the same cluster and $b$ is the mean nearest-cluster distance.
+
+The co-efficient can vary between $-1$ and $+1$. Close to 1 means the instance is well inside its own cluster. 0 means it is on the boundary. $-1$ means it may have been assigned to the wrong cluster. The silhouette score is then calculated by calculating the mean silhouette co-efficient over all instances.
+\\
+
+Another way to visualise this is to plot every instance's silhouette co-efficient, sorted by cluster they are assigned to and by the value of their co-efficient. We can then plot the silhouette score. If any clusters fall below this score this indicates that the clusters are much too close to other clusters.
+
 \subsection{Other Clustering Algorithms}
+
+\textbf{Gaussian Mixture Model} - A probabilistic model that assumes that the instances were generated from a mixture of several Gaussian distributions.
+
+Instances generated from a Gaussian Distribution form a cluster that often looks like an ellipsoid, so we can usually tell if instances were- but we don't know which one.
+
+Finding clusters is equivalent to estimating the parameters of these underlying distributions.
+\\
+
+\textbf{Agglomerative Clustering} - A hierarchy of clusters are built from the bottom up.
+
+Start with singleton clusters for each example in the dataset. At each iteration join the nearest pair of clusters.
+
+This approach scales well with large numbers of examples (provided a sparse matrix is used) and can capture clusters of various shapes.
+\\
+
+\textbf{Divisive Clustering} - Begin with one cluster and divide it until all clusters are singleton.
+
+Often results in less clear insights into the structure of the data. Large clusters are generated earlier so any erroneous decisions cannot be corrected later.
 
 \end{document}
