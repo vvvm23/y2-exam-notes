@@ -1,0 +1,89 @@
+\documentclass[../ml.tex]{subfiles}
+
+\begin{document}
+\subsection{Reasons for clustering}
+
+Clustering can be used to effectively organise large data sets in a way that makes it easy to understand. This is necessary in the "big data era" as data sets are now beyond our capability to memorise and analyse.
+
+Clustering refers to numerical methods of classification. The goal is to explain a set of examples by a fixed number $K$ of homogeneous groups.
+\\
+
+\subsection{Proximity Measurement}
+We must define some measure of proximity. A distance function on a dataset $X$ is called a metric if it satisfies the following conditions:
+
+\begin{itemize}
+    \item Symmetry, $D(x_i, x_j) = D(x_j, x_i)$
+    \item Positivity, $D(x_i, x_j) \geq 0, i,j=1,...,N$
+    \item Triangle Equality, $D(x_i, x_j) \leq D(x_i, x_k) + D(x_k, x_j)$
+    \item Reflexivity, $D(x_i, x_j) = 0$ if $x_i = x_j$
+\end{itemize}
+
+A common metric for hyper-spherical clusters is Euclidean Distance ($L_2$ norm).
+\begin{center}
+$D(x_i, x_j) = \sqrt{ \sum^{d}_{i=1} (x_{i,l} - x_{j,l})^2 }$
+\end{center}
+
+\subsection{Clustering Criteria}
+
+The most commonly used clustering criteria for the $Nxd$ matrix $X$ of continuous data is given as:
+
+\begin{center}
+    $ T = \sum^{K}_{k=1} \sum^{N_k}_{n=1} (x_{k,n} - \mu)(x_{k,n} - \mu)^T$
+\end{center}
+
+Where $x_{k,n}$ is the $d$-dimensional vector of observations of the $n$th object in group $k$ and $\mu$ is the vector of the overall sample means.
+\\
+
+Partition $T$ into a scatter matrix "within the group" $W$ and "between" $B$, such that $T=W+B$.
+
+$W$ is defined as:
+
+\begin{center}
+    $W= \sum^{K}_{k=1} \sum^{N_k}_{n=1} (x_{k,n} - \mu _k)(x_{k,n} - \mu _k)^T$
+\end{center}
+
+Where $\mu _k$ is the mean of all data points assigned to cluster $k$.
+
+A decrease in $W$ is equivalent to an increase of $B$.
+
+Thus our objective function is:
+
+\begin{center}
+    $J = \sum^{K}_{k=1} \sum^{N_k}_{n=1} r_{n,k} (x_n - \mu _k)^2$
+
+    $r_{n,k} = 
+    \begin{cases}
+        1 & \text{if} = arg min_j (x_n - \mu _j)^2 \\
+        0 & \text{otherwise}
+    \end{cases}
+    $
+\end{center}
+
+\textit{In simple terms, we calculate the objective function by iterating through all groups then iterating through all items in the entire dataset. We ignore items that are not part of the group (this is what the 0 clause is for). We decide whether an item is in the group by calculating the minimum distance between all the centres of the group.}
+
+\textit{We then want to minimise the difference between the centre of the group by using the clause} $(x_n- \mu _k)^2$. \textit{This in turn is equivalent to minimising our objective function.}
+
+\subsection{K-means Algorithm}
+
+The optimisation algorithm is as follows:
+
+\begin{itemize}
+    \item Initialise ${\mu _k}, k \in 1,...,K$ then keep $\mu _k$ fixed and minimise $J$ with respect to $r_{n,j}$
+    \item Assign $r_{n,j}$ to each data point. Then keep $r_{n,j}$ fixed and minimise $J$ with respect to $\mu _k$
+    \item Repeat until convergence.
+\end{itemize}
+
+\textit{In essence, randomly create centres and assign labels to the examples in the space based on these centres. Update the centres using these labels and repeat.}
+
+\textit{This is guaranteed to converge as we can prove that mean squared distance will decrease at every step. (It may not converge to the right solution though)}
+\\
+
+An important improvement to the K-Means algorithm is K-means++. It allows for a smarter centre initialisation process that decreases the chance of converging on a suboptimal solution by placing centres far away from each other.
+
+To initialise, first select one data point at random to be the first centre. Then for each other data point compute $D(x)$, the distance between $x$ and the nearest centre. Use a weighted probability distribution proportional to $D(x)^2$ to pick the next centre at random. Repeat until enough centres have been chosen.
+
+\subsection{Silhouette Analysis}
+
+\subsection{Other Clustering Algorithms}
+
+\end{document}
