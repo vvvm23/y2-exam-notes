@@ -1,0 +1,63 @@
+\documentclass[../security.tex]
+
+\begin{document}
+
+\subsection{What is cryptography?}
+
+\textit{"The science of secret writing"} - Gollman
+
+\textit{"... the practice and study of techniques for secret communications in the presence of third parties called adversaries."} - Wikipedia (Nice one Willcocks)
+
+Encryption is the process of turning plain text into cipher text. Decryption is the reverse, the process of turning cipher text back into its original plain text.
+\\
+
+One of the simplest form of cyphers is a substitution cipher, for example ROT13 (in general ROT$k$), which simply rotates the alphabet by a offset of 13. This is known as a monoalphabetic cipher. Others exist such as polyalphabetic (change rules in different parts of the message) and polygraphic (substitute with groups of letters.).
+
+These forms of ciphers can easily be broken with frequency analysis.
+\\
+
+In practise, we use algorithms that encrypt the message with some key. If the key to decrypt is the same, this is a symmetric key crypto-system. If it is different, this is a asymmetric key crypto-system. (A Caesar Cipher as opposed to Elliptic Curve Cryptography).
+
+\subsection{Block Ciphers}
+
+Symmetric key methods are typically use for files. Files often are often encrypted blocks at a time rather than in bits.
+
+In order to eliminate the chance of encrypting identical data the same way, the cipher-text from the previous block is fed into the algorithm for computing the next block. Additionally, it uses an initialisation vector such that the same message encrypted multiple times will be different.
+
+\subsection{Hash functions}
+
+Obviously, storing passwords in plain text is a bad idea. If the database is compromised then all users are also exposed. Encrypting the passwords will not work as we must store the key somewhere in plain text.
+
+To solve this, we will use hash functions instead and then check if the hashes match.
+
+A hash function is any function that can map data of arbitrary size to a fixed size. \textbf{Cryptographic} hash functions should guarantee these properties: 
+
+\begin{itemize}
+    \item Deterministic -- Always results in the same output given the same input
+    \item One-way -- The function should be easily computable, but its inverse should be computationally difficult. (Difficult being an understatement)
+    \item No collisions - Different inputs should never result in the same output
+    \item Avalanche Effect - A small change in the input should have a large change in the result.
+\end{itemize}
+\\
+
+However, this still leaves hashed passwords vulnerable to brute force attack or even pre-computing the hashes to common passwords. For a purely random and long password however the storage requirements are too great for this.
+
+Instead, Rainbow Tables are used. These are tables containing start text and the end hashes after a large amount of iterations. The table is then sorted by the end result for fast lookup.
+
+To query the rainbow table:
+
+\begin{itemize}
+    \item Look up the hash in the sorted list
+    \item If not found, reduce the hash (via some reduction function, such as taking first $N$ characters) and hash again.
+    \item If it is found, the chain for which the hash matches the final hash contains the original hash. You can go from the start of that chain to recover the secret plain text (as in, go to the start of the chain until you find the starting hash, and the plain text immediately before it is your answer).
+    \item Else, keep iterating up until the maximum number of iterations.
+\end{itemize}
+\\
+
+Using rainbow tables we can quickly recover passwords while retaining a reasonable storage requirement. 
+
+To defeat them, we can introduce a salt. A salt is a random string stored as plain text alongside the hash, but we can compute the hash by combining it with the password and then hashing. This means two users with the same password will now have different hashes and also stops pre-computing methods such as rainbow tables.
+
+Now, they must query $2^N$ rainbow table databases where $N$ is the number of bits in the salt.
+
+\end{document}
