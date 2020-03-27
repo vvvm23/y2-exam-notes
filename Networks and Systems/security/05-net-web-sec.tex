@@ -1,0 +1,70 @@
+\documentclass[../security.tex]{subfiles}
+
+\begin{document}
+    
+This section will just be a list of common network and web vulnerabilities and concepts:
+\\
+
+\textbf{Border Gateway Protocol (BGP) Abuse} -- BGP handles routing along the internet backbone.
+
+If we were to announce a shorter route through a blank page we could cause chaos throughout the BGP and take down a sizeable chunk of the internet.
+\\
+
+\textbf{Router Security} -- Routers can contain firewalls that may have stateful packet inspection. Additionally, they support VPN handling allowing confidentiality through encryption.
+\\
+
+\textbf{Telnet \& SSH} -- Telnet is an old protocol that sends plain text that is commonly used to control terminals remotely. It is easy to capture sensitive data using a packet sniffer.
+
+Telnet was replaced by SSH which implements strong encryption and public key authentication.
+\\
+
+\textbf{FTP} -- Also replaced by SSH, but can still be used for sending insensitive data.
+
+Use SFTP (FTP over SSH) for most cases.
+\\
+
+\textbf{ARP Poisoning} -- ARP or Address Resolution Protocol maps IP addresses to physical machines (MAC Addresses).
+
+This can be exploited by sending false ARP replies causing frames to be redirected to the attackers machine. This works as ARP replies are trusted without question.
+
+To solve this, ARP has been replaced by NDP for IPv6 which ensures the claimed source of an NDP message is the owner of the claim address. This is still however, susceptible to MITM attacks.
+\\
+
+\textbf{IP Spoofing} -- Changing the source IP of a packet with a fake IP to hide the identity of the sender.
+
+Protection against IP spoofing includes measures such as encrypted sessions, authentication protocols and access control lists.
+\\
+
+\textbf{Smurf \& Fraggle Attacks} -- A smurf attack is a form of DDoS attack that renders a network inoperable.
+
+A false ICMP ping request with the victim address is sent to many computers on the network. All the computers will respond with a ping response to the victim address and overwhelm its network bandwidth.
+
+A fraggle attack is a variation of a smurf attack where the attacker instead uses UDP ports to carry out the attack.
+\\
+
+\textbf{Distributed Denial of Service (DDoS)} -- A large number of computers (perhaps even a botnet) send lots of traffic to the victim computer in order to overwhelm its network capabilities and bring it down.
+
+This attack is very difficult to defend against.
+
+In the era of IoT devices, these devices can be compromised and used in botnet attacks without the owner knowing.
+\\
+
+\textbf{Wiretapping} -- Physically inserting a sensor into the communication medium and listening on the wire using a packet sniffer.
+\\
+
+\textbf{Cross-Site Scripting (XSS)} -- Attacker injects a malicious script into the vulnerable web page which will execute once the victim also uses the web page. This script could then send sensitive data from the victim back to the attacker such as cookies.
+
+Nearly 70\% of attacks consist of XSS scripting and injections.
+
+Web sites must ensure to sanitise inputs from their users in order to stop malicious scripts from being injected. This includes methods such as white-listing valid inputs and HTML escaping inputs.
+
+Linked to XSS is XSRF (Cross-site request forgery). We can inject a script that then makes a further request to another site (for example, to withdraw money from a bank). If the user has recently logged in, the cookie will still be valid and the request will be accepted.
+\\
+
+\textbf{Path Traversal Attacks} -- If paths on a web server are not properly verified then a user may be able to gain access to other files in the system.
+
+For example by navigating backwards through directories using "../" or URL encoded equivalent.
+
+This can be solved by evaluating any input paths recursively to see the true destination. Additionally, ensure the web server user only has access to web site files and not system files (such as /etc/passwd).
+
+\end{document}
