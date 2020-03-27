@@ -1,0 +1,55 @@
+\documentclass[../security.tex]{subfiles}
+
+\begin{document}
+
+\subsection{Identification}
+
+Some terminology:
+
+\begin{itemize}
+    \item Subject -- An active entity within a system (person, script, etc)
+    \item Principal -- An entity that can be granted access (a username, user id, pin, etc.)
+    \item Object -- Resource that some principals may access or use.
+\end{itemize}
+
+The subject must identify themselves to the system as a principal. The system then verifies the identity of the user. If the identity is verified, the system then checks that the principal has the permissions to access the target object.
+
+\subsection{Authentication}
+
+Credentials can take a number of forms:
+\begin{itemize}
+    \item What you know -- Passwords, pin numbers
+    \item What you have -- Auth key, passport, ticket, phone
+    \item Who you are -- Fingerprints, DNA, face recognition
+\end{itemize}
+
+Passwords are a non-ideal credential method. Modern security guidelines require users to remember many complex passwords. This may encourage users to write them down in plain text. Instead, we should store them in a password protected password agent.
+\\
+
+Another method of authentication is to use authentication keys such as SSH keys. The subject creates a private-public key pair and shares the public key with services. One pair must be generated per device. Authentication keys have the advantage of public keys being leaked is completely inconsequential as the private key is still secure, compared to passwords which, if compromised, allows for an attacker to access the account. Additionally, compromised devices can easily have access revoked as the keys are per device.
+
+However, authentication keys have the weakness of the client being open to be compromised, as we must store the private key somewhere. The solution to this is to have physical security keys separate to the client computer such as a one time password (like bank devices or RSA key chains) or a physical USB key.
+\\
+
+Another method of authentication is to use biometric information such as fingerprints, iris recognition, face recognition or gait recognition. This has the advantage of non-repudiation- a way to guarantee that an individual who accesses a certain facility cannot later deny using it (as only they have access to their own biometrics (?)). Unfortunately, there is uncertainty in this method of authentication as there must be a compromise between false-positives and false-negatives.
+
+We can combine authentication methods to get the benefits of both using two-factor authentication (or, in general, $k$-factor authentication)
+
+\subsection{Zero-knowledge Password Proof (ZKPP)}
+
+Our objective is not to reveal anything in the client-server communications about the password (or other authentication methods) so we are not vulnerable to replay attacks.
+
+The most common ZKPP approach is challenge-response authentication:
+
+\begin{itemize}
+    \item Server generates unique challenge value (known as a nonce)
+    \item Server sends nonce to the client
+    \item Client computes response by combining the nonce with the password and then hashing.
+    \item The client then sends this response back to the server.
+    \item Server then compares response with the nonce and the stored password hashed.
+    \item \textit{In reality, the stored password will most likely be the hashed password, so we may hash twice.}
+\end{itemize}
+
+The nonce must be a random value (Suspectible to psuedo RNG flaws) and must be unique to prevent replay attacks.
+
+\end{document}
