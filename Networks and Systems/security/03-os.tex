@@ -1,0 +1,83 @@
+\documentclass[../security.tex]{subfiles}
+
+\begin{document}
+    
+\subsection{Access Control}
+
+Most computers contain lots of subjects (users) and lots of objects (files, programs). We need access controls to ensure that subjects can only access objects that they have permission to access.
+
+One way to control this is to construct a Access Control Matrix (ACM). This is a matrix of subjects over objects. Each field in the matrix defines the permissions that subject has over the object (Example, read, write, execute).
+
+This method is easy to define and verify, but has poor scalability when there is a large number of subjects or objects.
+
+Unix systems have 8 access permission settings for 3 types of user, represented as a 3-digit 8-bit number. The types of users are User, Group and Other.
+
+\\
+
+Another method for access control is Access Control Lists (ACL). This is a table with lookup by object. Each entry contains a list of subjects and their permissions.
+
+This method makes it easy to view and edit object access control, but gives poor overview of access rights per subject and makes it difficult to remove a subject.
+\\
+
+Yet another method is Capability-based Security. This is similar to ACLs but instead we store by subject. This makes it easy to transfer ownership and inherit access rights but gives a poor overview of access rights per object.
+
+\\
+
+Access control in Unix systems extends to devices represented as files for example /dev/tty (terminals) which could allow keys to be monitored.
+
+\\
+
+Who decides access rights?
+
+\begin{itemize}
+    \item File owner -- Mandatory access control (MAC)
+    \item System owner -- Discretionary access control (DAC)
+\end{itemize}
+
+\subsection{Windows Access Controls}
+
+Windows Access Controls are implemented in the windows registry, the core place for system control (and so makes it a big target). Windows systems have more levels than Unix systems (Hardware $>$ System $>$ Administrators $>$ Users)
+
+NTFS adds more levels of access control when compared to FAT32 and DOS by adding two ACLS:
+
+\begin{itemize}
+    \item DACL - Defining reading, writing, executing, deleting for users and groups
+    \item SCAL - Defines which actions are audited
+\end{itemize}
+
+It also provides encryption.
+
+\subsection{Control Models}
+
+\textbf{Bell-LaPadula confidentiality policy} -- "Read down, write up"
+
+Subject cannot read object of higher sensitivity (stops unauthorised users reading classified files)
+
+Subject cannot write to object of lower sensitivity (stops accidental leaking of classified data)
+
+Subject cannot read/write to object of higher or lower sensitivity.
+
+\textit{This model was developed originally for military and intelligence secrets}\\
+
+\textbf{Biba Integrity Model} -- "Read up, write down"
+
+Subject cannot read object of lower integrity. (Ensures they only read data we are sure is correct)
+
+Subject cannot write to object of higher integrity. (Stop subject from jeapordising the integrity of the object.)
+
+Subject cannot request higher integrity access.
+\\
+
+\textbf{Clark-Wilson Integrity Model} -- Handles case of needing both integrity and confidentiality.
+
+Limits direct interaction between subjects and objects by having an authorised application act as a middleman that prevents unauthorised subjects from modifying objects whilst simultaneously preventing authorised subjects from making invalid modifications to objects that would put integrity at risk.
+
+\subsection{Hardware Based Controls}
+
+x86 CPUs offer four protection rings that can be assigned to objects and subjects. If subject $<$ object, access is disallowed. In Windows and Unix only levels 0 and 3 are used. (ARM uses 3 levels).
+
+BIOS and UEFI systems often do not have a password by default, this should be set. Similarly, bootloaders such as GRUB and ReFIND should have a password as not having one can let anyone boot into a shell with root privileges.
+
+On Windows, a bootable USB can be used to allow full access to the registry, and therefore edit user permissions and passwords.
+
+\end{document}
