@@ -1,0 +1,99 @@
+\documentclass[../security.tex]{subfiles}
+
+\begin{document}
+
+\subsection{Terminology}
+
+First, some definitions:
+
+\begin{itemize}
+    \item \textbf{Database} -- An organised collection of data
+    \item \textbf{Relational Database} -- Collection of schemas, tables, queries, reports, views and other elements.
+    \item \textbf{DBMS} -- Database management system, acts as an interface between the database and programs that need to utilise it.
+    \item \textbf{Database Administrator} -- Defines the rules that organise the data and controls access.
+    \item \textbf{NoSQL} -- A "non-relational" database. Consists of a list of documents rather than tables.
+\end{itemize}
+
+And some important database security concepts:
+
+\begin{itemize}
+    \item \textbf{Authentication} -- Who are you?
+    \item \textbf{Authorization} -- What are you allowed to do?
+    \item \textbf{Encryption} -- Ensuring data is encrypted so it cannot be read in the event of a breach
+    \item \textbf{Auditing} -- What did users do? Allows us to retrace the steps of an attack.
+    \item \textbf{Redaction} -- Disguise sensitive data in the returned result
+    \item \textbf{Masking} -- Creating similar but inauthentic data for testing purposes.
+    \item \textbf{Firewall} -- Enforces white-list of commands, monitor for data leakage and evaluating incoming IP address/time/location
+    \item \textbf{Integrity} -- Data should be accurate and tolerant to physical problems.
+\end{itemize}
+
+\subsection{Database Vulnerabilities}
+
+\textbf{Excessive and Unused Privileges} -- The privileges people have may not scale with the role they server
+
+For example, an employee changing roles may have greater permissions than they should have if their privileges are also not updated.
+
+Worse, privileges could be mis-configured, giving people too high of a privilege by default.
+\\
+
+\textbf{Privilege Abuse} -- People who have legitimate use of data, but choose to abuse it.
+
+For example, employees playing pranks on friends or coworkers. 
+
+Alternatively, taking data with them when they go home / quit their job. On a similar vein, a disgruntled employee doing damage to the company.
+\\
+
+\textbf{SQL Injection} -- Inserting or injecting unauthorised malicious database statements somewhere in the application or database that gets executed by the database itself. 
+
+Involves typing structure query language commands to the database through the application.
+
+Very damaging as directly executed by the database in a trusted way. One SQL injection attack can be very costly.
+
+\textit{A defence against this is to use prepared statements. This parameterises the SQL statement so code and data don't get mixed.}
+\\
+
+\textbf{Malware} -- Installing malware on the database to directly read data out.
+
+The majority of breaches involve malware in some way. Malware is introduced in other attacks such as phishing.
+\\
+
+\textbf{Weak Audit trail} -- All details on all transactions are not recorded.
+
+This makes it harder for organisations to deal with the aftermath of data breaches, making it nearly impossible to trace back to individuals.
+\\
+
+\textbf{Storage Media Exposure} -- Other storage mediums that are unprotected from attacks.
+
+For example, a backup server or backup copy may not be as protected (if at all) from attacks. Its often that backups are leaked rather than the active copy.
+\\
+
+\textbf{Database Vulnerability Exploitation} -- Existing vulnerabilities in database software that have not been patched.
+
+A large proportion of database users never apply patches or take a long time to apply patches.
+
+Can quickly be found by performing a vulnerability scan on a server.
+\\
+
+\textbf{Unmanaged sensitive data} -- Sensitive data being used in testing environments that are not managed as strictly as production environments.
+\\
+
+\textbf{Denial of Service} -- Attackers overloading the server resources by flooding the database with queries.
+
+Pretty hard to defend against and can happen to any databases/
+\\
+
+\textbf{Limited Expertise} -- Untrained staff or not following policies exactly.
+
+Lack of education in security risks can make staff exposed to being targets to attacks.
+\\
+
+\textbf{Obscure Queries} -- Hiding you real query in a more complex query
+
+Good for circumnavigating a naive white-list or a naive permission system.
+\\
+
+\textbf{Inference Attacks} -- Analyzing data in order to illegitimately gain knowledge of a subject or the database.
+
+Occurs when someone is allowed to execute queries that they are authorised for, but done so in a fashion that allows additional data to be deduced.
+
+\end{document}
