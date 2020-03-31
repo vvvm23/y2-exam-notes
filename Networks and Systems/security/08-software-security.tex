@@ -18,7 +18,25 @@ If we request memory from the stack when there is no more to allocate we get a s
 
 We must ensure to deallocate memory requested from the heap to avoid dangling pointers and memory leaks.
 
-By overwriting data in the stack using a stack overflow we can change the return address of functions to the attackers malicious code and execute arbitrary code.
+By overwriting data in the stack using a stack overflow we can change the return address of functions (or any variable) to the attackers malicious code and execute arbitrary code. This can be used for a variety of purposes such as gaining elevated privileges. This is known as stack smashing.
+
+For example, we could overwrite variable "allow" in a password protected program to allow access even with the wrong password (as anything that is not 0 is considered to be true in C).
+
+If we detect an error, abort before any malicious behaviour can be executed.
+
+To protect against overflows, we can perform bounds checking (check data will not cause overflow before actually adding it) or by using heap memory.
+
+We can also use ASLR to randomise memory locations, making it harder for a stack smashing attack to jump to the correct location with the malicious code (as the location is not known before).
+
+We can also use canary values, values in memory that if changed indicate an overflow has occurred and so execution will terminate.
+
+\textit{Can also occur in the heap, in a process known as heap overflow.}
+
+Heaps rarely contain pointers that influence control flow, so we must use NOP sleds to bring execution to bring execution to the correct memory address. A NOP sled is a concurrent section in memory containing no operation instructions, causing the program counter to slide to the wanted memory address.
+
+There are lots of modern checks against it. GCC can warn you of vulnerable functions and recommend the modern alternative with checks against overflows.
 \\
+
+Another attack in software is a timing attack. If we accurately time a program vulnerable to this we can determine information that we should not have. For example, testing a password character by character and timing which guess took the longest (which is most likely the correct password).
 
 \end{document}
