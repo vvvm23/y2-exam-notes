@@ -1,0 +1,47 @@
+\documentclass[../security.tex]{subfiles}
+
+\begin{document}
+
+\subsection{Security Measures}
+
+Security in large businesses is a constant trade off between security and cost, convenience and usability. Examples of a measures include:
+\\
+
+\textbf{Locked Down Environments}
+
+Software has to be pre-vetted before being installed on employee systems.
+
+Often using VMs with everything setup to prevent host system being compromised.
+
+Network policies will be very strict.
+\\
+
+\textbf{General Security Policies}
+
+Measures such as security badges wherever you go. Even higher security measures in more sensitive areas. 
+
+Clean desks policies (remove all documents from desk at end of day)
+
+Heavy surveillance of production servers.
+\\
+
+\textbf{Laptop Security Policies}
+
+Screen locks, encrypted drives, kensington locks, monitoring software.
+\\
+
+Once a breach occurs, companies must disclose it within 24 hours of the attack or they will face heavy fines. Disclosures also help security researchers analyse the attack and they may offer free advice. Courts will also be more likely to be in favour of the company if they willingly disclose it early.
+
+\subsection{Best Industry Practices}
+
+\begin{itemize}
+    \item Use a strong hash function for passwords with password salts.
+    \item Encrypt files if possible.
+    \item Use multi-factor authentication
+    \item Keep software and dependencies up to date.
+    \item Ensure we can trust dependencies and that they will continue be maintained in the future.
+    \item Ensure to properly validate and escape user data. Never directly execute.
+    \item Making employees use password managers, adblockers and tunneling (SSH, TOR)
+\end{itemize}
+
+\end{document}

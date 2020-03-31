@@ -1,0 +1,24 @@
+\documentclass[../security.tex]{subfiles}
+
+\begin{document}
+
+\subsection{Application Memory}
+
+In compiled languages a program is created by compiling the source code to change it into an object file. The program can then be executed by the CPU as machine code instructions.
+
+An application's memory consists of 4 components:
+\begin{itemize}
+    \item Text (Code) Segment -- Contains the executable instructions of a program.
+    \item Data Segment -- Contains global and static variables
+    \item Stack -- A LIFO structure, stores automatic variables and information saved before each function call so it can be returned to its original state upon returning.
+    \item Heap -- Where dynamic memory allocation takes place. Grows in the opposite direction to the stack. This is the memory that is allocate when you call malloc/alloc.
+\end{itemize}
+
+If we request memory from the stack when there is no more to allocate we get a stack overflow. This is often caused by badly written recursive functions.
+
+We must ensure to deallocate memory requested from the heap to avoid dangling pointers and memory leaks.
+
+By overwriting data in the stack using a stack overflow we can change the return address of functions to the attackers malicious code and execute arbitrary code.
+\\
+
+\end{document}
