@@ -1,0 +1,77 @@
+\documentclass[../alg.tex]{subfiles}
+
+\begin{document}
+
+\subsection{Algorithms}
+
+\textbf{Algorithm} -- Computational procedure that takes some value(s) as input and produces some value(s) as output.
+
+\textbf{Problem} -- Specifies desired relationship between input and output.
+\\
+
+An algorithm is correct if for every input instance it halts with the correct output. A correct algorithm therefore solves the problem.
+
+\textit{For example, a problem could be sorting a sequence on numbers. An algorithm to solve the problem could be the insertion sort.}
+\\
+
+\subsection{Asymptotic notation}
+
+Rules for asymptotic notation:
+
+\begin{itemize}
+    \item $f(n) = \Omega (g(n))$ if $\exists c_1 > 0, n_0$ s.t. $c_1 g(n) \leq f(n), \all n \geq n_0$
+    \item $f(n) = O(g(n))$ if $\exists c_2 > 0, n_0$ s.t. $f(n) \leq c_2 g(n), \all n \geq n_0$
+    \item $f(n) = \Theta (g(n))$ if $\exists c_1, c_2 > 0$ s.t. $c_1 g(n) \leq f(n) \leq c_2 g(n), \all n \geq n_0$
+    \item $f(n) = \omega (g(n))$ if $\exists c_1 > 0, n_0$ s.t. $c_1 g(n) < f(n), \all n \geq n_0$
+    \item $f(n) = o(g(n))$ if $\exists c_2 > 0, n_0$ s.t. $f(n) \leq c_2 g(n), \all n \geq n_0$
+\\
+\end{itemize}
+
+Some relationships:
+
+\begin{itemize}
+    \item $f(n) = \Theta(g(n))$ iff $g(n) = \Theta (f(n))$
+    \item $f(n) = \Theta(g(n))$ iff $f(n) = O(g(n))$ and $f(n) = \Omega(g(n))$
+    \item $f(n) = O(g(n))$ iff $g(n) = \Omega(f(n))$
+    \item $f(n) = o(g(n))$ iff $g(n) = \omega(f(n))$
+    \item $f(n) = O(g(n))$ iff either $f(n) = \Theta(g(n))$ or $f(n) = o(g(n))$
+    \item $f(n) = \Omega(g(n))$ iff either $f(n) = \Theta(g(n))$ or $f(n) = \omega(g(n))$
+\end{itemize}
+\\
+
+\subsection{Running Time}
+
+The running time $T(I)$ of an algorithm $\alpha$ on input $I$ is the time taken by $\alpha$ on $I$ until $\alpha$ halts. We classify inputs according to their size.
+
+The notion of size depends on the context of the problem. For example, a sorting problem would have the input size $n$ equal to the number of items in the list.
+\\
+
+We define the worst case running time $T(n)$ of an algorithm on an input of size $n$ as the maximum time taken over all inputs $I$ of size $n$. This gives us an upper bound of the running time for any input of a given size.
+
+Additionally, the average case is often similar to the worst case, so this gives us an idea of how fast our algorithm is.
+\\
+
+In order to calculate running time in a way that is independent of hardware, we can define a naive approach where each line of psuedocode takes 1 unit of time and sum the number of times the line is executed when running on the input $I$.
+
+\begin{center}
+\begin{math}
+    T(I) := \sum^{p}_{i=1} q_i
+\end{math}
+\end{center}
+
+Where, $q_i$ is the number of times line $i$ is executed and $p$ is the number of lines.
+
+Hence, the worst case aims to the maximise the number of lines executed.
+\\
+
+Reasons to use asymptotic notation:
+
+\begin{itemize}
+    \item Gives a precise upper bound for functions in terms of other functions
+    \item Removes ambiguity caused by specific implementations
+    \item Allows us to analyse behaviour on very large inputs that we could not directly executed ourselves.
+\end{itemize}
+
+Some disadvantages are that we lose information from constants involved in running time. For example, incredibly large hidden constants could mean one is better in theory, but the other is better in practise.
+
+\end{document}
