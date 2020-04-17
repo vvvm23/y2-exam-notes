@@ -1,0 +1,88 @@
+\documentclass[../compiler.tex]{subfiles}
+
+\begin{document}
+
+\subsection{Languages}
+
+A natural language such as English, Chinese, German has words, types of words, syntax and semantics.
+
+Natural languages are only useful for communications between humans if we speak the same language, otherwise we need translation.
+\\
+
+Computers, however, speak a machine language- strings of 0s and 1s. Programming languages act as an intermediate between natural languages and machine languages. Programming languages are much more structured than natural language but are still understandable by humans.
+
+\subsection{Compilers}
+
+We need a program that can translate programming language to executable machine language. This program is known as a compiler. In general, a compiler is a program, written in some language, that transforms a program, written in some source language, to an equivalent program in another language.
+
+\textit{Any language can be the target language, we could even "compile" (or rather decompile) machine code into C }.
+\\
+
+After compilation, the target program can be called by the user and used.
+
+An interpreter differs from a compiler as it directly executes the operations specified in the source program on the inputs supplied.
+
+The target program produced by a compiler is faster than an interpreter as we don't need to translate while running the program. However, an interpreter gives better error diagnostics and runs at a speed irrelevant of the size of the source code (as it will only translate and execute lines it needs to)
+\\
+
+Both Compilers and Interpreters must detect lexical (is the word in the language), syntactic (is it well former) and semantic (does it make sense) inconsistencies and propose solutions where possible.
+\\
+
+\subsection{High level Structure of a Compiler}
+
+Compilers can be split into two parts (which can be further subdivided):
+\\
+
+\textbf{Analysis (Front End)} -- Breaks the program into pieces, imposes grammatical structure on them and creates an intermediate representation of the source program. 
+
+Provides informative error messages if errors are detected and collects all important information in a symbol table.
+
+Results are passed to the Synthesis (Back End) part.
+
+\textit{Phases of Analysis: Lexical Analysis (Scanning), Syntax Analysis (Parsing), Semantic Analysis}
+\\
+
+\textbf{Synthesis (Back End)} -- Uses the symbol table and the intermediate representation to generate and then optimize the target code.
+
+\textit{Phases of Synthesis} -- Target Code Generation, Target Code Optimization
+\\
+
+We separate Analysis and Synthesis to allow for modularity in our compilers (We can swap out one front end or another whilst still keeping the same back end, for example).
+\\
+
+\subsection{Brief Overview of the Phases of a Compiler}
+
+\textbf{Lexical Analysis / Scanning} -- Reads the input program as a character stream and groups them into meaningful sequences of tokens. Generates the symbol table for all tokens, storing additional information about them such as type and scope.
+\\
+
+\textbf{Syntax Analysis / Parsing} -- Uses the tokens to create a intermediate representation of the source program as a syntax tree.
+\\
+
+\textbf{Semantic Analysis} -- Uses the symbol table and syntax tree to check for semantic consistency (such as type checking). Stores the semantic information within the syntax tree and symbol table.
+\\
+
+\textbf{Intermediate Code Generation} -- Generates explicit, low-level machine-like code. It must be easy to produce and to translate into the target language.
+
+\textit{For compiling into machine code, we usually use three-address code as our intermediate code.}
+\\
+
+\textbf{Intermediate Code Optimization} -- Improve the intermediate code into better code. (Faster, shorter, etc.)
+\\
+
+\textbf{Target Code Generation / Optimization} -- Translate to the target language and optimize further if possible.
+
+\subsection{Evolution of Compilers}
+
+The first computers were programmed in machine languages. Soon, assembly language appeared as mnemonic representations of machine instructions. Then, more modern programming languages formed, requiring more advanced compilers.
+
+We can use previous compilers in order to compile new source languages into a target language. This the recursive use of compilers and can be shown using T-diagrams.
+
+\begin{center}
+\begin{figure}[ht]
+    \subfloat{\includegraphics[width=2in]{compiler/images/T-diagram.png}}
+    \hspace*{\fill}
+    \subfloat{\includegraphics[width=2in]{compiler/images/rT-diagram.png}}
+\end{figure}
+\end{center}
+
+\end{document}

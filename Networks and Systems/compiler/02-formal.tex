@@ -1,0 +1,126 @@
+\documentclass[../compiler.tex]{subfiles}
+
+\begin{document}
+
+\subsection{Formal Languages}
+
+Formal languages can provide a formal description of programming languages and so are useful in compiler design as they allow us to build systematic ways to test correctness of an input program.
+\\
+
+Basic concepts of any formal language:
+\\
+
+\begin{itemize}
+    \item Alphabet $\Sigma$ = Set of all possible symbols
+    \item Sequence $\alpha$ = String of symbols
+    \item Language = particular set of sequences
+    \item Syntax, which sequences belong to the language
+    \item Semantics, meaning behind those sequences
+\end{itemize}
+
+In the context of programming languages, all sequences in the formal language definition are all valid program codes. However, there are infinitely many of these sequences.
+\\
+
+If a language $L$ has a finite number of sequences, we can describe it by simply listing all sequences.
+
+\begin{center}
+    $L_1 = \{a, b, c, ab, ac, bc, abc\}$
+\end{center}
+
+If it has an infinite number of sequences we must use more complex set notation:
+
+\begin{center}
+    $L_2 = \{ 0^n1^n | n \geq 0 \} =  \{ \epsilon , 01, 0011, ... \}$
+\end{center}
+
+or using a set of substitution rules:
+
+\begin{center}
+    $S \rightarrow 0S1$
+
+    $S \rightarrow \epsilon$
+\end{center}
+
+\subsection{Formal Grammars}
+
+A grammar is a finite way of describing an infinite number of strings given a start symbol and a set of production rules.
+
+Definition of a grammar:
+
+\begin{center}
+    A quadruple ($V_T, V_N, P, S$) where:
+    \begin{itemize}
+        \item $V_T$ is a set of terminal symbols
+        \item $V_N$ is a set of non-terminal symbols
+        \item $P$ is a set of productions
+        \item $S$ is the start symbol (must be non-terminal)
+    \end{itemize}
+
+    Where $V_T$ and $V_N$ are disjoint.
+\end{center}
+
+Non-terminals are often given as capital letters, terminals as lower-case letters and sequences as Greek letters.
+
+Productions have the form: $\alpha \rightarrow \beta$ where $\alpha$ and $\beta$ are strings. $\alpha$ must have at least one non-terminal and where $\beta$ can be the empty string $\epsilon$.
+\\
+
+A non-terminal $N$ is called:
+
+\begin{itemize}
+    \item Left-recursive if starting with $N$ we can produce a string that again starts with $N$.
+    \item Nullable if starting with $N$ we can produce $\epsilon$
+    \item Useless if starting with $N$ we can never produce a string consisting of only terminals.
+\end{itemize}
+
+\subsection{The Chomsky Hierarchy}
+
+Chomsky Hierarchy -- The classes of grammars we obtain by restricting the types of productions that can appear.
+
+\begin{itemize}
+    \item \textbf{Type 0 Grammars} -- The set of all grammars.
+    \item \textbf{Type 1 (Context-Sensitive) Grammars} -- Grammars that have only productions of the form $\alpha \rightarrow \beta$ where $|\alpha| \leq |\beta|$
+    \item \textbf{Type 2 (Context-Free) Grammars} -- The left part of each production has one non-terminal (Not a string).
+    \item \textbf{Type 3 (Regular) Grammars} -- All productions have one of the forms: $A \rightarrow a$ or $A \rightarrow aB$
+\end{itemize}
+
+The Chomsky Hierarchy classifies also the corresponding languages (The languages generated from these grammars)
+
+\subsection{Regular Expressions}
+
+A regular expression over an alphabet $\Sigma$ is:
+
+\begin{itemize}
+    \item Any element of $\Sigma$ and the empty string $\epsilon$ are regular expressions.
+    \item If $P$ and $Q$ are regular expressions then so is:
+        \begin{itemize}
+            \item $PQ$ (Concatentation)
+            \item $P|Q$ (Disjunction)
+            \item $P^*$ (Kleene Star)
+        \end{itemize}
+\end{itemize}
+
+This is a recursive definition.
+
+\textit{Theorem: Regular Grammars generate exactly regular expressions}
+\\
+
+Regular grammars are useful at describing local features of a programming language by expressing them as regular expressions.
+
+\textit{For example, the definition of constants, strings and identifiers}
+\\
+
+However, regular grammars cannot "count". For example, they are unable to match the pattern of matching brackets of arbitrary length. Context-free grammars can, however, do this.
+
+\subsection{Calling Graph}
+
+Many algorithms in compiler construction first collect some basic data items and then apply rules to them to extend the known knowledge further. These algorithms often share a common structure.
+
+A basic example is the calling graph of a program. This is a direction graph where each node is a procedure in the source program and an edge is drawn from one node to another if one calls the other- either directly or indirectly.
+
+This useful to find out which procedures are recursive and which can be expanded in-line inside another procedure for speed up in the target code.
+
+This algorithm is time consuming for most programs but for sparse inputs it works relatively fast.
+
+\textit{Uses recursive transitive closure of the initial direct calling graph to generate the full calling graph, which is time consuming.}
+
+\end{document}

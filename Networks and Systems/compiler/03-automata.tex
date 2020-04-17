@@ -1,0 +1,117 @@
+\documentclass[../compiler.tex]{subfiles}
+
+\begin{document}
+
+We need to automatically recognise whether a given string belongs to a given language. The solution to this is Finite Automata and their variations. These are essentially labelled directed graphs.
+
+\subsection{Non-deterministic Finite Automata}
+
+A Non-deterministi finite automaton (NFA) consists of:
+
+\begin{itemize}
+    \item A finite set $S$ of states.
+    \item The input alphabet $\Sigma$ (the set of input symbols)
+    \item A start state $s_0 \in S$ 
+    \item A set $F$ of accepting states
+\end{itemize}
+
+Often we represent NFA by a transition graph where nodes are all possible states in $S$, edges are directed and labeled by a symbol from the input alphabet (and $\epsilon$). The same symbol can label edges from a state $s$ to many different other states (This gives it the non-deterministic name)
+
+\begin{center}
+    \begin{figure}[ht]
+        \centering
+        \includegraphics[width=4in]{compiler/images/nfa.png}
+    \end{figure}
+\end{center}
+
+
+An alternative representation would be a transition table showing states and all their transitions given an input symbol.
+\\
+
+An NFA accepts an input string $x$ if there exists a path that:
+
+\begin{itemize}
+    \item starts at the state $s_0$ (start state)
+    \item Ends at one of the states in $F$ (the set of accepting states)
+    \item The concatenation of the symbols on its edges gives exactly $x$
+\end{itemize}
+
+The language defined (accepted) by an NFA is the set of strings that this NFA accepts.
+
+\subsection{Deterministic Finite Automata}
+
+A deterministic finite automaton (DFA) is a special case of an NFA where no edge is labeled by the empty string $\epsilon$ and for each state $s$ and each input symbol $a$ there is exactly one edge out of $s$ labelled with $a$.
+
+\textit{This removes the non-determinism as there is only ever one path.}
+
+This allows for a direct algorithm to decide whether a string $x$ is accepted by a DFA, by simply running through from the start state with the input and see if it is accepted once the input has been exhausted.
+
+\begin{center}
+    \begin{figure}[ht]
+        \centering
+        \includegraphics[width=3in]{compiler/images/acceptance-nfa.png}
+    \end{figure}
+\end{center}
+
+\textit{This is a useful example on how to quickly find the language defined by a DFA}.
+
+\subsection{NFA vs DFA}
+
+NFAs accept exactly the regular languages, so a simulation of an NFA can be used in the lexical analysis to recognise tokens. However, similar of NFA is not straightforward given the non-deterministic nature of it.
+
+However, for every NFA we can construct an equivalent DFA, so DFAs accept exactly the same languages as NFAs.
+\\
+
+First, we convert the regular expression $r$ to an NFA. For any two regular expressions $s$ and $t$ with NFAs $N(s)$ and $N(t)$ then:
+
+\begin{itemize}
+    \item if $r = s|t$ then start from the same start state and split off into $N(s)$ and $N(t)$ using the empty string transition.
+    \item if $r = st$ then concatenate the NFAs, making $N(t)$'s start state be the accepting states of $N(s)$
+    \item if $r=s^*$ then split off to the accepting state and $N(s)$. The accepting state of $N(s)$ splits off to the accepting state and the start state of $N(s)$.
+\end{itemize}
+
+\begin{center}
+    \begin{figure}[ht]
+        \centering
+        \subfloat{\includegraphics[width=3in]{compiler/images/reg-nfa.png}}
+        \hspace{\fill}
+        \subfloat{\includegraphics[width=2in]{compiler/images/reg-nfa-cont.png}}
+    \end{figure}
+\end{center}
+\\
+
+Next, given an NFA, we want to construct a DFA that accepts the same regular language. This allows us to use the DFA directly as a string recogniser.
+
+\textbf{The main idea is that each state of the DFA corresponds to a set of states in the NFA. After reading any input, the DFA is in the state corresponding to the set of states that the NFA could reach when reading the same input.}
+
+\subsection{Push-Down Automata}
+
+In order to recognise context free languages we must use Push-Down Automaton (PDA). This is exactly the same as an NFA but with the addition of a stack.
+\\
+
+The definition of a PDA as a tuple $(Q,\Sigma,\Gamma, \delta,p,Z,F)$ where:
+
+\begin{itemize}
+    \item $Q$ is a finite set of states
+    \item $\Sigma$ is the input alphabet
+    \item $\Gamma$ is the push-down alphabet
+    \item $\delta$ is a set of transitions
+    \item $p$ is the set of transitions
+    \item $Z$ is a push-down symbol, initially in the stack
+    \item $F$ is the set of final states
+\end{itemize}
+
+In general, a PDA is non-deterministic. A PDA accepts an input string $x$ if it reaches either a final state in $F$ or an empty stack after reading $x$.
+
+A single move in a PDA consists of reading a symbol, changing the state and replacing the top symbol of the stack by a string. The string can be empty.
+
+\begin{center}
+    \begin{figure}[ht]
+        \centering
+        \includegraphics[width=3in]{compiler/images/pda.png}
+    \end{figure}
+\end{center}
+
+PDAs accept exactly the context free languages. Additionally, deterministic PDAs accept strictly fewer languages than non-deterministic ones.
+
+\end{document}

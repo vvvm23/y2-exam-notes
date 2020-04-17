@@ -1,0 +1,108 @@
+\documentclass[../compiler.tex]{subfiles}
+
+\begin{document}
+
+\subsection{The Role of a Lexical Analyser}
+
+The Lexical Analyser is the first phase of a compiler. It reads input characters, groups them into lexemes and produces an output as a sequence of tokens which is sent to the parser for syntax analysis. When it discovers a lexeme for a new identifier it adds an entry to the symbol table.
+
+Lexical analysis and syntax analysis are separate phases. This helps with modularity and simplicity of design but also can improve compiler efficiency by applying specialised techniques that only work for lexical analysis such as specialised buffering techniques.
+
+\subsection{Tokens vs. Lexemes}
+
+There is a subtle difference between tokens and lexemes.
+
+\textbf{Token} -- A notation representing the kind of lexical unit such as a keyword or identifier.
+
+Consists of a pair of the token name and an optional attribute value. Tokens are passed as an input to the parser.
+
+A token has a pattern, which is the description of the forms of its lexemes. For example, a string of letters but no numbers.
+\\
+
+\textbf{Lexeme of a token} -- A sequence of characters in the source program that matches the pattern of a token. A lexeme is therefore an instance of a token.
+
+One token can have many lexemes associated with it. For example, a comparison token can have $<=$, $!=$, $==$, etc.
+
+In cases where many lexemes match with a specific token , the compiler must know which lexeme was found in the source program. The lexical analyser provides the parser with the token name and the additional information and the particular lexeme instance represented by the token.
+\\
+
+An attribute can correspond to more than one pieces of information:
+
+\begin{itemize}
+    \item The sequence of characters (Its Lexeme)
+    \item The type
+    \item The line it was found on (Error message reporting)
+\end{itemize}
+
+This information can be stored in the symbol table, then the attribute is just a pointer to the symbol table entry.
+
+\subsection{Recognition of Tokens}
+
+The source program can have several keywords that are reserved words and so cannot be used as identifiers. These tokens will have no attribute value.
+
+\textit{Examples include control flow keywords, such as if, else, then, while, etc.}
+
+Patterns of tokens can be expressed by regular expressions or defined by regular definitions (and so by a DFA).
+
+The syntax of a program can be expressed by a context free grammar (and so by a PDA).
+
+An example of all this from the slides:
+
+\begin{center}
+    \begin{figure}[ht]
+        \subfloat{\includegraphics[width=3in]{images/rec-token.png}}
+        \hspace{\fill}
+        \subfloat{\includegraphics[width=3in]{images/rec-token-2.png}}
+    \end{figure}
+\end{center}
+
+The terminal symbols of our simple grammar will be the token names, constants and comparison operators.
+
+We must define an additional rule for languages that are independent of whitespace. We must define a whitespace token in order to strip out whitespace and obtain a token stream.
+
+\subsection{Transition Diagrams}
+
+When we scan the source program to identify lexemes we need two pointers, one to mark the beginning of the current lexeme and the other to mark the current scan ahead point, until a match is found.
+
+Patterns for tokens, as we said before, can be expressed by regular expressions, and so can be recognised by a DFA.
+
+We model the recognition of pattern by a transition diagram (A special type of DFA). This diagram represents all information between the beginning of the lexeme and the forward pointer. Actions are attached to the final states which are to be performed after the lexeme has been scanned.
+
+The action is usually to return a specific token name and attribute value. It can also include retracting the forward pointer or skipping characters.
+
+\begin{center}
+    \begin{figure}[ht]
+        \centering
+        \includegraphics[width=5in]{images/tran-diagram.png}
+    \end{figure}
+\end{center}
+\\
+
+There are two ways to handle reserved words:
+
+\begin{itemize}
+    \item Install the reserved words initially in the symbol table. The entry stores that this is a reserved word. When we scan a lexeme, the call checks if it is already in the symbol table and will find it is a reserved word.
+    \item Create separate transition diagrams for each reserved word. For each new lexeme first run on the transition diagrams for reserved words. If none accepts, we can treat it as an identifier.
+\end{itemize}
+
+\subsection{Pattern Matching}
+
+There exists tools to automatically generate a lexical analyser simply from specifying the regular expressions to describes patterns for tokens. One example is Lex. It operates as follows:
+
+\begin{itemize}
+    \item List some regular expressions with some order.
+    \item Scans the input until it finds the longest prefix of the input that matches one of the patterns.
+    \item If many are matched, choose the first one.
+    \item Returns the corresponding token to the parser.
+\end{itemize}
+
+It simulates an NFA using all the input patterns and then reads an input. It returns the longest prefix reached when simulating this input on the NFA.
+
+\begin{center}
+    \begin{figure}[ht]
+        \centering
+        \includegraphics[width=5in]{images/pattern.png}
+    \end{figure}
+\end{center}
+
+\end{document}
