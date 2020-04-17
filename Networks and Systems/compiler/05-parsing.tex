@@ -1,0 +1,70 @@
+\documentclass[../compiler.tex]{subfiles}
+
+\begin{document}
+
+\subsection{Parsing}
+
+As before, a context free grammar is a finite way of describing an infinite number of strings given a start symbol and a list of production rules. Any given string that can be produced by the grammar is a valid program in the source language.
+
+The derivation of a string $s$ in grammar $G$ is the sequence of steps needed to produce $s$ using only the production rules of $G$.
+
+Example:
+
+\begin{itemize}
+    \item If $A \rightarrow \gamma $ is a production rule and $\alpha, \beta$ are strings.
+    \item Then $\alpha A \beta \rightarrow \alpha \gamma \beta $ derives in one step.
+    \item $\gamma_1 \rightarrow ^ * \gamma_2 $ means derives in zero or more steps.
+    \item $\gamma_1 \rightarrow ^ + \gamma_2 $ means derives in one or more steps.
+\end{itemize}
+\\
+
+Derivation comes in two forms:
+
+\begin{itemize}
+    \item \textbf{Leftmost derivation} -- At each step replace the leftmost non-terminal using a production rule.
+    \item \textbf{Rightmost derivation} --  At each step replace the rightmost non-terminal using a production rule.
+\end{itemize}
+\\
+
+The purpose of a parser is to simply, given a string of tokens, check whether it belongs to the language. If so, find a derivation of this string in the grammar. If not, report useful syntax errors to the developer.
+
+\subsection{Syntax Tree}
+
+For well formed strings of tokens, the parser will construct a syntax tree and pass it to the next phase of the compiler.
+
+Each internal node is marked by a non-terminal and represents the application of a production rule.
+
+Each leaf is marked by a terminal. All the leaves combined give the input string.
+\\
+
+There are two main methods for constructing a parse tree:
+
+\begin{itemize}
+    \item \textbf{Top-Down} --- Start from the root (start symbol) and continue downwards towards the leaves.
+    \item \textbf{Bottom-Up} -- Start from the leaves and continue up to the root.
+\end{itemize}
+
+We can build the parse tree as we derive as before.
+
+\subsection{Ambiguity}
+
+A grammar is ambiguous if there is more than one parse tree for the same string. This is the same as saying there exists more than one derivation of the same string.
+
+We can prove that a grammar is ambiguous by finding a string of terminals that can be produced by two parse trees. A string with two parse trees may have two different semantic meanings.
+\\
+
+As a result, we need to use additional rules to resolve ambiguities or design an equivalent grammar that is unambiguous.
+
+To resolve ambiguities we can construct disambiguating rules that define the relative precedence of operators.
+
+Constructing a unambiguous grammar is case dependant- there is no general algorithm to resolve this. Typically ambiguous problems include the "dangling-else" problem.
+
+\subsection{Abstract Syntax Tree}
+
+A traditional parse tree can often get very complicated if there are many non-terminals in the grammar. We need a solution to simplify the tree for large problems.
+
+An abstract syntax tree differs from a regular syntax tree as every internal node represents an operation and not a non-terminal.
+
+It allows allows us to annotate the tree with additional information about the semantics of the nodes. For example, types, location in memory, etc.
+
+\end{document}
