@@ -1,0 +1,73 @@
+\documentclass[../networks.tex]{subfiles}
+
+\begin{document}
+
+\subsection{Bandwidth}
+
+Bandwidth -- Width of a range of frequencies available to the signal. Synonymous with bitrate.
+
+Baseband -- A range running from 0 to maximum frequency.
+
+Passband -- Signals occupy same range of frequencies by passing corresponding frequencies through signals.
+\\
+
+The available bandwidth is the range of frequencies available for transmission in the medium.
+    
+\subsection{Modulation}
+
+Digital Modulation is the process of encoding digital signals as voltages. There are many schemes for this:
+\\
+
+\textbf{Non-Return to Zero (NRZ) -- }High voltage represents a 1. Low voltage represents a 0. 
+
+\textit{Relies on the sender having accurate clocks. Transitions can correct small deviations. Long runs of the same bit means they cannot resynchronise.}
+\\
+
+\textbf{NRZ Inverted (NRZI)} -- 0 is encoded as no change in level. 1 is encoded depending on the current state.
+
+If current is low, 1 will be encoded as high, and vice versa. This fixes the problem of consecutive 1s but not 0s.
+\\
+
+\textbf{Bipolar Encoding} -- 0 is represented as zero voltage (neither high or low). 1 is represented as either positive or negative voltage, it is the inverse of the last.
+
+\textit{Sum of voltages is 0. Balanced encoding.}
+\\
+
+\textbf{Manchester Encoding} -- Merge clock signal with data signal.
+
+Data signal is high for 1, low for 0. Data signal is XORed with clock signal that has high and low divided between one time step.
+
+The result signal is interpreted as a rising edge meaning 1, and a falling edge being a 0. This transmits data and synchronises simultaneously, but requires twice the bandwidth.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=4in]{networks/images/manchester.png}
+\end{figure}
+
+\subsection{Channel Sharing}
+
+Channels are often shared between multiple signals. There are multiple ways to accomplish this:
+\\
+
+\textbf{Frequency Division Multiplexing (FDM)} -- Frequency range split into multiple channels so that multiple signals can be sent to different signal bands without interference
+
+Gaps between channels prevent interference, as there is some overlap in frequency ranges.
+\\
+
+\textbf{Wavelength Division Multiplexing (WDM)} -- Same as FDM, but split across wavelengths instead.
+\\
+
+\textbf{Time Division Multiplexing (TDM)} -- Each channel gets a certain amount of time to use the medium before passing to next channel.
+\\
+
+\textbf{Code Division Multiple Access (CDMA)} -- Every transmitter can use entire channel all the time.
+
+Coding theory allows the extraction of individual transmissions from the merging of transmissions. 
+
+Each station has a chip (vector code so that all vectors are orthogonal to one another). 1 represents 1, -1 represents 0.
+
+Stations either transmit their chip or its negation to represent 1 and 0 respectively.
+
+Take the dot product of the received transmission with the chip to recover the individual transmission.
+
+\end{document}
