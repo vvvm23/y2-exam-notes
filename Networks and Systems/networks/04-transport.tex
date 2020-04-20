@@ -1,0 +1,82 @@
+\documentclass[../networks.tex]{subfiles}
+
+\begin{document}
+    
+Transport Layer Services and Protocols provide logical communication between application processes running on different hosts. The sending side breaks application messages into segments and passes to the network layer. The receiving side reassembles these segments into messages and passes to application layer.
+
+\subsection{Transport Layer Protocols}
+
+There are two main types of transport layer protocols used on the internet:
+
+\textbf{Transmission Control Protocol (TCP)} -- Provides reliable, in-order delivery.
+
+Provides other features to help maintain reliable communications such as congestion control (controls number of packets entering the network), flow control (ACK, timers) and connection setup.
+\\
+
+\textbf{User Datagram Protocol (UDP)} -- Unreliable, unordered delivery. Any reliability must be handled by the application.
+
+Can be sent at any moment without establishing connection, and so is faster than TCP. In other words, it is connectionless and each segment is handled independently.
+\\
+
+TCP is best suited for applications that require high reliability and where timing is less of a concern. This includes applications such as web browsers or torrenting clients where errors in the received data can cause things to function incorrectly.
+
+UDP is better suited for applications that require high speed and where reliability is not as much of a concern, such as streaming videos, music or playing games.
+\\
+
+All transport layer protocols must be able to handle multiplexing and demultiplexing.
+
+Multiplexing is the process of handling data from multiple sockets by adding a transport header (at the sender)
+
+Demultiplexing is the process of using header data to deliver segments to the correct socket (at the receiver)
+\\
+
+Hosts will receive IP datagrams containing source and destination IP address and a transport layer segment. Within the transport layer segment there is a source and destination port. During multiplexing and demultiplexing this data is used to direct segments to the appropriate socket.
+
+A UDP segment is directed to a socket based on destination IP address and port. 
+
+A TCP segment is directed to a socket based on both source and destination address and port.
+
+\textit{This means two TCP segments aimed at the same address and port but from different sources will go to different sockets. Conversely, in UDP they will go to the same socket.}
+
+\subsection{Reliable Data Transfer}
+
+The basic principle of reliable data transfer is that the characteristics of an unreliable channel will determine the complexity of a reliable data transfer protocol (RDT Protocol).
+
+\textit{By this principle, if the channel is completely reliable, there is no need for a RDT protocol. However, such circumstances are rare.}
+\\
+
+Suppose we had a channel that may or may not flip bits in a packet. We can use checksums to detect bit errors, however recovering the original packet is difficult. In TCP, we can use ACK flags that the receiver will send back to the sender if the packet was received correctly. If not, a NAK flag will be sent instead and the sender should resend the packet.
+
+Even if the ACK/NAK gets corrupted and the sender will resends the packet, the receiver will ignore duplicate packets. This is due to each packet having a sequence number. The receiver will ignore packets with a sequence number they have already seen.
+\\
+
+Suppose now the channel can both flip bits and also lose entire packets. We can handle this case by using a time out function and retransmit after some time if no ACK was received by the original sender. Again, sequence numbering should stop duplicate packets.
+\\
+
+A pipelined protocol (compared to the previously seen "stop-and-wait") allows for many packets to be in transit at once. This allows for greater data transfer speeds but has a few consequences:
+
+\textbf{The range of sequence numbers must be increased.} -- All packets must have a unique number and there may be multiple unacknowledged packets in transit. Therefore, the range must be increased.
+\\
+
+\textbf{Must have support for multiple packet buffering} -- Sender must buffer all that have been transmitted but not acknowledged. Receiver must buffer correctly all received packets for reassembly.
+\\
+
+There are two main forms of pipe-lined protocols:
+
+\begin{itemize}
+    \item Go Back N
+        \begin{itemize}
+            \item Sender can send multiple packets without waiting for ACK.
+            \item They can have up to N unACKed packets in the pipeline.
+            \item The receiver only sends cumulative ACK (Doesn't ACK if there is a gap)
+            \item Sender has a timer for oldest unACKed packet. If this timer expires, transmit all unACKed packets.
+        \end{itemize}
+    \item Selective Repeat
+        \begin{itemize}
+            \item Again, up to N unACKed packets in pipeline
+            \item Receiver sends ACK for each packet
+            \item Sender maintains timer for each unACKed packet. If it expires, retransmit only this packet.
+        \end{itemize}
+\end{itemize}
+
+\end{document}
