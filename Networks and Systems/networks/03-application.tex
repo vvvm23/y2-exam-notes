@@ -1,0 +1,59 @@
+\documentclass[../networks.tex]{subfiles}
+
+\begin{document}
+
+The goal of writing a network application using the application layer is so we don't need to write device specific code in order to communicate over networks. Sometimes, we don't even need to write code for network devices at all.
+
+\subsection{Application Structures}
+
+\textbf{Client-Server} -- Involves communication between servers and clients.
+
+Servers are "always on" devices with a static address that provides services and resources to the clients.
+
+Clients make requests to the server for services and resources and do not communicate directly with one another.
+\\
+
+\textbf{Peer-to-Peer} -- No always on server, instead peers request services to other peers of equal authority. There is no guarantee the requested peer will be online. As they are all equal authority, there is no central governing device such as a server.
+\\
+
+A process is a program running within a host.
+
+A socket is a software mechanism that allows a process to send and receive messages from the network. It can be thought of as the interface between the application and transport layer.
+
+An application requires certain properties from the transport layer in order to function correctly:
+
+\begin{itemize}
+    \item Data Integrity -- Some applications require that all data received be completely correct.
+    \item Security -- The encryption of messages.
+    \item Timing -- Some applications require low latency to be effective.
+\end{itemize}
+
+\subsection{Application Layer Protocols}
+
+An application layer protocol defines:
+
+\begin{itemize}
+    \item The type of messages exchanged (request, response, etc.)
+    \item Message syntax (what are the fields, delimiters, etc.)
+    \item Message semantics (meaning of the data in fields)
+    \item Rules for when and how processes send and respond to messages.
+\end{itemize}
+
+An example of an application layer protocol is HTTP. A web browser requests and receives, using HTTP, files such as websites. A web server then sends objects in response, also using HTTP.
+
+HTTP can come in two forms:
+
+\begin{itemize}
+    \item Non-persistent HTTP
+        \begin{itemize}
+            \item At most one object before connection closed.
+            \item Therefore, for many files connections must be closed and reopened.
+        \end{itemize}
+    \item Persistent HTTP
+        \begin{itemize}
+            \item Multiple objects can be sent over a single connection.
+            \item Reduces overhead as less delay in setting up connections
+        \end{itemize}
+\end{itemize}
+
+\end{document}
