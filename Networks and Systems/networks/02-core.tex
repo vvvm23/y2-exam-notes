@@ -1,0 +1,83 @@
+\documentclass[../networks.tex]{subfiles}
+
+\begin{document}
+
+\subsection{Networks Overview}
+
+A computer network is a group of devices that are connected to one another in order to exchange information or share resources. 
+
+A network protocol defines the format and order of messages transferred between network entities and the actions taken on transmission and receipt of messages.
+
+Networks can use a variety of mediums to communicate over- both wired and wireless.
+
+\subsection{Core Overview}
+
+Networks, at their core, are meshes of interconnected routers and devices. Packet switching is the process of breaking application layer messages into packets and forwarding each packet from one device to the next across links on the path from source to the destination.
+
+The entire packet must arrive at the device before it is forwarded to the next link. Packets can be queued if the link is currently busy. Packets can be dropped if the buffer is filled up.
+
+The two key functions of the network-core are routing (Determining source to destination route for packets) and forwarding (moving packets from router input to router output as appropriate).
+\\
+
+There is some delay in the sending of packets that comes from multiple sources:
+
+\begin{center}
+    $d = d_{\text{proc}} + d_{\text{queue}} + d_{\text{trans}} + d_{\text{prop}}$
+\end{center}
+
+\begin{itemize}
+    \item $d_{\text{proc}}$ -- Delay spent processing packet at the current node.
+    \item $d_{\text{queue}}$ -- Delay spent waiting at output link in a queue.
+    \item $d_{\text{trans}}$ -- Time to transmit from output link. Simply the packet size divided by the link bandwidth.
+    \item $d_{\text{prop}}$ -- Time to propagate the signal. Simply the length of the link divided by the propagation speed. (Usually speed of light in that medium.)
+\end{itemize}
+\\
+
+An alternative strategy to packet switching is circuit switching. This reserves all end to end resources between the source and destination so that there is no sharing of resources between devices during transmission. 
+
+\textit{Systems like phone lines use this. Think about how there can only be one call active from the landline at once.}
+
+\subsection{Protocol Overview}
+
+Protocols determine the format and order of messages exchanged between devices. The layering of protocols into the protocol stack has conceptual and structural advantages due to the abstracting of functions within each protocol layer.
+
+\textit{So, each layer only needs to know about its adjacent layers.}
+\\
+
+The most common protocol stack model is the Internet Protocol (IP) Stack:
+
+\begin{itemize}
+    \item Application -- Communicates with network applications. 
+        \begin{itemize}
+            \item EG: FTP, HTTP, SMTP, POP
+        \end{itemize}
+
+    \item Transport -- Process to Process communication between hosts.
+        \begin{itemize}
+            \item Breaks messages into segments and reassembles upon receipt.
+            \item EG: TCP, UDP
+        \end{itemize}
+    \item Network -- Routing of datagrams from source to destination.
+        \begin{itemize}
+            \item EG: IP
+        \end{itemize}
+    \item Link -- Data transfer between adjacent network elements.
+        \begin{itemize}
+            \item i.e. Link to link data transfer.
+            \item EG: Ethernet, 802.11 (WiFi)
+        \end{itemize}
+    \item Physical -- The actual propagation and transmission of a signal along a medium.
+\end{itemize}
+\\
+
+Another model is the ISO/OSI model. This model adds two additional layers between the previously defined Application and Transport layers:
+
+\begin{itemize}
+    \item Presentation -- Allowing applications to interpret meaning of data.
+        \begin{itemize}
+            \item Encryption, decryption, compression, machine specific conversions.
+        \end{itemize}
+    \item Session -- Synchronisation, checkpointing and recovery of data.
+\end{itemize}
+
+\end{document}
