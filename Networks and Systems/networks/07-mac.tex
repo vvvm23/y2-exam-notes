@@ -1,0 +1,81 @@
+\documentclass[../networks.tex]{subfiles}
+
+\begin{document}
+
+\subsection{Channel Allocation}
+
+Medium Access Control (MAC) is a sublayer to the link layer and it determines who transmits next on a medium.
+
+The MAC sublayer addresses the issue that multiple connected nodes all want to try to use the single physical layer medium from the node at the same time. If two nodes transmit along the same medium at the same time the transmissions will interfere.
+\\
+
+There are two different methods to allocate channels:
+
+\begin{itemize}
+    \item \textbf{Static Channel Allocation}
+        \begin{itemize}
+            \item Time division multiplexing -- Each user gets the entire transmission capacity for a fixed time interval.
+            \item Frequency division multiplexing -- Each user gets a portion of the transmission capacity for the whole time.
+            \item\textit{Both methods only work for a fixed number of users}
+            \item Traffic occurs in bursts, so for the majority of time the channels are idle
+        \end{itemize}
+    \item \textbf{Static Channel Allocation}
+        \begin{itemize}
+            \item No user is assigned a fixed frequency or time slot.
+            \item Instead there is dynamic allocation depending on the requirements.
+            \item Dynamic channel allocation protocols can be further subdivided into Random Access, Controlled Accesds, Limited Contention and Channelisation Protocols.
+        \end{itemize}
+\end{itemize}
+    
+\subsection{Random Access Protocols}
+
+\textbf{Pure ALOHA} -- Stations transmit frames whenever they have data to send.
+
+If two stations transmit at the same time there is a collision and data could be lost
+\\
+
+\textbf{Slotted ALOHA} -- Time is divided into frame-sized slots.
+
+A station can only send frame at the beginning of a slot and only one frame can be sent in each slot.
+\\
+
+\textbf{Carrier Sense Multiple Access (CSMA)} -- Station senses the channel before transmitting.
+
+If the channel is busy, don't send
+
+There are three different types of CSMA protocol
+
+\begin{itemize}
+    \item 1-persistent -- Send as soon as idle.
+    \item Non-persistent -- Wait a random amount of time then try again.
+    \item $p$-persistent -- Send with probability p when idle.
+\end{itemize}
+
+Chance of collision is greatly reduced but chance still exists due to propagation delays.
+\\
+
+\textbf{Carrier Sense Multiple Access with Collision Detection (CSMA/CD)} -- Same as CSMA but if collision is detected the station will stop transmission and wait a random amount of time before trying to send again.
+
+As soon as a collision is detected, the transmitting station sends a JAM signal to alert other stations and also stops them sending.
+
+\subsection{Controlled Access Protocols}
+
+In these types of protocols stations consult each other to find which station has the right to send. Therefore, they are collision free as they cannot send unless they have been authorised by all other stations.
+\\
+
+\textbf{Bitmap} -- Before sending, all stations state if they have data. Senders which announced can then send their data in some turn order.
+\\
+
+\textbf{Token Passing} -- Token sent around ring to define the sending order. Only the station with the token may send a frame. Once they have sent a frame they pass the token onto the next station.
+\\
+
+\textbf{Binary Countdown} -- Similar to bitmap, except stations send their address if they have data to send. Channel then ORs bits one by one. Station that see their full address can send.
+
+\begin{center}
+    \begin{figure}[ht]
+        \centering
+        \includegraphics[width=3in]{networks/images/binary-countdown.png}
+    \end{figure}
+\end{center}
+
+\end{document}
