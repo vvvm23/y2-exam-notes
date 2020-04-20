@@ -1,0 +1,92 @@
+\documentclass[../networks.tex]{subfiles}
+
+\begin{document}
+
+\subsection{Framing Methods}
+
+The Link Layer accepts packets from the network layer, encapsulates them into frames and then sends to the physical layer.
+
+There are many methods to turn packets into frames (known as framing methods):
+\\
+
+\textbf{Byte Count} -- Simply add number of bytes in a frame to the start of the frame.
+
+This is a simple method but difficult to resynchronise after an error. It also won't detect errors that don't change the byte count.
+\\
+
+\textbf{Headers and Trailers} -- Add a header and trailer to frames so that two adjacent frames are separated by flags.
+
+We must escape the flag so it is not confused with occurrences in the body.
+
+We can escape either using a special escape byte or escape bit. (Byte and bit stuffing respectively.)
+
+\subsection{Error Correction}
+
+If we include enough redundant data we may be able to deduce the original meaning. 
+
+A frame consists of $m$ data bits and $r$ redundant bits, making the code word $m+r$ bits long.
+
+The number of bit positions in which two codewords differ is called the Hamming Distance between these codewords.
+\\
+
+We can use Hamming Code to correct up to a single error:
+
+\textbf{To Encode} -- We number data bits starting from 1, skipping powers of two. The powers of two are reserved for parity bits. (Even/Odd Parity)
+\\
+
+\textbf{To Decode} -- Calculate all parities, if they are all OK there is no error. Else, add up all positions that are incorrect to get position of error.
+\\
+
+Calculate $p_i$ by starting at $i$ and add $i$ in length, then skip for $i$ length and also skip $i$.
+
+Example:
+
+\begin{center}
+    Message = $1011010 $
+
+    Code = $p_1 p_2 1 p_4 0 1 1 p_8 0 1 0$
+
+    $p_1 = 1+0+1+0+0 = 0$
+
+    $p_2 = 1+11+10 = 0$
+
+    $p_4 = 011 = 0$
+
+    $p_8 = 010 = 1$
+
+    $\therefore$ Code = $00100111010$
+
+\end{center}
+    
+To check, simply perform the same process. Add parity of incorrect to find the position of the error, and then flip.
+
+\subsection{Error Detection}
+
+\textbf{Parity Bit} -- Add parity bit which is Modulo 2 of sum of data bits.
+
+This will detect an odd number of bit flips. An even number will correct the parity again.
+
+We can extend this to two-dimensional bit parity, where each row and column has their own parity. This can allow for more errors to be detected.
+\\
+
+\textbf{Checksum} -- Calculate some value based on the data such as a hash.
+
+Send the result of the checksum with the data. Recompute on receiver and check if it matches.
+\\
+
+\textbf{Cyclic Redundancy Check} -- Pad message with CRC Code
+
+CRC is generated using a given polynomial. The polynomial chosen is agreed between the sender a receiver. 
+
+The receiver gets the message and the generated CRC and extracts the message using the polynomial.
+
+To generate the CRC:
+
+\begin{itemize}
+    \item Add degree of polynomial to message as zeros
+    \item Divide the message by polynomial using XOR
+    \item On the receiving end, divide by the polynomial
+    \item If the result is 0, the message was sent correctly, else there was an error.
+\end{itemize}
+
+\end{document}
