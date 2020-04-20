@@ -1,0 +1,127 @@
+\documentclass[../compiler.tex]{subfiles}
+
+\begin{document}
+
+\subsection{Parse Tree}
+
+We briefly discussed parse trees before, but here is a more formal definition:
+
+Formally, in a parse tree:
+
+\begin{itemize}
+    \item The root is labeled by the start symbol of the grammar
+    \item The leaves are labeled by tokens (terminals) or by the empty string $\epsilon$
+    \item Internal nodes are labeled by a non-terminal
+    \item If $A$ is the label of an internal node and $X_1,...,X_n$ are the labels of its children, then:
+        \begin{itemize}
+            \item $A \rightarrow X_1,...,X_n$ is a production of $A$ in the grammar
+            \item every $X_i$ can be terminal or non-terminal
+            \item There is a single special case $A \rightarrow \epsilon $
+        \end{itemize}
+\end{itemize}
+    
+We also briefly discussed before that there are two main methods to construct the parse tree, top-down and bottom-up.
+
+\subsection{Top-down parsing}
+
+In order to construct a parse tree via top-down parsing:
+
+\begin{itemize}
+    \item Start with the root, labeled with the start symbol
+    \item Repeatedly do as follows:
+        \begin{itemize}
+            \item At internal node $N$ labeled with a non-terminal $A$:
+                \begin{itemize}
+                    \item select one of the production rules for $A$
+                    \item construct the children at $N$ for the symbols in the right part of this production rule
+                \end{itemize}
+            \item Find the next node to construct a subtree (Typically, the left-most unexpanded non-terminal)
+        \end{itemize}
+\end{itemize}
+
+During the construction of the parse tree, the current terminal of the input is called the lookahead symbol.
+
+When a node in the parse tree:
+
+\begin{itemize}
+    \item Is labeled with a terminal and matches the lookahead symbol:
+        \begin{itemize}
+            \item The lookahead becomes the next terminal in the input
+            \item The next node we consider is the next child in the parse tree
+        \end{itemize}
+    \item Is labeled with a non-terminal:
+        \begin{itemize}
+            \item We repeat by selecting one of its production rules
+            \item Special case, if one rule is empty, we only choose this if nothing else can be used.
+        \end{itemize}
+\end{itemize}
+
+In general, there are many possibilities for any given production at a non-terminal and the selection of the correct one is often just a process of trial and error. We know when a given production is unsuitable if we can not complete the tree as we cannot match the whole input string. If we find it is unsuitable, we have to back track and try another production.
+
+\textit{If we exhaust all our options while backtracking, we can report a syntax error.}
+\\
+
+Recursive-descent parsing is a top-down method of parsing that utilises recursive procedures to process the input. We create one procedure for each non-terminal of the grammar,
+
+In general it will require backtracking, but is very easy to write code for it.
+\\
+
+Predictive parsing is a special case of recursive-descent parsing. It can determine the steps of each procedure and so no backtracking is required and so runs in linear time. However, not all grammars can be parsed by this method.
+
+\textit{To be more precise, only for $LL(k)$ grammars. This excludes all ambiguous grammars and all grammars containing left recursion. A parse can uniquely determine the next production rule by looking at the next $k$ tokens of the input.}
+\\
+
+As we discussed before, a grammar is left recursive if for some non-terminal $A$ and some string $\alpha$, $A \rightarrow^+ A\alpha$. A left recursive grammar can lead a parser into an infinite loop. In order to avoid this, we have to eliminate left recursions.
+
+\subsection{Left factoring}
+
+Many times, two alternative production rules have the same prefix to them and so the choice between them is not clear. For example, $A \rightarrow \alpha \beta_1 | \alpha \beta_2 $.  This grammar is not a $LL(1)$ grammar.
+
+In order to fix this, we can defer the choice until later, by rewriting the rule as:
+
+\begin{center}
+    $A \rightarrow \alpha A^'$
+
+    $A' \rightarrow \beta_1 | \beta_2$
+\end{center}
+
+An algorithm to left factor a grammar wopuld be to find the longest prefix for two or more alternative productions and replace them with one base production containing this prefix and a new production containing the disjunction of all the alternatives' postfixes.
+
+\subsection{LL(1) grammars}
+
+$LL(1)$ grammars are an interesting case, they only read one token ahead in the input. They are more efficient at parsing compared to other $LL(k)$ grammars and is used by several other languages.
+
+In order to uniquely determine the next production in an $LL(1)$ grammar we can use two functions $FIRST(\alpha)$ that takes any string of grammar inputs and $FOLLOW(A)$ that takes any non-terminal and also need a predictive parsing table, that associates terminals of the grammar with non-terminals of the input.
+
+The set $FIRST(\alpha)$ for a string $\alpha$ contains every first terminal of a string derived from the string $\alpha$. In other words, if $\alpha \rightarrow^* c\gamma$, then $c \in FIRST(\alpha)$. This also includes the empty string.
+
+Then, when considering two productions $A \rightarrow \gamma_1$ and $A \rightarrow \gamma_2$ and the next input symbol is $\alpha$ we then check whether $\alpha$ belongs to $FIRST(\gamma_1)$ or $FIRST(\gamma_2)$. Otherwise, report an error.
+\\
+
+The set $FOLLOW(A)$, for a non-terminal $A$ contains every terminal $a$ that can appear immediately to the right of $A$ in some string derived from $S$. In other words, there exists a derivation $S \rightarrow^* \alpha Aa\beta$ where $\alpha$ and $\beta$ are two strings.
+
+In addition, if $A$ can be the right-most symbol in some string derived from $S$ then the end of file symbol is in $FOLLOW(A)$
+\\
+
+Formal definition of a $LL(1)$ grammar:
+
+\begin{itemize}
+    \item A grammar $G$ is an $LL(1)$ grammar if and only if for every two productions $A \rightarrow \alpha | \beta$:
+        \begin{itemize}
+            \item There is no terminal $\alpha$ such that both $\alpha$ and $\beta$ derive a string starting with $\alpha$.
+            \item At most one of $\alpha$ and $\beta$ can derive the empty string $\epsilon$.
+            \item If $\beta \rightarrow ^ * \epsilon$ then $\alpha$ does not derive any string beginning with a terminal in $FOLLOW(A)$. 
+        \end{itemize}
+\end{itemize}
+\\
+
+A language $L$ is called $LL(1)$ language if $L$ can be generated by an $LL(1)$ grammar. If a language $L$ is given by a non-$LL(1)$ grammar then $L$ may still be a $LL(1)$ language by another grammar. Deciding whether a given language $L$ is an $LL(1)$ language is an undecidable problem.
+\\
+
+Given an $LL(1)$ grammar we can create a predictive parsing table which stores one production for each pair of a non-terminal in the grammar and the terminal in the input. We can then quickly look up the next production while parsing.
+
+\subsection{Non-recursive predictive parsing}
+
+We can make predictive parsing non-recursive by mimicking left-most derivation using a stack. If $w$ is the input that has been matched so far then then the stack holds a sequence $\alpha$ of grammar symbols such that $S \rightarrow ^ * w\alpha$ where $S$ is the start symbol of the grammar.
+
+\end{document}
