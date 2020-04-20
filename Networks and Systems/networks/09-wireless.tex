@@ -1,0 +1,75 @@
+\documentclass[../networks.tex]{subfiles}
+
+\begin{document}
+
+\subsection{Wireless Networks}
+
+Wireless hosts are any device with the capability to connect to other hosts along a wireless medium.
+
+A base station is typically connected to the wired network. It is responsible for sending packets between wired networks and wireless hosts in its area.
+
+A wireless link is used to connect mobile devices to a base station. They can have a variety of data rates, transmission distances, etc. Access protocols coordinate access to these links.
+\\
+
+Infrastructure mode is where many base stations connect hosts to one wired network. The base station used changes as a mobile host moves through the area. One station smoothly hands off to the next.
+
+Ad-hoc mode is where there are no base stations. Instead, nodes can only transmit to other nodes within range. The nodes organise themselves into a network and route among themselves.
+
+\subsection{Wireless Issues}
+
+Wireless links have important differences to wired links:
+
+\begin{itemize}
+    \item Decreasing signal strength as signal propagates through matter.
+    \item Interference from other devices that share the same frequencies (even things such as motors)
+    \item Multipath propagation, signal reflects off objects and so arrive at different times.
+\end{itemize}
+\\
+
+Another issue is hidden terminals, where senders cannot sense each other but both collide at the receiver.
+
+Exposed terminals are the opposite. Senders can sense each other and transmit safely to different receivers.
+\\
+
+In a 802.11 link, the spectrum divided into 11 channels at different frequencies. Administrators must choose channels so that adjacent access points do not have overlapping frequencies.
+
+\subsection{Scanning}
+
+In order to connect to the network a host must associate with an access point. 
+
+There are two forms of scanning in 802.11:
+
+\begin{itemize}
+    \item \textbf{Passive}
+        \begin{itemize}
+            \item Beacon frames sent from access point
+            \item Association request frame sent from host to selected access point.
+            \item Association response sent from access point to host.
+        \end{itemize}
+    \item \textbf{Active}
+        \begin{itemize}
+            \item Probe request frame broadcasted from host
+            \item Probe response sent from access points
+            \item Association request sent from host to selected access point.
+            \item Association response sent from access point to host.
+        \end{itemize}
+\end{itemize}
+
+\subsection{Collision Avoidance}
+
+In 802.11 there is no collision detection as it is too difficult to sense collisions due to weak signals. Additionally, hidden terminals mean we cannot sense all collisions.
+
+Hence, we can only avoid collisions using CSMA/CA:
+
+\begin{itemize}
+    \item If it senses that the channel is idle, transmit the entire frame.
+    \item Else, wait random amount of time then try again.
+    \item If no ACK, increase backoff time.
+\end{itemize}
+\\
+
+Another idea is to allow the sender to reserve the channel. Sender transmits RTS (request to send) packets to base station. Base station then broadcasts CTS (clear to send) in response. The sender then transmits while other nodes wait.
+
+\end{document}
+
+
