@@ -1,5 +1,91 @@
 \documentclass[../compiler.tex]{subfiles}
 
 \begin{document}
-foobar
+
+\subsection{Semantics vs. Correctness}
+
+If a source program passes lexical and syntax analysis, does this mean that the program is legal? For example, variables may not be defined when they are first used. Conversely, code could be semantically not valid but still have correct output, for example if the error is never actually executed. Conversely again, the code could be semantically valid but return the wrong output.
+
+Our goal is to the reject the largest number of incorrect programs and accept the largest number of correct programs as fast as possible. The goal of semantic analysis is to ensure the program has well define meaning.
+
+This is done by verifying properties that aren't caught during earlier phases such as variables being declared before they are used, expressions having the correct types and the number and types of arguments of a procedure call agree with the procedure declaration.
+
+To check these properties, we need to check context conditions imposed by the specification of the language. These cannot be checked with context free grammars so we have to enhance our languages- making them attribute grammars.
+
+\subsection{Syntax-Directed Methods}
+
+The additional data needed for the checks are stored as attributes in nodes in the parse tree. An attribute may represent any useful (or not useful) quantity.
+\\
+
+Syntax-Directed Definition (SDD) is a context free grammar in which every grammar symbol has an associated set of attributes and every production has an associated set of semantic rules for computing the attribute values.
+\\
+
+Syntax-Directed translation is the process of processing an input string using a syntax directed definition.
+
+\begin{itemize}
+    \item First, build a parse tree for the input string $x$
+    \item For every node $N$ in the parse tree that is labeled by a grammar symbol $X$ (including terminals) denote by $X.a$ the attribute $a$ of $X$ at node $N$
+    \item if $X$ is non-terminal, the value of $X.a$ is determined using a semantic rule associated with some production
+    \item if $X$ is terminal, the value of $X.a$ is determined by the lexical analyser (directly obtained by analysing the input string)
+\end{itemize}
+\\
+
+There are two main types of attribute:
+
+\begin{itemize}
+    \item \textbf{Synthesised Attribute} -- An attribute whose value at a node $N$ is defined in terms of attributes at the children of $N$ and $N$ itself.
+    \item \textbf{Inherited Attribute} -- An attribute whose value at a node $N$ is defined in terms of attributes at $N$'s parents, at $N$'s siblings and $N$ itself.
+\end{itemize}
+
+\textit{Terminals have only synthesised attributes.}
+
+\begin{center}
+    \begin{figure}[ht]
+        \centering
+        \includegraphics[width=4in]{compiler/images/SDD.png}
+    \end{figure}
+\end{center}
+
+Attributes are not only for the computation of variables but also used to indicate actions to take, for example in the calculator example the semantic rule of $L$ is to print $E.val$
+
+\subsection{Evaluation of Attributes}
+
+In order to evaluate the attributes for a given node in the annotated parse tree, we first must evaluate all the attributes upon which the value depends on (recursive definition).
+
+For synthesised attributes only, evaluate the children first then build up. (Bottom-up order)
+\\
+
+For inherited attributes only, evaluate first the parent and all needed attributes of siblings and of itself, then evaluate the node itself. (A psuedo-top-down order)
+
+\textit{However, there is never only inherited attributes! Terminals can only be synthesised.}
+\\
+
+With both synthesised and inherited attributes there is no guarantee that there exists an order to evaluate the attributes of all nodes. This is known as circular rules and makes it impossible to evaluate certain attributes.
+
+To check whether there exists an evaluation order for attributes we can construct a dependency graph. This is directed graph $G=(N,E)$ with a set of nodes $N$ and a set of directed edges $E$ with a node for each attribute in the parse tree and a directed edge between $a$ and $b$ whenever in order to compute $b$ we must compute $a$ first.
+
+There exists an evaluation order if and only if the dependency graph has no directed cycles.
+\\
+
+Certain classes of SDD always have an evaluation order:
+
+\begin{itemize}
+    \item \textbf{S-Attributed SDD} -- The parse tree only has synthesised attributes. We can evaluate using any bottom up order.
+    \item \textbf{L-Attributed SDD} -- Both synthesised and inherited in the parse tree and where the dependency graph edges between siblings are only "left to right". (The inherited attribtues do not depend on siblings to the right)
+\end{itemize}
+
+\subsection{Scopes of Declarations}
+
+The scope of declaration of a variable is the region of the program in which uses of the variable refer to a given declaration.
+
+A new declaration of the variable in the same scope may hide older declarations. 
+The symbol table we declared before is a mapping from a name to what the name refers to. As we run semantic analysis we update the symbol table with information of what is in scope.
+
+To keep track of what is visible we typically use a stack of tables where each table corresponds to a particular scope. We can push and pop tables to enter and leave a scope. Inserting a new entry to the table corresponds to adding a new entry to the current scope.
+\\
+
+We can treat the symbol table as a spaghetti stack, a stack where each table stores a pointer to its parents but not vice versa. From any point in the program the symbol table appears to be a stack.
+
+\textit{In other words, from any given scope, we can traverse to any parent scope, but not sibling or child scopes.}
+
 \end{document}
