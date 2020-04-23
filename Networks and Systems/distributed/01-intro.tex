@@ -1,0 +1,38 @@
+\documentclass[../distributed.tex]{subfiles}
+
+\begin{document}
+
+A distributed system is a collection of independent network components which work together and appear to its users as a single coherent system.
+
+The study of Distributed Systems is the study of technologies that connect networks, geographically dispersed components to form a powerful, high performance and reliable system.
+\\
+
+The difference between networks and distributed systems is that networks' focus is on the method and implementation of communication and dealing with data transmission. Distributed systems however is focused on the coupling of components, the system architecture and the means to connect and organise the components.
+\\
+
+There are many applications of distributed systems. For example, rapid system development, construction of scalable systems and improvement of system reliability and availability.
+\\
+
+There are a few design issues to distributed systems:
+
+\begin{itemize}
+    \item \textbf{Network Issues} -- Highly variable bandwidth and latency.
+    \item \textbf{Distributed Event Issues} -- No native support to synchronise clocks. Additionally, it is difficult to ensure data consistency.
+    \item \textbf{System Failure Issues} -- Unpredictable failure of components must be handled.
+    \item \textbf{Security Issues} -- Cannot rely on physical security as the area to cover is too vast. It is hard to know what is and isn't trusted.
+\end{itemize}
+\\
+
+In order for a user to use a distributed system as if it was a single logical system we have to fulfill some transparency requirements:
+
+\begin{itemize}
+    \item Access -- Hide difference in data representations and how a component is accessed.
+    \item Location -- Hide where a component is located
+    \item Migration -- Hide that a component or resource may move to another location.
+    \item Relocation -- Hide that a component or resource may be moved to another location \textbf{While in use}
+    \item Replication -- Hide that a component or resource may have multiple copies.
+    \item Concurrency -- Hide that a resource may be shared be several other users.
+    \item Failure -- Hide failure and recovery of a resource or component.
+\end{itemize}
+
+\end{document}

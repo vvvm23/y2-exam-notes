@@ -1,0 +1,133 @@
+\documentclass[../distributed.tex]{subfiles}
+
+\begin{document}
+
+Middleware Technology is software that facilitates distributed system (DS) components to communicate and work together. It hides users from the implementation details of the distributed system and hides low level details from the developers. It should also provide a consistent abstraction and infrastructure for constructing distributed system applications.
+
+\subsection{Remote Procedure Call}
+
+RPC involves inter-process communication. With it we can execute a remote function without the programmer coding the network communication. This is adapting the traditional programming paradigm by dividing a system into functions.
+
+By doing so, we mask remote functions as being local which, as we want, hides the distributed nature of a system. 
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=4in]{distributed/images/rpc.png}
+\end{figure}
+
+Some RPC definitions:
+
+\begin{itemize}
+    \item \textbf{Server} -- Defines the service interface using an interface definition language (IDL). This defines the specific names, arguments and types for all callable procedures.
+    \item \textbf{Stub Compiler} -- Reads the IDL declarations and produces a client side and server side stub function for each function.
+    \item \textbf{Linking} -- Server programmer implements the service's functions and links with the server-side stubs. Client programmer implements client program and links it with client-side stub.
+    \item \textbf{Operation} -- Stubs manage all details of remote communications between client and server.
+\end{itemize}
+\\
+
+Some properties and their limitations of RPC:
+
+\begin{itemize}
+    \item \textbf{Synchronous Request/Reply Interaction} 
+        \begin{itemize}
+            \item Holds a connection open and waits until the response is delivered or timed out. (Tight Coupling)
+            \item Client could block for a long time if server is loaded. Slow or failed clients may also delay the server.
+        \end{itemize}
+    \item \textbf{Host Information is required}
+        \begin{itemize}
+            \item In order to connect to remote server we need its location information. Therefore, location transparency cannot be facilitated.
+        \end{itemize}
+    \item \textbf{Not Object-Oriented} 
+        \begin{itemize}
+            \item Directly invokes functions on servers, so there is no encapsulation or inheritance support.
+        \end{itemize}
+\end{itemize}
+
+\subsection{Object-Oriented Middleware}
+
+Objects can be local or remote. Remote objects are visible through remote interfaces and remote method invocation (RMI) masks remote objects so that they appear local using proxy objects.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=4in]{distributed/images/oom.png}
+\end{figure}
+
+Java RMI is Java's implementation of object-to-object communication in order to create distributed systems.
+\\
+
+When developing a RMI based application:
+
+\begin{itemize}
+    \item Design the interface for the service.
+    \item Implement the methods specified in the interface.
+\end{itemize}
+
+During run-time:
+
+\begin{itemize}
+    \item On the server, dynamically generate the stub and register the service by name and location.
+    \item On the client, look up the remote reference on the registry and use the service in the client application.
+\end{itemize}
+\\
+
+A registry is a process on the host machine that can look up remote objects by name in order to obtain a remote reference. Servers can register their objects in the registry. The client can also request a list of all remote objects in the registry.
+\\
+
+Some properties of OOM:
+
+\begin{itemize}
+    \item Follows object-orientated programming models and so allows for OO features such as encapsulation.
+    \item Synchronous request/reply interaction (so same limitations as RPC)
+    \item Location Transparency as object request broker maps object reference to the physical locations, rather than having the physical locations in the code.
+    \item Services comprising multiple services are easier to build as all services and be acquired through the object request broker. Geographical location and changes in service are not a problem.
+\end{itemize}
+
+\subsection{Message-Oriented Middleware}
+
+Our aim with this is to make a more loosely coupled system. In order to do this we can instead communicate using messages. We place a message server between the client and server and store messages in message queues. We must make various assumptions about the message syntax and content.
+\\
+
+Some properties of MOM:
+
+\begin{itemize}
+    \item \textbf{Asynchronous Interaction} -- Client and server are only loosely coupled and messages are queued.
+    \item \textbf{Reliable Delivery Service} -- Keep queues in persistent storage so they remain even after message server failure.
+    \item \textbf{Intermediate Processing of Messages} -- We can perform filtering, transformation and logging.
+    \item \textbf{Works naturally with database integrations.}
+\end{itemize}
+\\
+
+Java Message Service (JMS) is the API specification to access MOM implementations. It has two modes of operation, "Point-to-point" (one to one) and "Publish/Subscribe" (One to many, broadcast).
+
+JMS Server implements JMS API and JMS Clients connect to these servers. Java script objects can be serialised into JMS messages.
+
+\subsection{Web Services}
+
+We can also use well-known web standards that already exist for distributed computing.
+
+\begin{itemize}
+    \item Message Content expressed in XML
+    \item Simple Object Access Protocol (SOAP) for sync/async communications
+    \item Web Services Description Language (WSDL) for describing the interfaces
+    \item Universal Description Discovery and Integration (UDDI) for service discovery.
+\end{itemize}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=4in]{distributed/images/web.png}
+\end{figure}
+
+Web services based on HTTP are designed to work over public internet and so can traverse firewalls.
+
+SOAP defines a common standard that allows differing systems to interoperate.
+
+XML allows for machine-readable documents.
+\\
+
+An alternative strategy is to use REST and JSON (Representational State Transfer and JavaScript Object Notation respectively). 
+
+REST is an architectural style, treating the web as a resource-centric application. Each URL in a RESTful application represents a resource.
+
+JSON is an open standard format that uses text to transmit objects consisting of attribute-value pairs that is still human readable.
+
+\end{document}
