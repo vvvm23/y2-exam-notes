@@ -1,0 +1,90 @@
+\documentclass[../distributed.tex]{subfiles}
+
+\begin{document}
+
+\subsection{System Overview}
+
+The goal of replication is to provide multiple copies of the same data or services in a distributed system. This improves capabilities by enhancing performance (caching, parallel processing), increasing availability (full data and services in case of service failures) and load distribution (avoids a few components being overloaded by balancing.)
+
+There are multiple types of replication:
+
+\begin{itemize}
+    \item \textbf{Computation Replication} -- Multiple instances of the same functional process are executed. They have the same functional use, but may be implemented differently and on different hardware.
+    \item \textbf{Data Replication} -- Same piece of information is stored on multiple devices. The data can be replicated on demand.
+\end{itemize}
+    
+We have to fulfill some additional requirements:
+
+\begin{itemize}
+    \item \textbf{Replication Transparency} -- A user sees one logical server and not many physical copies
+    \item \textbf{Data Consistency} -- The same request will receive the same result even if it is processed by a different copy of the same service.
+\end{itemize}
+
+\subsection{Replication Model}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=4in]{images/replication.png}
+\end{figure}
+
+Maintain replicas (copies of data or functions) on servers. Process requests or store results and propagate to other replicas. The set of replicas can be fixed or variable.
+
+Client requests come in two forms. Those without updates are called read-only requests and others are called update requests, which may still involve reads. If it is read only the request can be handled by one replica, an update may involve propagation and synchronisation with other replicas.
+
+The front end server makes replication transparent by monitoring and maintaining replica availability. It distributes requests and collates the responses and returns them to the client.
+\\
+
+The full work flow would be:
+
+\begin{itemize}
+    \item The front end receives the incoming request and forwards the request to the replicas.
+    \item The replicas accept a request and decide the ordering of a request relative to other requests.
+    \item The replicas process the request.
+    \item The replicas reach a consensus on the effect of the requests.
+    \item One or more of the replicas reply to the front end.
+    \item The front end processes the response and returns it to the client.
+\end{itemize}
+
+\subsection{Fault Tolerant Services}
+
+Our goal is to provide the correct service despite up to $f$ process failures. A service based on replication is correct if it keeps responding despite failures and if clients cannot tell the difference between an implementation with replicated data and one with a single correct replica manager.
+\\
+
+There are many types of fault tolerant models:
+\\
+
+\textbf{Passive (primary-backup) Replication } -- There is at any time a single primary replica and one or more backup replicas.
+
+The front end communicates with the primary which executes the operation. The result is sent to the front end and sends copy of any updated data to the backups.
+
+If the primary fails one of the backups is promoted to primary.
+
+Some properties of Passive Replication:
+
+\begin{itemize}
+    \item Can survive up to $f$ replica crashes when a system has $f+1$ replicas.
+    \item Requires little functionality in front end server.
+    \item Relatively large system overhead due to large amounts of data propagation.
+\end{itemize}
+\\
+
+\textbf{Active Replication} -- All replicas are state machines all playing the same role organised as one group.
+
+They all start in the same state and perform operations in the same order, so their state remains identical.
+
+The requests are assigned a unique id and use totally ordered reliable multicast to ensure that the operations are in fact done in the same order.
+
+If a replica crashes it has no effect on performance of the service because the others continue as normal. Usually, the front end will only use the first response if it is only trying to tolerate crash failures.
+
+In contrast to a crash fault, a Byzantine fault is an arbitrary fault that occurs during the execution of an algorithm. This class of fault encompasses both Omission faults (failing to receive/send) and Commission faults (processing incorrectly, corruption, inconsistent response)
+
+Some properties of Active Replication:
+
+\begin{itemize}
+    \item It works by assuming that a totally ordered and reliable multicast is available.
+    \item Can mask up to $f$ Byzantine faults provided the system has at least $2f+1$ replicas. (Majority voting)
+    \item Front-end may send read-only requests only to individual replicas. This loses the fault tolerance but remains consistent and we can simply try another replica on failure.
+\end{itemize}
+
+
+\end{document}
