@@ -1,0 +1,163 @@
+\documentclass[../distributed.tex]{subfiles}
+
+\begin{document}
+
+Replication offers fault tolerance and better performance in distributed systems. However, this may no longer apply if, as a result, replicated servers are overloaded while others are idle.
+\\
+
+High workload comes three sources:
+
+\begin{itemize}
+    \item Task response time
+    \item CPU Utilisation
+    \item Bandwidth Utilisation
+\end{itemize}
+
+All of these are proportional to queue length and so workload.
+\\
+
+There are two approaches to collect load information:
+
+\begin{itemize}
+    \item \textbf{Central Coordinator} -- Collects server load information centrally and globally.
+    \item \textbf{Local Approach} -- A server locally collects load information of neighbouring servers.
+\end{itemize}
+\\
+
+There are two main approaches for basic task transfer:
+
+\begin{itemize}
+    \item \textbf{Non-Preemptive} -- Transfer tasks that have not started executing. Transfer only the request not states. Difficult for load balancing.
+    \item \textbf{Preemptive} -- Transfer tasks that are partially executed. More expensive as we have to transfer task st ates as well such as buffers, timers and pointers.
+\end{itemize}
+\\
+
+There are two types of routing mechanisms for load distribution:
+
+\begin{itemize}
+    \item \textbf{Layer-4 Routing} -- Determines the target server with considering message content. Server select is entirely based on information in IP header.
+    \item \textbf{Layer-7 Routing} -- Examine the request at the application level and select a server accordingly
+\end{itemize}
+
+The implementations can be one way or two way. Two way is less scalable because of front end server overhead.
+
+Layer-4 routing is more efficient and requires only simple front end servers. Layer-7 is less scalable but allows for server specialisation.
+\\
+
+There are multiple approaches to load distribution:
+
+\begin{itemize}
+    \item \textbf{Static} -- Decisions are hard-coded into an algorithm. This allows for simple implementation but requires prior knowledge of the system.
+    \item \textbf{Dynamic} -- Make decisions during runtime based on system states, such as queue length and processor utilisation. Correctness of the distribution depends on how fast the parameters are collection. (Depends on coordinator type.)
+    \item \textbf{Adaptive} -- Enhance the dynamic approach by changing decision algorithms and frequency of collection of load data based on system states.
+\end{itemize}
+
+\subsection{Load Distribution Algorithms}
+
+There are four main components, the transfer, selection, location and information policies. The first three policies controls the information policy. They define what information is required to support decision making and what procedures to follow for distributing workload.
+\\
+
+\textbf{Transfer Policy} -- Decides whether a server needs to transfer tasks.
+
+Based on thresholds such as number of tasks and processor utilisation. The server becomes a sender/receiver when its load is over/under a threshold (respectively).
+
+It is sensitive to time duration of a task transfer.
+\\
+
+\textbf{Selection Policy} -- Determines which task to transfer.
+
+Based on task execution and server response time. It should also aim to minimise location dependent system calls made by the task. 
+\\
+
+\textbf{Location Policy} -- Decide the receiving server for a task.
+
+Polling is generally used (ask the server if it can be a receiver) and can be done serially or using a multicast.
+\\
+
+\textbf{Information Policy} -- Decide when, where and what information to collect.
+
+\textit{Demand Driven} -- A server collects the state if and only if it becomes either a sender or receiver. 
+
+\textit{Periodic} -- The servers will always exchange load information periodically.
+
+\textit{State-change-driven} -- Servers spread state information whenever their state changes by a certain degree.
+\\
+
+There are multiple classes of load distributing algorithms:
+
+\begin{itemize}
+    \item \textbf{Sender-initiated} --  Distribution initiated by the overloaded server.
+    \item \textbf{Receiver-initiated} -- Distribution initiated by the lightly loaded server.
+    \item \textbf{Symmetric} -- Initiated by both senders and receivers, giving it the advantages and disadvantages of both approaches.
+    \item \textbf{Adaptive} -- Sensitive to the state of the system.
+\end{itemize}
+
+\hrule
+
+\textbf{Sender-Initiated:}
+\begin{itemize}
+    \item Transfer Policy -- Use threshold. Become a sender if queue length exceeds the threshold. Can only be a receiver if accepting a task will not make queue length exceed the threshold.
+    \item Selection Policy -- Only transfer newly arrived tasks (non-preemptive)
+    \item Location Policy -- Could be random, based on some threshold or the one with the shortest queue length.
+    \item Demand-Driven
+\end{itemize}
+
+Sender-Initiated algorithms can become unstable at high loads. At these times, it becomes difficult to find receivers. Additionally, the number of senders increases at high load and therefore increases polling activity, making the system even more unstable.
+\\
+
+\textbf{Receiver-Initiated:}
+\begin{itemize}
+    \item Transfer Policy -- Uses thresholds. Those below it are receivers, those above are senders.
+    \item Selection Policy -- Select newly arrived tasks for higher priority tasks. Preemptive task transfer for low priority tasks.
+    \item Location Policy -- Poll a random server, transferring when the polled server becomes a sender. Repeat polling attempts until the polling limit is reached.
+    \item Information Policy - Demand Driven
+\end{itemize}
+
+Solves the stability issues from sender-initiated. It is not without drawbacks, however. It tends to result in more preemptive transfers so transfer costs are higher. This is because newly arrived tasks are usually scheduled immediately, so high priority tasks are dealt with quickly (Selection Policy)
+\\
+
+\textbf{Symmetric:}
+\begin{itemize}
+    \item Senders search for receivers and vice-versa.
+    \item At low loads, senders can find receivers easily. Vice versa for high loads.
+\end{itemize}
+
+May have disadvantages of both previous methods for a simple algorithm. We can adjust the scope of server search to avoid this (Optimisation).
+\\
+
+\textbf{Adaptive Algorithm:}
+
+The main aim is to limit the sender's polling actions at high load by classifying servers based on collected state information and so poll adaptively.
+Each serer maintains three lists, receiver, sender and OK.
+We initially assume all servers are receivers (hence, not overloaded).
+
+\textit{Location Policy at Sender:}
+\begin{itemize}
+    \item Sender polls head of receiver list.
+    \item Polled server puts the sender at the head of its sender list and returns whether it is receiver, sender or OK.
+    \item If the polled server is still a receiver, a new task is transferred.
+    \item Else, sender updates list and polls next candidate receiver.
+    \item If this process fails to find a receiver, task can still be transferred with receiver-initiated dialogue.
+\end{itemize}
+
+\textit{Location Policy at Receiver:}
+\begin{itemize}
+    \item Receiver obtains tasks from potential senders. Lists are scanned from head to tail in senders list first (most up to date info used), then tail to head in OK list (least up-tp-date used) then tail to head in receiver list.
+    \item \textit{We try least up-to-date in case status has changed.}
+    \item Transfer a task if a sender is found. 
+    \item If the server is not a sender, both the polled and receiver sever update each other's status.
+    \item Polling stops if a sender is found or a poll limit is reached.
+\end{itemize}
+
+At high loads, sender initiated polling gradually reduces as servers get removed from receiver list. Similarly, at high loads, receiver initiated works and can find a sender.
+
+So, the algorithm dynamically becomes sender-initiated or receiver-initiated as appropriate and so is a stable algorithm.
+\\
+
+In general, if the system never gets highly loaded, sender-initiated works better. Receiver-initiated is better for high loads.
+
+For widely fluctuating loads and there is a high cost for preemptive transfers, again, use sender-initiated.
+
+For diverse work arrival use adaptive algorithms.
+
+\end{document}
