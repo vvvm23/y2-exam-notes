@@ -1,0 +1,109 @@
+
+\documentclass[../distributed.tex]{subfiles}
+
+\begin{document}
+
+A distributed system comprises of many independent components and so system behaviour may be unpredictable and prone to failure.
+
+Fault tolerance is the ability of a system to continue error-free operation despite a fault occurring in individual components.
+
+\subsection{Redundancy}
+
+Apply duplication to increase system reliability. Before we discussed system architecture approaches using active and passive replication. This is expensive due to requiring extra hardware.
+
+I will now describe some operational approaches to replicate system operations to offer fault tolerance:
+\\
+
+\textbf{Time Redundancy} -- Perform same operation multiple times.
+
+No fault if we are getting the same result each time. We can detect temporary faults but not permanent ones.
+
+However, it has an impact on system performance as multiple machines must be used for one operation.
+\\
+
+\textbf{Component Redundancy} -- Replicate component and compare outputs.
+
+Introduce two or more independent running components which provide the same functionalities. Vote on the result.
+
+A variation is N-Version Programming (NVP) where we implement multiple versions of the program (Design Diversity). This makes it tolerant to hardware and software faults but not correlated faults. (Errors propagated by other errors)
+\\
+
+\textbf{Information Redundancy} -- Encode outputs with error detecting or correcting codes.
+
+This adds fault detection and requires less hardware than just replicating a module. However, fault recovery may be limited.
+\\
+
+The general workflow towards fault tolerance:
+
+\begin{itemize}
+    \item Error Detection and diagnosis
+    \item Failure Isolation, isolate offending components.
+    \item Error Containment, prevent further damage and error propagation.
+    \item Recovery, move the system to a state that does not cause the error.
+\end{itemize}
+    
+\subsection{Recovery}
+
+There are two main forms of error recovery:
+
+\begin{itemize}
+    \item \textbf{Backward Recovery} -- Move the system back to a failure-free state. Ensure system is correct before continuing.
+    \item \textbf{Forward Recovery} -- Find a new state from which the system can continue operation. Try to avoid stopping the system even if failure occurs.
+\end{itemize}
+\\
+
+We can implement backward recovery using checkpointing. Each component periodically saves its state which contains sufficient information to restore state and then restart component execution.
+
+A global checkpoint can be set up which compromises of a set of local checkpoints, one for each component, forming a consistent system state. The most recent consistent global checkpoint is called the recovery line.
+
+We must ensure the system state remains consistent. If one process' state reflects a message receipt, then the state of the corresponding sender reflects sending that message.
+
+The goal of backward recovery is to bring the system into a consistent state when inconsistencies occur because of a fault.
+\\
+
+There are a few types of checkpointing:
+
+\begin{itemize}
+    \item \textbf{Uncoordinated Checkpointing} -- Each process takes its checkpoints independently. This is automatic and easy but produces possibly useless checkpoints. It could also result in domino effect (Having to roll back to the very start)
+    \item \textbf{Coordinated Checkpointing} -- Process coordinate process checkpoints in order to save a system-wide consistent state. This leads to less storage used and avoids the domino effect but takes some additional processing.
+    \item \textbf{Communication-Induced Checkpointing} -- Force each process to take checkpoints based on information piggybacked on the messages it receives from other processes. Avoids domino effect while also allowing local checkpoints.
+\end{itemize}
+\\
+
+There are multiple methods to implement forward recovery:
+
+\begin{itemize}
+    \item \textbf{Self-checking components} -- Switch from failed to non-failed components executing the same code.
+    \item \textbf{Fault Masking} -- Error compensation is continuously applied, for example using voting schemes to address Byzantine faults.
+    \item \textbf{Error Compensation} -- Use algorithms that implement redundancy, such as multiple processes executing in parallel or using redundant data.
+    \item \textbf{Data Prediction} -- Simulate application responses (predicting actions in games)
+\end{itemize}
+\\
+
+In general, backward recovery requires no knowledge about the error itself, we only need to maintain some error free state. However, it has a higher resource and time consumption when compared to forward recovery and can be susceptible to the domino effect.
+
+Forward recovery is efficient in terms of time and space but requires knowledge of the error and is application dependent. It is not appropriate for systems where significant delay cannot occur.
+
+\subsection{Measuring System Quality}
+
+We measure system quality using two measures, reliability (without failure) and availability (ready to use).
+
+In other words, reliability is the extent to which a system yields expected results on repeated trials and is measured by mean-time-between-failures and availability is the fraction of time the system yields expected results.
+
+\begin{center}
+$A = \frac{MTBF}{MTBF + MTR}$ 
+\end{center}
+
+Where MTTR is mean-time-to-repair.
+\\
+
+"The Myth of the 9s" is that as we infinitely approach 100\% availability the cost increases very rapidly. Additionally, 99\% availability is a significant amount of downtime over the course of a year.
+
+System availability is affected by software configuration, workload, user expectations and MTTR.
+
+Workload is hard to model. It is easier to directly measure availability and repair intervals running real world loads.
+\\
+
+All downtimes are not created equally. At certain times, 100\% uptime is basically required, such as peak hours or certain times of year.
+
+\end{document}
