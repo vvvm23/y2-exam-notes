@@ -1,0 +1,72 @@
+\documentclass[../distributed.tex]{subfiles}
+
+\begin{document}
+
+\subsection{Concurrency}
+
+A shared object is an object that may be simultaneously accessed by multiple events. A server which manages shared objects is responsible for using the objects remain consistent when accessed by concurrent events. This is known as concurrency control. Control is usually done by locking.
+
+If concurrency must be supported with replication we must extend this slightly. If an event T happens before event U in their conflicting access to objects at one server then they must be in that order at all servers who objects are accessed in a conflicting manner.
+\\
+
+Locks on an object are held locally in a server. A local lock manager can decide whether to grant a lock or make transactions wait.
+
+There are a few issues with distributed transactions. A DT acquires resources located at different servers and cannot release any locks until the transaction has been committed or aborted at all servers involved in the transaction. Objects remain locked and are unavailable for other transactions.
+\\
+
+One method is timestamp ordering. Assign a timestamp to each transaction when it starts. Serial equivalence is enforced by committing changes to objects in order of the timestamps of transactions associated with them. This requires globally unique timestamps.
+\\
+
+In a single machine, concurrent operations are handled by the time-sharing feature of the operating system by executing one by one under a single clock. In a distributed system, concurrent operations may run on different machines and so order of operation cannot easily be sorted due to their being no global clock and network issues.
+
+\subsection{Deadlocks}
+
+Deadlocks can arise within a single server when locking is used for concurrency control. Timeouts are a non-ideal solution as it is difficult to choose an appropriate timeout and may result in transactions being aborted unnecessarily.
+
+Most deadlock detection schemes operate by the finding cycles in the transaction wait-for-graph. Each node is an object or a transaction. Each edge represents how one node waits or is held by another. A centralised deadlock detection is not a good idea as it depends on a single server and so suffers from poor availability and no ability to scale.
+\\
+
+Another issue is phantom deadlocks, a deadlock that is detected but is not really a deadlock. This is caused by global deadlock detectors not being updated quick enough and so the wait-for graph may no longer be valid anymore.
+\\
+
+A better solution is Edge Chasing. We do not construct a global wait-for graph. Instead, each server attempts to find cycles by forwarding probe messages. A probe message consists of a transaction wait-for relationship representing a local path in the global wait-for graph.
+
+\subsection{Correctness}
+
+If a system only maintains a single copy for each object, object correctness simply relates to the sequence of operations applied on the object. 
+
+Correctness of replicated objects is more challenging. Object copies on different machines may receive operations with a different order due to network issues.
+
+Operations are linearisable if the interleaved sequence of operations meets the specification of a single correct copy of the objects and the order of the operations in the interleaving is consistent with the real times at which the operations occurred in the actual execution.
+\\
+
+Linearisability means there exists a virtual canonical execution, the interleaved operations against a virtual single image of shared objects and that each client sees a view of the shared objects that is consistent with that single image. 
+
+\subsection{Consistency Control}
+
+Distributed systems rely on replicating shared objects or allowing concurrent access. If the concurrent access is not carefully controlled, object access may be executed in an order different from expectation and so generate incorrect results.
+
+An informal model of consistency control is that a certain object is coherent if the value returned by a read operation is always the value the user expected. A consistency model, therefore, defines the rules for apparent order and visibility of updates.
+\\
+
+\textbf{Strict Consistency} -- The strongest consistency model. Any read on a data item X returns a value corresponding to the result of the most recent write on X.
+
+This requires absolute global time and so in practise can only be implemented with one single machine.
+\\
+
+\textbf{Sequential Consistency} -- When processes are running concurrently, the interleaving of read and write operations is acceptable if all processes see the same interleaving of operations.
+
+This differs from strict consistency as there is no reference to the global time.
+
+\textit{It doesn't matter when the events actually took place, but it does matter if all processes see them in the same order. Therefore, operations that are linearisable also fulfill sequential consistency.}
+\\
+
+\textbf{Causal Consistency} -- Represents the weakening of sequential consistency as it makes the distinction between events that are potentially causally related and those that are not.
+
+Writes that are potentially causally related must be seen by all processes in the same order. Concurrent writes may be seen in a different order on different machines.
+
+\textit{Concurrent if operations are not causally related.}
+
+\textit{If event B is caused or influenced by an earlier event A, causality requires everyone first sees A and then B.}
+
+\end{document}
