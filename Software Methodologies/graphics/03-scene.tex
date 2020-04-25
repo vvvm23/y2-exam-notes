@@ -1,0 +1,26 @@
+\documentclass[../graphics.tex]{subfiles}
+
+\begin{document}
+
+A 3D scene is a space defined by a 3D coordinate system comprised of 3D objects, forming an environment to support navigation and interaction.
+
+Each object is constructed on its own dedicated coordinate system, giving its local coordinates. World coordinates apply a single coordinate system to all objects globally.
+
+To transform the view we can shift the origin of the world coordinate system to the view origin. The view origin is where our eye is located with respect to the world origin. This allows us to define the current users viewpoint.
+\\
+
+The visible region is what part of the 3D scene is currently visible. Depending on the project type, it may either modify or preserve object shapes.
+
+Projection transform is done based on a view frustum and is defined by six planes: near, far, top, bottom, right and left. The frustum determines which objects will be clipped out.
+
+If the far and near planes have the same dimensions then the frustum will produce an orthographic projection. Otherwise, it will be a perspective projection.
+
+We then can map the projected view to the available space in the computer screen, typically referring to the canvas or similar viewport.
+\\
+
+The model, view and projection transforms can be done in the vertex shader using a specific order of matrix multiplications. Commands to generate these matrices are provided with WebGL, which can then be buffered and have attributes assigned to them.
+\\
+
+By swapping the model matrix we can draw different types of objects. We can change the view matrix to change how we are viewing the scene.
+
+\end{document}

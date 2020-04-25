@@ -1,0 +1,46 @@
+\documentclass[../graphic.tex]{subfiles}
+
+\begin{document}
+
+\subsection{Rendering Pipeline}
+
+A GPU typically comprises of hundreds to thousands of processors that process graphics primitives in parallel. The rendering pipeline in WebGL is programmable at two points: The Vertex Shader and The Fragment Shader. GPU programming is therefore also called shader programming.
+
+A simplified view of the programming rendering pipeline would be:
+
+\begin{itemize}
+    \item \textbf{Input Geometry} -- Graphics Commands from main program
+    \item \textbf{Vertex Shader} -- Programmable
+    \item \textbf{Rasterisation} -- Non-programmable
+    \item \textbf{Fragment Shader} -- Programmable
+    \item \textbf{Composition} --  Generates output image
+\end{itemize}
+
+The Vertex Shader manipulates per-vertex data such as coordinates, normals, colours, texture coordinates. The Fragment Shader deals with surface points for processing, its main goal is to calculate the resulting colour for each pixel displayed on the screen.
+
+\textit{Fragment shader interpolates values in between vertices.}
+
+The Rasterisation process is non-programmable. It's purpose is to generate fragments from the output of the vertex shader for use in the fragment shader.
+\\
+
+The programmable rendering pipeline utilises a few data structures:
+
+Vertex Buffer Objects (VBO) contains the data that WebGL requires to describe the geometry that it is going to render.
+
+Index Buffer Objects (IBO) contain integers that are used as reference (pointers) to data in VBOs in order to enable the reuse of the same vertex. (For example, two triangles that share common points in order to make a rectangle)
+\\
+
+Attributes, uniforms and varyings are three different types of variables that are used when programming shaders:
+
+\begin{itemize}
+    \item \textbf{Attributes} -- Input variables used in the vertex shader such as coordinates and colours. (Dynamic)
+    \item \textbf{Uniforms} -- Input variables available to both the vertex shader and the fragment shader such as light position. (static)
+    \item \textbf{Varyings} -- Used for passing data from the vertex shader to the fragment shader such as colour, which will be interpolated between points.
+\end{itemize}
+
+We can then associate vertex shader attributes with one and only one buffer. From there, the attribute extracts a value that is then passed to the vertex shader.
+\\
+
+Rendering can start once we have defined VBOs and have mapped them to corresponding shader attributes. We can then call WebGL draw functions in order to write to the frame buffer.
+
+\end{document}

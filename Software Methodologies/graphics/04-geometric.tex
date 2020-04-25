@@ -1,0 +1,152 @@
+\documentclass[../graphics.tex]{subfiles}
+
+\begin{document}
+
+There are three parts to transformations in the rendering pipeline:
+
+\begin{itemize}
+    \item \textbf{Model Transform} -- Place objects in a 3D scene and then apply transformations such as translations, rotations and scaling.
+    \item \textbf{View Transform} -- Place a virtual camera and define where from and where to you would like to look in the 3D scene.
+    \item \textbf{Projection Transform} -- Change the type of virtual frustum such as orthogonal versus perspective.
+\end{itemize}
+
+\subsection{Geometric Transformation}
+
+There are many types of geometric transformation, such as translation, scaling, rotation and shearing (changing shape). These can all be implemented by a transformation matrix.
+\\
+
+Here are how to do some 2D Transformations.
+\\
+
+Translation can be performed using simple vector addition:
+
+\begin{center}
+\begin{math}
+    \begin{bmatrix}
+        x \\
+        y
+    \end{bmatrix}
+    +
+    \begin{bmatrix}
+        a \\
+        b
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+        x^' \\
+        y^' 
+    \end{bmatrix}
+\end{math}
+\end{center}
+\\
+
+Scaling operations can be done in either vector or matrix form:
+
+\begin{center}
+    \begin{math}
+        \begin{bmatrix}
+x^' \\
+y^'
+        \end{bmatrix}
+        =
+        \begin{bmatrix}
+            ax \\
+            by
+        \end{bmatrix}
+        =
+        \begin{bmatrix}
+            a & 0 \\
+            0 & b
+        \end{bmatrix}
+        \begin{bmatrix}
+            x \\
+            y
+        \end{bmatrix}
+    \end{math}
+\end{center}
+\\
+
+Anti-clockwise rotation in its vector and matrix form:
+
+\begin{center}
+    \begin{math}
+        \begin{bmatrix}
+x^' \\
+y^'
+        \end{bmatrix}
+        =
+        \begin{bmatrix}
+            x cos(\Theta) - y sin(\Theta) \\
+            x sin(\Theta) + y sin(\Theta)
+        \end{bmatrix}
+        =
+        \begin{bmatrix}
+            cos(\Theta) & -sin(\Theta) \\
+            sin(\Theta) & cos(\Theta)
+        \end{bmatrix}
+        \begin{bmatrix}
+            x \\
+            y
+        \end{bmatrix}
+    \end{math}
+\end{center}
+\\
+
+Sheering in its matrix form:
+
+\begin{center}
+    \begin{math}
+        \begin{bmatrix}
+            x^' \\
+            y^'
+        \end{bmatrix}
+        =
+        \begin{bmatrix}
+            1 & sh_x \\
+            sh_y & 1
+        \end{bmatrix}
+        \begin{bmatrix}
+            x \\
+            y
+        \end{bmatrix}
+    \end{math}
+\end{center}
+\\
+
+Reflection across $x$ axis in matrix form:
+
+\begin{center}
+    \begin{math}
+        \begin{bmatrix}
+            x^' \\
+            y^'
+        \end{bmatrix}
+        =
+        \begin{bmatrix}
+            1 & 0 \\
+            0 & -1
+        \end{bmatrix}
+        \begin{bmatrix}
+            x \\
+            y
+        \end{bmatrix}
+    \end{math}
+\end{center}
+\\
+
+It is similar for 3D Transformations, but is tedious to write here. Just google them dummy.
+
+\subsection{View Transform}
+
+Instead of moving the camera, we move the world around it. (Funny Futurama Reference). We use a view transform matrix to do so. The scope of the mathematics is beyond this module. Instead, we can use inbuilt WebGL functions to compute this for us.
+
+\subsection{Projection Transform}
+
+Normally we will use perspective transformation. This transforms objects so that distance objects will appear smaller. In contrast, orthogonal transformations will not cause distance objects to appear smaller. This is useful in 2D applications.
+
+To create the effect of smaller objects have a smaller size we scale it by the distance away from the center of the projection.
+\\
+
+Perspective projection is different from perspective transformation. Perspective Transformation retains the depth value of each transformed vertex whilst perspective projection does not.
+
+\end{document}
