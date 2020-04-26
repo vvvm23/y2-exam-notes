@@ -1,0 +1,14 @@
+\documentclass[../graphics.tex]{subfiles}
+
+\begin{document}
+
+\subsection{Scene Graph}
+
+A Scene Graph is a collection of nodes in a graph or tree structure. A tree node may have many children but often only a single parent. The effects of a parent are applied to all its child nodes. This means an operation performed on a group is automatically propagated to all members.
+
+For example, a table could be group containing its legs, the top and another group which represents a bowl of fruit. When we move the table group the bowl of fruit will move with it.
+\\
+
+This can be implemented in WebGL either as an actual tree structure or by simply popping and pushing the model matrix to some stack.
+
+\end{document}

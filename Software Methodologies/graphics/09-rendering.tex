@@ -1,0 +1,55 @@
+\documentclass[../graphics.tex]{subfiles}
+
+\begin{document}
+
+\subsection{Graphics Pipeline}
+
+The rendering, or graphics, pipeline compromises of operations converting 3D geometry into a 2D pixel representation for display.
+
+There are typically two types of pipelines:
+
+\begin{itemize}
+    \item \textbf{Fixed-Function} -- Uses a standard set of operations to efficiently generate pixel representations from 3D polygons based on their visibility.
+    \item \textbf{Programmable} -- Focus on flexibility in programming and the utilisation of the parallel processing capability of the GPU.
+\end{itemize}
+\\
+
+Each object in the scene is usually first created using a software program such as \textit{Blender} in its own local coordinate system. The world coordinate transformation transforms each object to a common world coordinate system.
+\\
+
+The sequence of the pipeline matters. Optimisations that can happen earlier will results in less primitives to draw later. Some computations are also simpler to do earlier on such as back-face removal.
+
+\subsection{Pipeline Processes}
+
+Back-face removal removes surfaces of a solid object which are facing away from the viewer. This significantly increases performance as approximately half of the total number of surfaces in a scene are these back faces.
+
+After a perspective transformation, the projection becomes a parallel projection. The back-face test then becomes simple: if the $z$ component of the normal vector is positive, it is a back face. Else, it is a front face.
+\\
+
+Clipping is the process of determining the portion of an object lying inside or outside a region called the clip region. The clip region is usually either a view volume (3D) or the window on a screen (2D). This helps remove objects lying outside the view volume and so saves computation time.
+
+This is again best done after a perspective transformation as the view volume will become rectangular, which makes the calculations much simpler.
+
+We can entirely clip lines that fall outside the clip region and completely accept ones that fall entirely in. Ones that fall partially in need to be clipped. We can assign code words to vertices to show which region they fall in, in order to identify these conditions.
+
+Clipping shapes is more involved, we have to create synthetic vertices where its lines cross outside the clip region. We then draw the shape using the synthetic vertices and ignore the vertices outside the clip region.
+\\
+
+Rasterisation is the process of breaking a primitive into pixel fragments by interpolating between points.
+
+Each pair of interpolated points on the same row (from two different lines) is called a scan line. We then interpolate between these pairs to form pixel fragments.
+\\
+
+Another step we can perform is hidden surface removal. This is the process of removing primitive (or parts of) that are obscured by other primitives.
+
+One option is simply to paint distant parts of the scene before parts nearer to the user. This wastes processing on obscured primitives though.
+
+A better option is Z-Buffering. This tests fragment visibility by its z-coordinate. This is the option implemented by the majority of the existing graphics accelerators.
+
+The Z-Buffer method requires both a z-buffer (determines the nearest primitive fragment at each screen pixel) and image buffer (stores the colour value of the nearest primitive fragment at each pixel).
+
+Finally, the shading step computes the colour of each visible primitive at each pixel location based on some shading methods (lighting).
+
+In order to calculate the z-buffer, repeatedly take the max of the z-values of each fragment padded by negative infinity.
+
+\end{document}
