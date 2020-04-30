@@ -1,0 +1,175 @@
+\documentclass[../models.tex]{subfiles}
+
+\begin{document}
+
+\subsection{Introduction}
+
+A Turning Machine (TM) was the first mathematically rigorous definition of computation. It can do anything a real computer can do. \textit{(Church-Turing Thesis)}
+
+A TM consists of an infinite tap, a finite-state program that controls the head, where the head can move in both directions and can read and write to the tape.
+\\
+
+The formal definition is as follows:
+
+\begin{center}
+    A TM is a 7-tuple $(Q, \Sigma, \Gamma, \delta, q_0, q_\text{accept}, q_\text{reject})$ where:
+    \begin{itemize}
+        \item $Q$ is the set of states
+        \item $\Sigma$ is the input alphabet not containing the blank character.
+        \item $\Gamma$ is the tape alphabet satisfying $\Sigma \subset \Gamma$ and also contains the empty character.
+        \item $\delta : Q \times \Gamma \rightarrow Q \times \Gamma \times \{L, R\}$ is the state transition function.
+        \item $q_0 \in Q$ is the start state
+        \item $q_\text{accept} \in Q$ is the accepting state
+        \item $q_\text{reject} \in Q$ is the rejecting state such that $q_\text{accept} \neq q_\text{reject}$
+    \end{itemize}
+\end{center}
+\\
+
+The tape content is unbounded but always finite. The leftmost blank marks the end of the tape content.
+
+A configuration consists of three items, the current state, the tape content and the head location. We say a configuration $x$ yields a configuration $y$ if the TM can legally move from $x$ to $y$ in a single step.
+\\
+
+A TM $M$ accepts an input $w$ if there is a sequence of configurations $C_1, ..., C_k$ such that:
+
+\begin{itemize}
+    \item $C_1$ is the start configuration of $M$ on $w$
+    \item $C_i$ yields $C_{i+1}$ for $1 \leq i \leq k-1$
+    \item $C_k$ is an accepting configuration
+\end{itemize}
+
+The set of strings accepts by $M$ is the language of $M$ denoted $L(M)$. 
+
+A language $L$ is Turing-Recognisable if there is a TM $M$ that recognises it. ie. $L=L(M)$
+
+A language $L$ is Turing-Decidable if there is a TM $M$ that accepts every $w \in L$ and rejects every $w \notin L$.
+
+\textit{An important distinction, if $M$ recognises $L$, it may or may not halt on words not in $L$. However, if $M$ decides $L$ it always halts.}
+
+Standard terminology says recursively enumerable is equivalent to Turing-Recognisable and recursive is equivalent to Turing-Decidable.
+\\
+
+The Church-Turing Thesis is as follows:
+
+\begin{center}
+    \textit{The intuitive notion of an algorithm is equivalent to the mathematical concept of an algorithm defined by Turing Machines, or any other formal model of computation.}
+\end{center}
+
+A language $L$ is Turing-Decidable if and only if both $L$ and $\bar{L}$ are Turing-Recognisable.
+
+\textit{We can prove this by simulating simultaneously $L$ and $\bar{L}$ on their respective recognising machines $M_1$ and $M_2$. Accept if $M_1$ accepts and reject if $M_2$ accepts.}
+
+\subsection{Turing Machine Variations}
+
+\subsubsection{Multi-Tape TM}
+
+Exactly the same as an ordinary TM except with several tapes each with their own tape heads. There is only one change in the formal definition in the state transition function:
+
+\begin{center}
+    $\delta : Q \times \Gamma^k \rightarrow Q \times \Gamma^k \times \{L, R\}^k$ where $k$ is the number of tapes.
+\end{center}
+
+In other words, there is one shared state, but the transitions take into account the current value under all tape heads and can read, write and move all heads simultaneously.
+
+Additionally, all multi tape TM have an equivalent single tape TM.
+
+\subsubsection{Non-deterministic TM}
+
+A Non-deterministic TM has the transition function:
+
+\begin{center}
+    $\delta : Q \times \Gamma \rightarrow P(Q \times \Gamma \times \{L, R\})$
+\end{center}
+
+In words, this means that more than one action can be performed for a given situation. This leads to the issue of a NTM knowing which action to take. One way is to assume it is lucky, and to always pick the transition that leads to an accepting state.
+
+Another way is to form a computation tree. If at least one branch of the tree accepts, we say the NTM is accepting on an input $w$. To do this, use a breadth first search. Depth-first will not work as we could infinitely loop.
+\\
+
+Like with multi-tape Turing machines, all NTMs have an equivalent TM. Simply use the BFS tree and find the computational path to the accepting state.
+
+\subsubsection{Enumerators}
+
+A language $L$ is enumerated by a TM $M$ if $M$ starts on an empty input and outputs a, potentially infinite, list of words that contains every word in $L$ and nothing else.
+
+A language $A$ is recursively enumerable if and only if some enumerator enumerates it.
+
+Proof:
+
+\begin{center}
+    If $A$ is r.e:
+    \begin{itemize}
+        \item Use an enumerator to generate strings in lexicographic ordering.
+        \item Print if $A$ accepts the string, using $A$ as the decider.
+        \item We have created an enumerator for $A$
+    \end{itemize}
+
+    If A is enumerable:
+    \begin{itemize}
+        \item If $A$ is finite, it is decidable as all finite languages are.
+        \item If $A$ is infinite, use a decider than operates as follows:
+            \begin{itemize}
+                \item Receive an input $w$
+                \item Enumerate all strings in $A$ until a string lexicographically after $w$ appears (This must occurs as $A$ is infinite)
+                \item If $w$ has appeared already accept, else reject. As if it hasn't appeared yet it never will as it is decidable.
+            \end{itemize}
+        \item Hence, it is decidable.
+    \end{itemize}
+\end{center}
+
+\subsubsection{Universal TM}
+
+All TMs can be encoded as a word over a finite language. We shall use $<M>$ to denote the encoding of a TM $<M>$. A universal TM $U$ takes two inputs, the encoding of a TM $M <M>$ and the word $w$. $U$ then simulates $M$ on $w$.
+
+\subsection{The Halting Problem}
+
+The halting problem is, given an encoding of a TM $M$ and a word $w$, does $U(<M>, w)$ terminate?
+
+Essentially, can we tell if a TM will terminate on some input?
+\\
+
+The Halting Problem is Turing-Recognisable. This can be proved by running the UTM and accept if it eventually terminates. We don't care about infinite loops as we are just checking if it is Turing-Recognisable.
+\\
+
+The Halting Problem is not Turing-Decidable. There is a more involved proof for this:
+
+\begin{center}
+
+    Assume for contradiction there is some TM $H$ that decides the Halting Problem. It would look like:
+    \vspace{0.5cm}
+
+    $H(<M>, w) = \begin{cases}
+        \text{accept}, &\text{ if } M \text{ terminates on } w \\
+        \text{reject}, &\text{ if } M \text{ does not terminate on } w
+    \end{cases}$
+    \vspace{0.5cm}
+
+    Consider a TM $D$ that takes a TM $M$ and does:
+    \vspace{0.5cm}
+
+    $D(<M>) = \begin{cases}
+        \text{accept}, &\text{ if } H(<M>, <M>) \text{reject}\\
+        \text{loop}, &\text{ if } H(<M>, <M>) \text{accepts}\\
+    \end{cases}
+    \vspace{0.5cm}$
+
+    Running $D$ on $<D>$ leads to two possibilities
+    \begin{itemize}
+        \item $D$ terminates on $<D> \implies H(<D>, <D>) $ rejects $\implies D$ does not terminate on $<D>$. Contradiction.
+        \item $D$ does not terminates on $<D> \implies H(<D>, <D>) $ accepts $\implies D$ does terminate on $<D>$. Contradiction.
+    \end{itemize}
+    \vspace{0.5cm}
+
+    As both contradict, our initial assumption must be incorrect. Hence, the Halting Problem is not Turing-Decidable.
+
+\end{center}
+\\
+
+There are some other notable problems:
+
+\begin{itemize}
+    \item \textbf{Co-Halting Problem} -- Given an encoding of a TM $<M>$  and a word $w$ is it the case that $M$  does not terminate on $w$ ?
+    \item \textbf{Step-Counter Predicate} -- Step$(M, w, k)$  if and only if the machine $M$ terminates on $w$ within $k$  timesteps.
+\end{itemize}
+
+\end{document}

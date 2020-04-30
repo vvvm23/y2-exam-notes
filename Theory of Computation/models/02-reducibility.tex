@@ -1,0 +1,78 @@
+\documentclass[../models.tex]{subfiles}
+
+\begin{document}
+
+\subsection{m-Reducibility}
+
+Let $A$ and $B$ be languages over the same alphabet $\Sigma$. $A$ is many to one reducible to $B$ (written $A \leq B$) if there is a TM $F$ that terminates on every input $u \in \Sigma^*$ such that:
+
+\begin{center}
+    $A = \{u \in \Sigma^* | F(u) \in B \}$
+\end{center}
+
+In other words, there exists a TM $F$ that converts string in $A$ to strings in $B$.
+
+In an informal sense, checking $u \in A$ is no harder than checking $u \in B$
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=4in]{models/images/reducibility.png}
+\end{figure}
+\\
+
+Supposing $A \leq B$:
+\begin{itemize}
+    \item If $B$ is decidable, so is $A$
+    \item If $B$ is recognisable, so is $A$
+    \item If $A \leq B$ and $B \leq C$ then $A \leq C$
+\end{itemize}
+
+The contrapositive is also true. ($A \implies B$, $\neg B \implies \neg A$)
+
+We can also say that $A \equiv B$ if both $A \leq B$ and $B \leq A$.
+\\
+
+\textit{Intuitively, if we say $A\leq B$ then we mean problem $A$ is reducible to $B$ if an algorithm for solving $B$ (we assumed this algorithm exists) could be used to solve problem $A$ efficiently. }
+
+\subsection{m-Completeness}
+
+A language is $m$-complete if $A$ is recognisable and for every recognisable language $B$, $B \leq A$.
+
+In informal terms, if $A$ is complete then $A$ is as hard as any other recognisable language.
+
+It then follows if $A$ is complete and $A \leq B$ then $B$ is also complete due to $A \equiv B$ if $A \leq B$ and $B \leq A$.
+\\
+
+The Halting Language $H$ consists of words $<M> \circ w$ if a TM $M$ terminates on $w$. The theorem is that $H$ is complete. The proof is as follows:
+
+\begin{center}
+    \begin{itemize}
+        \item Pick any recognisable language $A$ that is recognised by a TM $M_A$ Reduce it to $H$ by mapping any word $w$ to $<M_A> \circ w$
+        \item It is obvious this reduction is computable as $w \in A$ if and only if $<M_A> \circ w \in H$ as $w$ can only be in $A$ if it halts.
+        \item Hence, as any recognisable language can be reduced to $H$, $H$ is complete.
+    \end{itemize}
+\end{center}
+\vspace{0.5cm}
+
+$H_0$ is the diagonal of $H$, the language consisting of words $<M> \circ <M>$ such that $M$ terminates on $<M>$.
+
+The theorem is that $H_0$ is also complete. The proof is as follows:
+
+\begin{center}
+    \begin{itemize}
+        \item Use a reduction from $H$. Given a word $<M> \circ w$ create a TM $N_{M, w}$ that simulates $M$ on $w$ using a UTM. (Ignores any other input.)
+        \item $N_{M, w}$ terminates on any input if and only if $M$ terminates on $w$. (Because input now has no effect.)
+        \item In particular, $N_{M, w}$ terminates on $<N_{M,w}>$ if and only if $M$ terminates on $w$.
+        \item As we have reduced from $H$, $H_0$ is complete.
+    \end{itemize}
+\end{center}
+
+\subsection{Oracles}
+
+An oracle for a language $A$ is a black-box that takes a word $w$ and instantly and correctly replies if $w \in A$. An oracle TM $M$ denoted $M^A$ is a TM that has the capability to make calls to an oracle for the language $A$.
+
+A language $A$ is $t$-reducible to a language $B$ if $A$ is decidable by some oracle TM $M^B$. Again, if $A \leq_t B$ and $B$ is decidable then so is $A$.
+
+\textit{Think of it as a black-box subroutine.}
+
+\end{document}

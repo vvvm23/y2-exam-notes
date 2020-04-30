@@ -1,0 +1,187 @@
+\documentclass[../models.tex]{subfiles}
+
+\begin{document}
+
+\subsection{Partial and Fully Computable Functions}
+
+A total function $f: \Sigma^* \rightarrow \Sigma^*$ is computable if there is a TM such that on any input $x \in \Sigma^*$ , the TM produces $f(x)$ as an output. In other words, there exists a TM that is equivalent or performs that function.
+
+A partial function $g: \Sigma^* \rightarrow \Sigma^*$  is partially computable if there is a TM such that on any $x \in \text{domain}(g)$ it produces $g(x)$ and if $x \notin \text{domain}(g)$ the TM will not terminate.
+\\
+
+A language $S \subset \Sigma^*$  is Turing-Recognisable if and only if it is:
+\begin{itemize}
+    \item The domain of a partially computable function. (OR)
+    \item The range of a computable function (OR)
+    \item The range of partially computable function.
+\end{itemize}
+
+\subsection{Parameter and Recursion Theorem}
+
+Parameter theorem is as follows:
+
+\begin{center}
+    Let $M(x,y)$  be a TM that expects a two part input $x,y$   . There exists a TM that on inputs $<M>$  and $x$ produces a description of a TM $<M_x>$  such that for every $M_x(y) = M(x,y)$ 
+\end{center}
+
+The proof of this is quite trivial. Take $M$  and, as the first step, reassign $x$  to a fixed value. This is analogous to overwriting an argument in a programming language.
+\\
+
+Recursion Theorem is as follows:
+
+\begin{center}
+    Let $M(x,y)$ be a TM that expects a two part input $x,y$ . There is a TM $R(y)$ such that for every $y$ , $R(y) = M(<R>, y)$ 
+\end{center}
+
+The proof is as follows:
+
+\begin{itemize}
+    \item Define the following TMs:
+        \begin{itemize}
+            \item $F$ -- Forward to next section
+            \item $B$ -- Backward to next section
+            \item $l_w$ --  Produces $w \square $ and resets to $w$ 
+            \item $S(x)$ -- Keeps $x$ and appends $<l_x>$ so we have $x \square <l_x>$ 
+            \item $P_\pi(x_1 \square ... \square x_n)$ -- Rearranges $\square$ separated strings by ordering $\pi$ 
+        \end{itemize}
+    \item $R$ consists of $F, l_r, S, B, P_\pi, M$  where $r = <F>\square<S>\square<B>\square<P_\pi>\square<M>$ 
+    \item If we executed $R$  on $y\square$ , $F$ positions head just after blank. $l_r$  produces $y\square<F>\square<S>\square<B>\square<P_\pi>\square<M>$ with head at $<F>$ 
+    \item $S$ now has $r$ as an input and so produces $y\square<F>\square<S>\square<B>\square<P_\pi>\square<M>\square<l_r>$ 
+    \item $B$  brings heads back to $y$ and $P$ reshuffles so $<F>\square<l_r>\square<S>\square<B>\square<P_\pi>\square<M>\square y$ 
+    \item Finally, $M$ is executed on the tape, which is $<R>$  followed by $y$ 
+\end{itemize}
+
+Hence, we've shown we can craft $R$  from $M, y$ and so have proved recursion theorem.
+
+\subsection{Partially Computable with No Machines}
+
+We will only consider functions on the set of natural numbers.
+\\
+
+Our initial functions are:
+\begin{itemize}
+    \item The Successor -- $s(x) = x+1$ 
+    \item The Zero -- $n(x) = 0$ 
+    \item The Projections -- $u^n_i(x_1, ..., x_n) = x_i$ for every $n \in \mathbb{N} , 1 \leq i \leq n$ . Selects $i$ th item from $n$ .
+\end{itemize}
+
+A function is called primitive recursive if it can be obtained from the finite applications of the initial functions and composites of them.
+\\
+
+Let $f$  be a function of $k$ variables and let $g_1, ..., g_k$ be functions of $n$ variables. The function $h$ of $n$ variables can be obtained from this by composition if:
+
+\begin{center}
+    $h(x_1, ..., x_n) = f(g_1(x_1, ..., x_n), ..., g_k(x_1, ..., x_n))$ 
+\end{center}
+\\
+
+Additionally let $f$ and $g$ be total functions of $n$  and $n+2$  variables respectively. A function $h$ of $n+1$ variables can be obtained from them by primitive recursion if:
+
+\begin{center}
+    $h(x_1, ..., x_n, 0) = f(x_1, ..., x_n)$ and
+
+    $h(x_1, ..., x_n, t+1) = g(t, h(x_1, ..., x_n, t), x_1, ..., x_n)$ 
+\end{center}
+
+By repeatedly applying these, we can construct more complex functions:
+
+\begin{center}
+    Adding \hfill Multiplication
+
+    $a(x,y) = x+y$  \hfill $m(x,y) = x \cdot y$ 
+
+    $= a(x,0) = x$ \hfill $= m(x,0) = 0$ 
+
+    $a(x, t+1) = S(a(x,t))$ \hfill $m(x, t+1) = a(m(x,t), x)$ 
+\end{center}
+\\
+
+The following functions are primitive recursive:
+
+\begin{itemize}
+    \item Addition and Subtraction
+    \item Multiplication and Integral Division (Quotient and Remainder)
+    \item Exponential and logarithm
+    \item $n$ th prime
+    \item $i$ th digit in base $b$ expansion
+\end{itemize}
+
+\subsection{Godel's Incompleteness}
+
+The Godel Number of a sequence of numbers $x_1, ..., x_n$ is defined as $p_1^{x_1} \cdot ... \cdot p_{n-1}^{x_{n-1}} \cdot p_n^{x_n + 1}$  where $p_i$ is the $i$ th prime number. This is also primitive recursive.
+
+\textit{We add 1 to the final power so we know when to terminate when computing Godel numbers.}
+\\
+
+Therefore a string $w$ can be encoded by a single number $[w]$ and so cna a turing machine $[<M>] \rightarrow [M]$ . Each encoding is unique as all integers have a unique prime decomposition.
+
+Any configuration of a TM $M$ can be encoded as a single number via a primitive recursive function $[q,i,w] = C(q,i,w)$ . (State, position and content)
+
+Additionally, if a configuration yields $q', i', w'$ from $q,i,w$ , the function Step$([q,i,w]) = [q',i',w']$ is primitive recursive.
+
+And so, the step-counter function can be defined as:
+
+\begin{center}
+    $SC([M], [w], 0) = [q_\text{start}, 0, w]$
+
+    $SC([M], [w], t+1) = \text{Step}(SC([M], [w], t))$ 
+\end{center}
+\\
+
+A formula $\psi$ in a formal system that reasons with natural numbers is a finite sequence of symbols. Therefore, it can be encoded as the Godel Number $[\psi]$ .
+
+Another formula in the system $\prod$ can also be encoded in the same way.
+
+Define the following predicate:
+
+\begin{center}
+    Proof $([\prod], [\psi])$ is true if $\prod$ is a proof of $\psi$ .
+
+    The predicate is primitive recursive.
+\end{center}
+
+Assume now that every formula in the system is also provable if the formula is true. For every instance $(M, w)$ of the co-Halting Problem, the following predicate:
+
+\begin{center}
+
+    $\exists p \text{Proof}(p, [M \text{ does not terminate on } w])$ 
+
+\end{center}
+
+.. is semi-decidable (recognisable)
+\\
+
+For positive instances, the predicate is true which we can show by simply brute forcing the proof encoding until we find it. But then this makes the co-Halting problem semi-decidable. Since the Halting problem is also semi-decidable we get that the Halting Problem is decidable, a contradiction.
+
+\textit{This is from an earlier proof. A language $A$ is decidable if and only if both $A$ and its complement are semi-decidable. Using this, and the knowledge that the Halting Problem is semi-decidable and not decidable, we get a contradiction.}
+
+Hence, it is not the case that every formula that is true is also provable.
+\\
+
+Godel's self referential sentence is as follows:
+
+\begin{itemize}
+    \item $\varphi(x)$  be a formula with one free variable $x$ 
+    \item Define the predicate $P(n, [\varphi])$  to mean $n$ does not encode a proof of $\varphi([\varphi])$ 
+    \item Now define $\psi(y) = \all x P(x,y)$  with a free variable $y$ 
+    \item $\psi([\psi])$ says $\psi([\psi])$ is not provable.
+    \item If $\psi([\psi])$ is false, then what it says is false and so is provable, but then it must be true. A contradiction.
+    \item Hence, it must be true. So $\psi([\psi])$ is not true. 
+\end{itemize}
+\\
+
+Robinson Arithmetic $Q$ is the weakest sub-system in which Godel's Incompleteness holds.
+
+It contains a constant 0, $S$ for successor and $+$ and $\times $ it has no induction. The axioms are:
+
+\begin{itemize}
+    \item $S(x) \neq 0$ -- Successor can never be 0
+    \item $(S(x) = S(y)) \implies x=y$  -- If two successors are equal, the predecessor must also.
+    \item $y = 0 \vee \exists x (S(x) = y)$  -- $y$ is either 0 or a successor to some value.
+    \item $x+0 = x$ 
+    \item $x + S(y) = S(x+y)$ 
+    \item $x \times 0 = 0$ 
+    \item $x \times S(y) = x \times y + x$ 
+\end{itemize}
+
+\end{document}
