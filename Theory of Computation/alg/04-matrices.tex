@@ -1,0 +1,48 @@
+\documentclass[../alg.tex]{subfiles}
+
+\begin{document}
+
+\subsection{Simple Divide-and-Conquer}
+
+Simply partition the matrices into multiple parts and solve each independently:
+
+\begin{center}
+\begin{math}
+
+    C = A \cdot B = 
+    \begin{bmatrix}
+        A_{1,1} & A_{1,2} \\
+        A_{2,1} & A_{2,2}
+    \end{bmatrix}
+    \cdot
+    \begin{bmatrix}
+        B_{1,1} & B_{1,2} \\
+        B_{2,1} & B_{2,2}
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+        C_{1,1} & C_{1,2} \\
+        C_{2,1} & C_{2,2}
+    \end{bmatrix}
+
+\end{math}
+\end{center}
+
+Where $X_{i,j}$ is a partition of matrix $X$ 
+
+By Master Theorem, this naive algorithm has running time $\Theta(n^3)$ 
+
+\subsection{Strassen's Algorithm}
+
+A more sophisticated divide and conquer approach:
+
+\begin{itemize}
+    \item Divide Matrices into parts as before
+    \item Create 10 matrices $S_1, ..., S_{10} \in \mathbb{R}^{n/2 \times n/2}$ obtained by sums or differences of the partitions of $A$ and $B$ .
+    \item Recursively compute 7 product matrices $P_1, ..., P_7 \in \mathbb{R}^{n/2 \times n/2}$ 
+    \item Compute partitions of $C$ by adding and subtracting combinations of $P$ 
+\end{itemize}
+
+Using Master Theorem, the worst-case running time is $\Theta(n^{log_27}) \approx \Theta(n^{2.8074})$ 
+
+\end{document}

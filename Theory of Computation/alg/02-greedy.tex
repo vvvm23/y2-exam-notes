@@ -1,0 +1,39 @@
+\documentclass[../alg.tex]{subfiles}
+
+\begin{document}
+
+\subsection{Knapsack Problem}
+
+There are two variants of this problem:
+
+\begin{itemize}
+    \item \textbf{0-1 Knapsack Problem} -- There are $n$ items each with an associated value $v_i$ and weight $w_i$ . Someone can take at most $w$  weight. Find which items to take in order to maximise profit.
+    \item \textbf{Fractional Knapsack Problem} -- Same as before, but you are allowed to take fractions of items.
+\end{itemize}
+
+An assumption we make for both is that we cannot carry all items (as the solution would be trivial.) 
+
+In other words, $w < \sum^{n}_{i=1} w_i$ 
+\\
+
+Fractional Knapsack is easily solved by a greedy strategy:
+
+\begin{itemize}
+    \item Compute the ratio $r_i = v_i / w_i$ for all items.
+    \item Sort by the ratio in non-increasing order
+    \item Take as much as you can of items of the greatest ratio.
+    \item When one item is exhausted pick the next highest until capacity $w$ is met.
+\end{itemize}
+    
+The running time is $\Theta(nlog(n))$ due to sorting the ratios. We can decrease the average running time by partitioning ratios instead, until the total weight on the good side is, or nearly is, $w$ .
+
+This algorithm is always correct for the fractional problem as the maximum possible value per unit of weight is always picked and the bag is completely filled.
+
+This algorithm does not work for the 0-1 problem. A simple counter example can show this.
+\\
+
+The Knapsack problem is an example of an optimisation problem. An optimisation problem can have many solutions each with a value. The goal is to the find the optimal solution, be it minimum or maximum value.
+
+A greedy algorithm always makes, in each step, the choice that looks best at the moment. This is known as the greedy or locally optimal choice. This does not always lead to optimal solutions in all problems.
+
+\end{document}

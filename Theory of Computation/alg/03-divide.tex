@@ -1,0 +1,70 @@
+\documentclass[../alg.tex]{subfiles}
+
+\begin{document}
+
+A divide and conquer algorithm typically uses recursion. At each level of recursion it:
+
+\begin{itemize}
+    \item Divides the problem into a number of subproblems
+    \item Conquer the subproblems by solving either by continuing to recurse or solves the trivial solution if the subproblem is small enough.
+    \item Combine the subproblems into a solution for the original problem.
+\end{itemize}
+    
+\subsection{Graph Colouring}
+
+A colouring is an assignment of colours to the vertices of a graph such that no two adjacent vertices are the same colour.
+
+Previously, we have seen a $k$ -colouring is a colouring using at most $ k$ colours. The chromatic number $\chi_G$ of a graph $G$ is the smallest $k$ such that $G$ has a $k$ -colouring.
+\\
+
+We can solve this for restricted inputs by exploiting the structures for said inputs using divide and conquer algorithms. The justification for this is that sometimes real world problems may exhibit structures that can be exploited.
+
+First, some definitions. Let $G_1$ and $G_2$ be two vertex disjoint graphs:
+
+\begin{itemize}
+    \item The disjoint union $G_1 + G_2$ is the graph with vertex set $V(G_1) \cup V(G_2)$ and edge set $E(G_1) \cup E(G_2)$ .
+    \item The join $G_1 \times G_2$ is the graph with vertex set $V(G_1) \cup V(G_2)$ and edge set $E(G_1) \cup E(G_2) \cup E^*$ where $E*$ is the set of all edges between the vertices of $G_1$ and vertices of $G_2$ .
+\end{itemize}
+
+A graph $G$ is a cograph if and only if $G$ can be created by the following rules:
+
+\begin{itemize}
+    \item The 1-vertex graph $K_1$ is a cograph
+    \item If $G_1$ and $G_2$ are cographs, then so is $G_1 + G_2$ 
+    \item If $G_1$ and $G_2$  are cographs, then so is $G_1 \times G_2$ 
+\end{itemize}
+\\
+
+An alternative definition is as follows:
+
+\begin{itemize}
+    \item A graph $G$ contains $P_4$ as an induced subgraph if $G$ can be turned into $P_4$ via vertex deletion.
+    \item If not, $G$ is said to be $P_4$  free.
+    \item A graph is a cograph if and only if it is $P_4$ free.
+\end{itemize}
+\\
+
+The cotree $T_G$ of a cograph $G$ is the unique decomposition tree satisfyingL
+
+\begin{itemize}
+    \item It's root $r$ corresponds to the graph $G$ 
+    \item Every leaf of $x$ of $T$ corresponds to exactly one vertex of $G$ and vice versa.
+    \item Every internal node $x$ of $T$ has at least two children and is either labelled $\times$ or $+$ and corresponds to a subgraph of $G$ 
+    \item If a node $x$ is a $+$ -node, this corresponds to the union of its children. Similarly, a $\times$ -node corresponds to the join of its children.
+    \item Labels of internal nodes on the path from any leaf to the root alternate.
+\end{itemize}
+\\
+
+Now we can solve colouring for cographs as follows:
+
+\begin{itemize}
+    \item Construct the cotree $T_G$ 
+    \item Each leaf corresponds to a single vertex of $G$ . The chromatic number of a single vertex graph is 1.
+    \item Union nodes have the chromatic number equal to the max chromatic number of its children.
+    \item Join nodes have the chromatic number equal to the sum of the chromatic number of its children.
+    \item The chromatic number of the root is the solution.
+\end{itemize}
+
+As the number of nodes in $T_G$ is $O(n)$ , time per node is also linear and constructing $T_G$ is $O(n+m)$ , the total running time is linear. ( $n$ is number of nodes $m$ is number of edges )
+
+\end{document}

@@ -1,0 +1,112 @@
+\documentclass[../alg.tex]{subfiles}
+
+\begin{document}
+
+Let $G = (V,E)$ be an undirected graph. A set $M \subseteq E$ is a matching in $G$ if no edges in $M$ have an end vertex in common. 
+
+The matching number $v_G$ of $G$ is the size of a maximum matching in $G$ . Our goal is to find $v_G$ given a graph $G$ .
+
+A path $P $ (and a cycle $C$ ) is alternating with respect to $M$ if and only if among every two consecutive edges, exactly one edge is in $M$ .
+    
+A vertex $u$ is matched by a matching $M$ if it is an end vertex of an edge in $M$ .
+\\
+
+Let $G$ be a graph with matching $M$ and an alternating path $P$ with respect to this $M$ . If each endpoint of $P$ is either unmatched by $M$ or matched by $M \cap P$ , then $M \otimes P$ is another matching.
+
+\begin{center}
+
+    $M \otimes P$ is the symmetric difference of $M$ and $P$ . The symmetric  difference of $A$ and $B$ is defined as:
+
+    $A \otimes B = (A \backslash B) \cup (B \backslash A)$ 
+
+\end{center}
+
+An alternating path $P$ with respect to a matching $M$ is augmenting if both endpoints of $P$ are unmatched by $M$ 
+
+Let $G$ be a graph with matching $M$ and augmenting path $P$ with respect to $M$ . Then $M \otimes P$ is a matching of size $|M| + 1$ .
+
+\textit{Hence, $M$ is not maximum if there exists an augmenting path $P$ with respect to $M$ }
+\\
+
+We can also prove the converse, $M$ is maximum if there exists no augmenting path $P$ with respect to $M$ . 
+
+In order to do so, we must define some lemmas:
+
+\begin{center}
+let $G = (V,E)$ be an undirected graph and let $M$ and $M^*$ be matchings in $G$ . Then, the subgraph $(V, M \otimes M^*)$ is the disjoint union of isolated vertices, alternating cycles and alternating paths.
+\end{center}
+\\
+
+Another:
+
+\begin{center}
+
+    Let $G = (V,E)$ be an undirected graph and let $M$ and $M^*$ be matchings in $G$  such that $|M^*| = |M| + k$ for some $k \geq 1$ . Then $G$ has at least $k$ pairwise vertex-disjoint augmenting paths with respect to $M$ . 
+
+    \textit{The subgraph $G' = (V, M \otimes M^*)$ consists of alternating paths, cycles and isolated vertices with respect to $M$ and $M^*$ 
+
+    $M \otimes M^*$ has exactly $k$ more edges from $M^*$  than $M$ }
+
+Hence, $G'$ contains $k$ pairwise vertex-disjoint paths that start and end with edges of $M^*$ . There are augmenting paths with respect to $G$ .
+
+\end{center}
+
+From this lemma, we find a matching $M$ is maximum if there exists no augmenting path $P$ with respect to $M$ . Hence, we can conclude, a matching $M$ in a graph $G$ is maximum if and only if $G$ has no augmenting path with respect to $M$ .
+\\
+
+This infers the following approach for solving matching:
+
+\begin{itemize}
+    \item Let $M$ be the empty set
+    \item Check if there is an augmenting path $P$ with respect to $M$ 
+    \item If so, let $M := M \otimes P$ and repeat, else output $M$ 
+\end{itemize}
+
+Finding this augmenting path though is computationally expensive. We can again exploit structures to reduce this cost.
+
+Recall, that a graph is bipartite if its vertex set can be partitioned into two sets $R$ and $B$ such that every edge has one end-vertex in each partition. We can exploit this structure to check if the augmenting path exists.
+\\
+
+Let $M$ be a matching in a bipartite graph $G = (R \cup B, E)$ . If all red vertices are matched then $M$ is maximum . Otherwise, we try to find an augmenting path $P$ with respect to $M$ as follows:
+
+\begin{itemize}
+    \item Start with an unmatched red vertex $v$ 
+    \item Consider all blue neighbours of $v$ . If one of them is unmatched, stop as $P$ is found. \textit{(As both unmatched means we can easily add this edge to $M$ )}
+    \item Consider all matched red neighbours of the newly found blue vertices.
+    \item Consider all new blue neighbours of red vertices from previous step. If one of them is unmatched, stop as $P$ is found. \textit{(We cannot match as neighbour is already matched to something else)}.
+    \item If no new neighbour is detected, also stop. Otherwise, repeat from step 3.
+\end{itemize}
+\\
+
+If this algorithm terminates because no new blue neighbour was found, then we have found an alternating tree $T$ .
+
+\textit{Trace a tree from $v$ as we complete the algorithm. This becomes $T$ .}
+\\
+
+Now consider $G - T$ and repeat the whole proess until $P$ is found or the set of unmatched red vertices becomes empty.
+
+\textit{It is safe to perform $G-T$ as there are no edges from red vertices to blue vertices outside of $T$ (as we have terminated) and any edge from a blue vertex in $T$ to a red vertex outside of $T$ cannot be on $P$ either , otherwise we can modify $P$ into a new agumenting path. So, it is safe to consider $G-T$ }
+\\
+
+The total running time is $O(|E||V|)$ as the augmenting path algorithm runs in $O(|E|)$ and we run this at most $ \frac{|V|}{2} $ times, as we can only have a maximum matching of size at most $ \frac{|V|}{2} $ in the case of a path.
+\\
+
+We can apply these techniques to the similar problem of Vertex Cover. A Vertex Cover of a graph $G = (V,E)$ is a set $S \subseteq V$ so that each edge has at least one end vertex in $S$ . The vertex cover number $\tau_G$ of $G$ is the smallest vertex cover in $G$ . Our goal is to find $\tau_G$ given $G$ .
+\\
+
+If we let $G$ be a bipartite graph. Then $\tau_G = v_G$ , so we ca use the matching algorithm to compute $\tau_G$ as well.
+
+The proof that $\tau_G = v_G$ for bipartite graphs:
+
+\begin{itemize}
+    \item Let $M$ be a matching and $C$ be a vertex cover of $G$ . At least one end-vertex of every edge in $M$ belongs to $C$ , so $|M| \leq |C|$ , as the vertex cover will cover all edges, but $M$ may not be a maximum matching.
+    \item Let $M^*$ be a maximum matching. We construct a vertex cover $C^*$ with $|M^*| = |C^*|$ so $C^*$ has minimum size.
+    \item As $M^*$ is of maximum size, the algorithm produces a forest $F$ with alternating trees.
+    \item Let $M_1$ be the set of edges of $M$ in $F$ . Let $M_2 = M \backslash M_1$ 
+    \item We let $C^*$ consist of all blue-end vertices in $M_1$ and all red-end vertices in $M_2$ 
+    \item Then, $|C^*| = |M_1| + |M_2| = |M^*|$ . $C^*$ is a vertex cover. If it were not, then there is an edge $vw$ where neither endpoints is in $C^*$ . This implies $v$ is in $F$ , but $w$ is not, but then the algorithm should have discovered it.
+    \item Hence, $|C^*|$ is a vertex cover and $\tau_G = v_G$ 
+\end{itemize}
+
+\end{document}
+

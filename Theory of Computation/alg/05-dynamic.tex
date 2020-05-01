@@ -1,0 +1,128 @@
+\documentclass[../alg.tex]{subfiles}
+
+\begin{document}
+
+\subsection{Rod Cutting Problem}
+
+How can we determine the best way to cut a rod so as to maximise profit from its smaller parts, given that we only sell in discrete sizes of known price.
+
+The naive solution is to brute force, but integer partitioning grows exponentially. A better way is to use dynamic programming.
+
+\begin{center}
+    
+    Generally, for all $n \geq 1$:
+    \begin{math}
+
+        r_n = max\{ p_i + r_{n-i} | 1 \leq i \leq n \}
+
+    \end{math}
+    where $r$ is revenue and $p_i$ is price for length $i$ .
+
+\end{center}
+
+To solve the original problem of size $n$ , we solve independent smaller problems of the same type.
+\\
+
+\textit{This approach is known as optimal substructure, the process of incorporating optimal solutions to subproblems to find optimal solutions to the problem.}
+\\
+
+A naive recursion method is still exponential time. We can use memoisation to save previous solutions to subproblems which will run in polynomial time.
+
+\textit{This is because we use overlapping subproblems, so multiple subproblems can be solved quickly if they are really the same.}
+\\
+
+There are two ways to implement dynamic programming:
+
+\begin{itemize}
+    \item \textbf{Top-Down} -- The natural way, check if it has already solved the subproblem. If not, compute normally.
+    \item \textbf{Bottom-Up} -- Sort subproblems by size and solve smallest to highest so that when we encounter a subproblem, all pre-requisites have already been solved.
+\end{itemize}
+
+\textit{Both approaches have same running time $\Theta(n^2)$ }
+
+\subsection{Matrix Chain Multiplication}
+    
+Matrix Multiplication is associative. \textit{i.e. $A_1A_2A_3 = A_1(A_2A_3) = (A_1A_2)A_3$ }
+
+Given a sequence of matrices $<A_1, ..., A_n>$  matrices with a defined product, how should we place parentheses so as to minimise the number of operations?
+
+\textit{Note, we are not computing the product directly.}
+\\
+
+Like with rod-cutting, the number of ways exponentially grows, making brute force inefficient.
+
+We will use dynamic programming by following these steps:
+
+\begin{itemize}
+    \item Characterise the structure of an optimal solution
+    \item Recursively define the value of an optimal solution.
+    \item Compute the value of an optimal solution
+    \item Construct the optimal solution from computed information.
+\end{itemize}
+\\
+
+Denote $A_{i,j} = A_i,A_{i+1},...,A_j$ for $i \leq j$ .
+
+To parenthesise $A_{i,j}$ we must split between $A_k$ and $A_{k+1}$ for some $i \leq k \leq j$ . Hence, the optimal substructure is that, if we split between $A_k$ and $A_{k+1}$ then both $A_{1..k}$ and $A_{k+1..j}$ must be optimal.
+\\
+
+Let $m[i,j]$ be the minimum number of multiplications required to compute $A_i..j$ . Our could is to compute $m[1,n]$ 
+
+We have:
+
+\begin{center}
+    \begin{math}
+        m[i,j] = min\{ m[i,k] + m[k+1, j] + p_{i-1}p_kp_j | i \leq k \leq j \}
+
+        m[i,i] = 0 \text{ for all } i
+    \end{math}
+
+    Where $p_{i-1} \times p_i$ is the dimensions of matrix $A_i$ 
+\end{center}
+
+We then use bottom up approach to compute optimal costs. We work up from our base case and keep track of both where we place the parentheses and how many multiplications occur.
+
+\subsection{Longest Common Subsequence}
+
+We wish to find the length of the longest common subsequence of two strings.
+
+Given sequences $X = <x_1, ..., x_m>$ and $Z = <z_1, ..., z_k>$ $Z$ is a subsequence of $X$ if $z_1 = x_{i_1}, ..., z_k = x_{i_k}$ for some $i_1 < i_2 < ... < i_k$ . 
+
+\textit{So, not necessarily consecutive elements!}
+
+A common subsequence of $X$ and $Y$ is simply a subsequence of both $X$ and $Y$ . The longest common subsequence problem is, given two sequences, find the longest common subsequence (LCS).
+\\
+
+The Optimal Substructure is as follows:
+
+\begin{itemize}
+    \item Let $Z = <z_1, .., z_k>$ be an LCS of $X = <x_1, ..., x_m>$ and $Y = <y_1, ..., y_n>$ 
+    \item If $x_m = y_n$ , then $z_k = x_m = y_n$ and $Z[1..k-1]$ is an LCS of $X[1..m-1]$ and $Y[1..n-1]$ 
+    \item If $x_m \neq y_n$ , then $z_k \neq x_m$ implies that $Z$ is an LCS of $X[1..m-1]$ and $Y$ 
+    \item If $x_m \neq y_n$ , then $z_k \neq y_n$ implies that $Z$ is an LCS of $X$ and $Y[1..n-1]$ 
+\end{itemize}
+
+\textit{So, we always examine last element in a sequence. If they match, the rest of $Z$ must be LCS of $X$ and $Y$ . Else, recurse into same of one sequence, and rest of another.}
+\\
+
+Let $c[i,j]$ be length of LCS of $X[1..i]$ and $Y[1..j]$ .
+
+\begin{center}
+    \begin{math}
+
+        c[i,j] = \begin{cases}
+            0, &\text{ if } i=0 \text{ or  } j = 0\\
+            c[i-1, j-1] + 1, & \text{ if } i,j > 0 \text{ and } x_i = y_j\\
+            max\{ c[i, j-1], c[i-1, j] \}, & \text{ if } i,j >0 \text{ and } x_i \neq y_j
+        \end{cases}
+
+    \end{math}
+
+\end{center}
+\\
+
+We again use a bottom-up approach with inputs $X$ and $Y$ . WE store the values $c[0..m, 0..n]$ and also the table $b[1..m, 1..n]$ which points to the next pair $(i,j)$ to consider when reconstructing the LCS of $X$ and $Y$ 
+
+\textit{Think directional arrows in bioinformatics}
+
+\end{document}
