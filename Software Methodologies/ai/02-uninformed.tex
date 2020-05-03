@@ -1,0 +1,35 @@
+\documentclass[../ai.tex]{subfiles}
+
+\begin{document}
+    
+\textit{All following documents assume the following:}
+
+\begin{itemize}
+    \item Branching factor $b$ is bounded
+    \item There exists $d$ , the depth of the shallowest goal node
+    \item There exists $m$ , the maximum length of a path from the root in the search tree.
+    \item Both $d$ and $m$ could be infinite.
+\end{itemize}
+\\
+
+An uninformed (or blind) search is one where agents have no additional information beyond the definition of the search problem. An example of this is BFS. Given the fringe of the search tree, every node on the fringe is expanded each iteration.
+
+BFS however, has quite poor performance. If we assume each state has $b$ successors (assume worst case). This gives us, at depth $d$ , the number of nodes generated as $\Omega(b^d)$ 
+
+Thus, both time and space complexity is exponential. It is also complete, but not necessarily optimal.
+\\
+
+Another example is DFS which, in each iteration, expands the node of greatest depth in the fringe.
+
+DFS is not complete as, if the state space contains cycles or is infinite, has the potential to get stuck in a loop forever and won't find a goal state. It is also still exponential time complexity.
+
+However, the space complexity is $O(bm)$ as once we back up from a node, we can remove it and all its ancestors from memory. So, we only need to  store those on the path.
+\\
+
+A way of getting the benefits of both methods is to use Iterative Deepening. This is simply undertaking DFS but cutting off at depth $T$ . If a goal is found, return it, else increment $T$ and repeat.
+
+This keeps a linear amount of nodes in memory, but must recompute paths of length $k$ to get paths of $k+1$ .
+
+This makes it complete (but again, not necessarily optimal) with space complexity $O(bd)$ , but we must generate more nodes than BFS (wasted computation.)
+
+\end{document}

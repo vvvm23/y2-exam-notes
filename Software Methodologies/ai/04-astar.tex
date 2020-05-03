@@ -1,0 +1,108 @@
+\documentclass[../ai.tex]{subfiles}
+
+\begin{document}
+
+The most widely known example of best-first search is A* search. It's evaluation function is $f(z) = g(z) + h(z)$ where:
+
+\begin{itemize}
+    \item $h(z)$ is the heuristic cost of getting from $z$ to the goal
+    \item $g(z)$ is the path-cost to reach $z$ from the root
+\end{itemize}
+
+\textit{In other words, the estimated cost of the optimal solution given that we must go through $z$ }
+\\
+
+An A* Search will terminate if the goal node $z$ is on the fringe and $f(z)$ is minimal amongst all other fringe nodes (or when there is no nodes to expand)
+\\
+
+An A* search is complete if:
+
+\begin{itemize}
+    \item There is a fixed $\epsilon > 0$ such that all steps costs exceed $\epsilon$ 
+    \item The branching factor is bound by $b$ .
+\end{itemize}
+\vspace{0.5cm}
+
+The proof of this is as follows:
+
+\begin{center}
+    Suppose for a contradiction, there is a goal-node but A* doesn't find it. There are two cases:
+    \\
+
+    \textbf{Case A -- A* Search does not terminate having found a goal node.}
+
+    \textit{As in, terminates for some other reason}
+
+    \begin{itemize}
+        \item So, the search tree is finite and every node has been expanded.
+        \item So, at some point the goal node must have been on the fringe with minimal $f$ -value.
+        \item Contradiction.
+    \end{itemize}
+    \vspace{0.5cm}
+
+    \textbf{Case B -- A* Search does not terminate.}
+
+    \begin{itemize}
+        \item This means that every goal node is either never placed on the fringe or is placed there and remains forever as it is never minimal.
+        \item Suppose there is a non-goal node $z$ that is not expanded and where the path from $z$ to the root does not contain a goal node. (as we would have already terminated.)
+        \item As the parent of $z$ is expanded, $z$  must appear on the fringe at some point.
+        \item So, as $z$ is not expanded and on the fringe, it must not have minimal $f$ -value from amongst the fringe nodes forever.
+        \item However, in a finite, there are finitely many nodes with $f$ -value at most $f(z)$ and so must be expanded at some point.
+        \item Now, let $w$ be a goal-node so that the path from the root to $w$ contains only non-goal nodes.
+        \item From before, every node on this path is expanded, so $w$ must appear on the fringe at some point.
+        \item Again, finitely many nodes with $f$ -value at most $f(w)$ so at some point $w$ becomes minimal and A* search terminates.
+        \item Contradiction
+    \end{itemize}
+    \vspace{0.5cm}
+    
+    As both cases contradict, that means our first assumption is incorrect. Hence, A* search is complete assuming that $b$ is bounded and there is a lower bound $epsilon$ to step cost.
+
+\end{center}
+
+\textit{The intuition behind this proof is that, even if the heuristic fails to quickly find the goal, it will eventually in a brute-force-esque fashion.}
+\\
+
+A heuristic is admissible if the value of $h(z)$ of any node $z$ is always at most the minimum cost path from $z$ to the goal node.
+
+\textit{In other words, the estimate is at most the real value. Crow-flies distance is an example of an admissible heuristic.}
+\\
+
+If $h$  is admissible and A* search terminates through finding the goal node, then we always obtain an optimal solution.
+
+The proof of this is as follows:
+\vspace{0.5cm}
+
+\begin{center}
+\begin{itemize}
+    \item Suppose that A* terminates because a goal-node $w$ has appeared with minimal $f$ -cost but where $f(w)$ is strictly greater than some cost $c*$ of an optimal path.
+
+    \item Specifically, at termination every other fringe node $z$ is such that $f(z) \geq f(w)$ 
+
+    \item Additionally at termination, at least one node on the fringe $z*$ is on an optimal path to some optimal goal node $w*$ . So, $f(w*) = g(w*) + h(w*) = g(w*) = c*$ .
+    
+    \item The optimal path from the root to $w*$ is the path from the root to $z*$ followed by $z*$ to $w*$ of cost $g(z*) $ and $c$ respectively. So, $c* = g(z*) + c$ .
+
+    \item As $h(z*) \leq c$ , then $f(z*) = g(z*) + h(z*) \leq g(z*) + c = c*$ 
+        
+    \item But at termination, $w$ was the node with minimal $f$ -cost on the fringe with $f(w) > c*$ and $z*$ was on the fringe with $f(z*) \leq c*$ 
+
+    \item Hence, if A* search terminates through finding the goal node then we always obtain an optimal solution if $h$ is admissible.
+
+\end{itemize}
+
+So A* search can be complete and optimal but can also be forced to be optimally efficient.
+\\
+
+\end{center}
+\vspace{0.5cm}
+
+A heuristic function $h$ is considered to be a consistent heuristic if for every node $z$ in the search tree and for every child node $z'$ for $z$  the step cost $c$ from $z$ to $z'$ is such that $h(z) \leq c + h(z')$ .
+
+If $h$ is consistent, there is a fixed $\epsilon > 0$ such that all costs exceed $\epsilon$ and the branching factor is bounded by $b$ then A* Search is optimally efficient.
+\\
+
+Despite all this, there is still a potential for an exponential sized fringe, meaning that A* search is memory demanding.  Unless the error in $h$ is such that $|h(z) - h(z*)| = O(log(h*(z)))$ then there can be an exponential number of nodes available for expansion.
+
+To alleviate some of these memory issues, we can combine iterative deepening with A* search as IDA*.
+
+\end{document}

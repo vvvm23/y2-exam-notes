@@ -1,0 +1,88 @@
+\documentclass[../ai.tex]{subfiles}
+
+\begin{document}
+
+\subsection{Local Search Problems}
+
+In some search problems the path to the goal state is unimportant. We only care about the goal state itself. Examples of this include the 8-Queens problem as all we want is the final chess board configuration.
+
+In these cases, local search algorithms might be better than global path-based search methods. Local searches, using only the current state, move to successors until a goal state is found.
+
+Local searches often have two advantages over global searches. They use very little memory as they only have to remember the current state and often give reasonable solutions in problems with a very large state space.
+
+Local search algorithms are useful for solving optimisation problems where we must find the optimal state based on some objective function.
+\\
+
+A local state-based search problem consists of:
+
+\begin{itemize}
+    \item A state space and associated transitions
+    \item Objective function $f$ 
+\end{itemize}
+\\    
+
+\subsection{Hill Climbing}
+
+One example of such an algorithm is the hill-climbing search. In this, we iteratively move to a better successor state, one with a higher $f$ value, calculated from the objective function.
+
+Hill climbing can get stuck in local maxima/minima as it can only look at its immediate neighbours.
+
+In the 8-Queens problem, the objective function could be the number of mutually attacking queens. In this problem, hill-climbing is not optimal as a result of the local maxima/minima problem.
+\\
+
+\subsection{Simulated Annealing}
+
+A solution to the local maxima/minima problem is to use simulated annealing.
+
+The algorithm contains a schedule that details the "temperature" at any given time. We iteratively perform a local search until the temperature drops to 0, at which the algorithm will halt.
+
+A potentially successors state is chosen at random. Assuming the current state is $X$ and the random state is $Y$ then:
+
+\begin{center}
+    If $\Delta E = f(Y) - f(X) \geq 0$ then $Y$ becomes our current state
+
+    If $\Delta E < 0$ then $Y$ becomes our successor state with probability $e^{\Delta E / T} = 1 / e^{| \Delta E | / T}$ 
+\end{center}
+
+The lower the $T$ and the lower the $\Delta E$ , the less likely $Y$ is chosen. However, it is not impossible to pick a less likely successor. This is done so we can escape local maxima/minima
+
+\subsection{Genetic Algorithms}
+
+Another algorithm to solve this class of problem is Genetic Algorithms
+
+A genetic algorithm starts with a randomly generated population with each individual in it encoding a particular solution to the problem.
+
+\textit{In 8-Queens, this could be a string of digits of length 8, giving the row it resides in}
+\\
+
+We iteratively generate a new population from the old. Each iteration consists of the following procedure:
+
+\begin{itemize}
+    \item Randomly select two individuals $X$ and $Y$ so that fitter individuals are more likely to be picked. (weight distribution)
+
+    \item Reproduce, creating child $Z$ through some reproduction method with a small probability to mutate $Z$ through some mutation function.
+
+    \item Repeat population size times, entirely replacing the old population with the new one.
+\end{itemize}
+\\
+
+Reproduction can be achieved via crossover:
+
+\begin{itemize}
+    \item A random bit position $i$  is chosen so that $X$ and $Y$ can be partitioned into a suffix and prefix.
+    \item Two children are produced, $Y_{i:} + X_{:i}$ and $X_{i:} + Y_{:i}$ 
+    \item The fitter of the two children is added to the population as $Z$ 
+\end{itemize}
+\\
+\vspace{0.5cm}
+
+We can apply genetic algorithm to TSP:
+
+\begin{itemize}
+    \item Individuals consists of complete tours with their fitness being the tour length.
+    \item We have to minimise, so $f_\text{min}(X) = \mathrm{T} - f(x)$ 
+    \item When we attempt crossover, sometimes invalid tours are produced. We require some mechanism to fix these tours.
+    \item For mutation, we swap two cities in the tour.
+\end{itemize}
+
+\end{document}

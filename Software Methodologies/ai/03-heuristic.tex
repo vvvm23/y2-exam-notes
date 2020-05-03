@@ -1,0 +1,36 @@
+\documentclass[../ai.tex]{subfiles}
+
+\begin{document}
+
+Uninformed search can be very computationally expensive. We can use heuristic search strategies which utilise additional information relevant to the problem to try and allow the agent to make better choices.
+\\
+
+One heuristic strategy is best-first search. This is simply to expand a fringe node $z$ with minimal value according to some state evaluation function $f(z)$ .
+
+The behaviour of this function $f$ determines the type of best-first search.
+
+\textit{We can think of a BFS as a best-first search with $f(z) = z_\text{depth}$ for example.}
+\\
+
+Working in tandem with $f$ is the termination condition.
+\\
+
+The function $f$ is usually dependent upon an additional heuristic function $h$ where $h(z) \geq 0$ for all $z$ in the search tree. This is the estimated cost from $z$ to the goal node.
+
+The heuristic function must have the following properties:
+
+\begin{itemize}
+    \item $h(z) = 0$ if $z$ is a goal state.
+    \item $h(z)$ only depends on the state $z$ 
+\end{itemize}
+
+The usefulness of a heuristic function is dependent on how good of an estimate it is and the time taken to compute it.
+
+\textit{One good example for solving a TSP type problem is the 'crow flies' distance as  the heuristic function. This is because the real distance will never be less than the direct distance.}
+\\
+
+If $f(z) = h(z)$ we say it is a greedy best-first search as it always makes the locally optimal move. It will also terminate as soon as a goal appears on the fringe. \textit{(as $h(z) = 0 = f(z)$ )}
+
+Therefore, this may not be optimal and perhaps not even complete. In the worst case the complexity is still exponential. Hence, the success of a greedy best-first search depends entirely on the quality of the heuristic function.
+
+\end{document}

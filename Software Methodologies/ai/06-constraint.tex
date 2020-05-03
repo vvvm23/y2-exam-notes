@@ -1,0 +1,86 @@
+\documentclass[../ai.tex]{subfiles}
+
+\begin{document}
+
+Constraint Satisfaction Problems (CSPs) are structured global path-based search problems:
+
+\begin{itemize}
+    \item There are variables $X_1, ..., X_n$ 
+    \item Each variable $X_i$ has a non-empty domain of values $D_i$ 
+    \item There are constraints $C_1, ..., C_m$ 
+        \begin{itemize}
+            \item Each constraint $C_j$ involves some tuple of variables $(X_{i_1}, ..., X_{i_k})$ called the scope
+            \item Specifies the allowed combinations of values for scope variables
+            \item Usually given as a relation detailing allowable simultaneous values
+        \end{itemize}
+    \item An assignment associates a value from $D_i$ to variable $X_i$ for some or all of the variables.
+        \begin{itemize}
+            \item An assignment is called complete if all variables are assigned a value
+            \item An assignment is consistent if no constraint is violated.
+        \end{itemize}
+    \item A solution is complete and consistent assignment
+    \item Some CSPs require a solution to be maximal or minimal based on some objective function.
+\end{itemize}
+\\
+
+An example of a CSP is the Graph $n$ -colouring problem and satisfiability.
+
+\textit{For 3-Colouring, the domain is the colours. Constraints are all pairs of distinct colours joint by an edge.}
+
+\textit{For Satisfiability, the domain is simply true and false. The constraints $C_j$ are the truth assignments on the propositional variables making $\Phi_j$ true in the set of clauses. }
+\\
+\vspace{0.5cm}
+
+We can realise CSPs as global path-based search problems:
+
+\begin{itemize}
+    \item A state is an assignment
+    \item The initial state consists of the empty assignment
+    \item A state $x'$ is a successor to $x$ if $x$ is consistent and $x'$ is an extension of $x$ by assigning a value to a previously unassigned value.
+    \item A goal state is a complete and consistent assignment
+    \item A step cost of 1 for all transitions.
+\end{itemize}
+\\
+
+We can also realise CSPs as a local state-based problem by replacing a goal state with an objective function $f$ such that $f(x) = 1$ if $x$ is complete and consistent. Otherwise, $f(x)=0$ .
+\\
+
+A crucial observation is that CSPs have commutativity. It does not matter which order we choose to assign values to variables.
+
+So, in all CSP search algorithms, we expand a node in a search tree by only considering possible assignments for only a single variable.
+
+We must choose before the order in which we choose to assign. This order can lead to improved performance and will yield different sub trees. Therefore, instead of discussing 'the' search tree, will we instead discuss 'a' subtree.
+\\
+
+In reality, CSPs may have some other notable properties:
+
+\begin{itemize}
+    \item \textbf{Infinite Domain} -- For example, domains over natural numbers.
+    \item \textbf{Infinite Constraints} -- As a result of an infinite domain, the constraints may also be infinite.
+    \item \textbf{Preference Constraints} -- Some solutions may be preferred compared to others, but both are legal.
+\end{itemize}
+\\
+
+One algorithm to solve CSPs is Back-Tracking Search:
+
+\begin{itemize}
+    \item We assign values to one variable at a time
+    \item All search tree nodes are labelled with the assignment of some values to some variables
+    \item The children of any node correspond to the assignments of different values to the same variable.
+    \item A fringe node which has an inconsistent assignment will have no children.
+    \item Explore this tree using DFS.
+\end{itemize}
+
+\textit{Using DFS means our trees will differ depending on the order in which we choose to assign variables and the ordering which we assign these values.}
+\\
+
+Alternatively, we can use heuristics to choose variables and values rather than rely on ordering:
+
+\begin{itemize}
+    \item \textbf{Minimum Remaining Values (MRV Heuristic)} -- Maintains for every unassigned $X$ the number of legitimate values. The next variable chosen has the smallest set of allowed values.
+    \item \textbf{Least Constraining Value (LCV Heuristic)} -- Given an already chosen variable $X$, maintain number of ruled out values for all other variables. Values for $X$ are ordered in increasing numbers of ruled out variables. The intuition to allow for maximum flexibility by picking the value that results in least amount of ruled out values in other variables.
+\end{itemize}
+
+The first heuristic chooses the next variable to try. The second chooses which value to try assigning first.
+
+\end{document}

@@ -1,0 +1,45 @@
+\documentclass[../ai.tex]{subfiles}
+
+\begin{document}
+    
+A state space is a set of states that can be infinite. In a search problem, we search a state space for a suitable state.
+
+\begin{itemize}
+    \item \textbf{Global Search} -- Solutions are paths through the state space
+    \item \textbf{Local Search} -- Solutions are the states themselves.
+\end{itemize}
+
+To describe a state space we must first define a state fully as an appropriate data structure. We then describe the rules for transitions between states, so states are only built when we need them.
+
+In order to solve a search problem, we must also define the initial state, the goal states and some notion of cost so we can measure the quality of a solution.
+\\
+
+A more formal definition is as follows:
+
+\begin{center}
+    
+    Every search problem has six essential components:
+
+    \begin{itemize}
+        \item An initial state
+        \item A description of actions available to the agent via a transition function $\Phi$ defined for each state $x$ and action $\alpha$ that details the set of states reachable from $x$ via action $\alpha$ .
+        \item A goal test function that determines if the state is a goal state.
+        \item A non-negative step cost function $\sigma$ which details the cost $\sigma(x,\alpha,y)$ from going from state $x$ to $y$ by action $\alpha$ .
+        \item A notion of a solution
+        \item A notion of an optimal solution, according to some criteria.
+    \end{itemize}
+\end{center}
+\\
+
+When carrying out a search strategy, we generate (or reveal) the search tree.
+
+Initially, the search tree consists of only the root node which represents the initial state of the search problem.
+
+A search tree is expanded in order to create new nodes such that the children of the expanded node are successor states of the state we expanded.
+
+The unexpanded leaves form the fringe.
+\\
+
+\textit{A search tree can also be seen as an unrolling of the state space. In other words, for every walk in the state space from the initial state there is a corresponding path from the root in the search tree.}
+
+\end{document}
