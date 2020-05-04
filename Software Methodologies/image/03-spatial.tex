@@ -1,0 +1,169 @@
+\documentclass[../image.tex]{subfiles}
+
+\begin{document}
+
+\subsection{Image Noise}
+
+No image is a perfect representation of the original 2D signal. They are limited by sampling and may contain noise.
+
+Noise removal is important so not to affect future visualisation, processing and analysis.
+
+Image noise can come from:
+
+\begin{itemize}
+    \item \textbf{Capture} -- Noise in electronics, variations in the environment, lens limitations, etc.
+    \item \textbf{Sampling} -- Limitation in sampling and quantisation
+    \item \textbf{Processing} -- Numerical precision, overflow and approximations
+    \item \textbf{Compression} -- Lossy Compression which removes information
+    \item \textbf{Lighting} -- Variations in time of day, extreme lighting and shadows as false features.
+    \item \textbf{Occlusion} -- Objects obscured by other objects.
+\end{itemize}
+\\
+\vspace{0.5cm}
+
+Types of the theoretical noise:
+
+\begin{itemize}
+    \item \textbf{Salt and Pepper} -- Random white or black pixels in the image in order to simulate dead pixels.
+    \item \textbf{Gaussian Noise} -- Small random variations around the true value that follows a gaussian distribution. Covers most types of random noise encountered.
+\end{itemize}
+
+\subsection{Spatial Filtering}
+
+One method of removing noise is to use spatial filtering. This is iterating through all pixels in the image and updating it by considering its local neighbourhood. 
+
+This can either be linear (all in neighbourhood have same weighting) or non-linear (based off some decision algorithm) 
+\\
+\vspace{0.5cm}
+
+\textbf{Mean Filter} - Replace pixel with the average value of its neighbourhood.
+
+This eliminates sudden jumps in intensity. 
+
+Against Gaussian Noise there is a loss in high frequency details (causing edge blurring.)
+
+Against Salt and Pepper noise, large deviations have a significant influence on the mean value, so there is little effect.
+
+It is better suited as a basic smoothing filter. The larger the search window, the greater the smoothing effect.
+\\
+
+\textbf{Minimum/Maximum Filter} -- Take the minimum/maximum of the neighbourhood.
+\\
+
+\textbf{Median Filter} -- Replace by the median of the neighbourhood.
+
+Eliminates effect of large intensity jumps, completely removing salt and pepper noise. Against Gaussian noise, it can remove with mild degradation.
+\\
+
+\textbf{Conservative Smoothing} -- Compares with other neighbourhood values. Replace with max if more than max, replace with min if smaller than min.
+
+So, a pixel value only changes if outside a range, and then only changed by the minimum amount.
+
+Eliminates sudden intensity jumps, but oes not entirely remove salt and pepper noise if there is multiple in same neighbourhood.
+
+Against Gaussian Noise, maximum preservation of detail but little noise suppression.
+
+\subsection{Convolution}
+
+Another form of spatial filtering uses convolution. This is a mask which a matrix of coefficients defining a linear filter for processing an image. The mask is also called filter, kernel, template or window.
+
+The size of the mask is that of the local neighbourhood of the filter. The filter is linear as it operates on the image linearly, component-wise multiplication and summation.
+
+The spatial linear filtering of a matrix $A$ by the mask $M$ is called the convolution of $A$ by $M$ 
+\\
+
+For each pixel of the input image $I_\text{input}$ :
+
+\begin{itemize}
+    \item Place the centre of the mask $M$ over the pixel $I_\text{input}(i,j)$ 
+    \item Do the component wise multiplication of corresponding elements of the mask and the neighbourhood of $I_\text{input}(i,j)$ 
+    \item Add the products to compute the response at $I_\text{input}(i,j)$ 
+\end{itemize}
+
+The matrix should be updated only after all responses has been computed, otherwise our results will be partly based of the old and new image.
+
+If the mask has odd dimensions, it has an obvious center. If it is even we have to decide which element is the centre.
+
+For a max of size $(2N + 1) \times (2N + 1)$ the convolution can be written as:
+
+\begin{center}
+    $I_\text{output}(i,j) = \sum^{N}_{k=-N} \sum^{N}_{l=-N} I_\text{input}(i+k, j+l)m_{k,l} $ 
+\end{center}
+\\
+
+We can use Gaussian functions to create Gaussian filters for convolution. The value of $p'$ in the mask is given by the Gaussian function of the distance from the center of the mask to $p'$ .
+
+\begin{center}
+
+$d = | p - p' |$ 
+
+$g(x) = \frac{1}{\sigma \sqrt{2 \pi}} e^{- \frac{x^2}{2 \sigma ^2} } $ 
+
+$p' = g(d)$ 
+
+\end{center}
+
+Where $\sigma$ is the standard deviation, a parameter controlling the width of the Gaussian bell curve.
+
+Therefore, a Gaussian filter gives more weight to values near the centre of the mask and gradually reduces weight as we move away from the centre.
+\\
+
+As the elements of the Gaussian mask come straight from the values of the Gaussian function, it allows for a description of Gaussian filtering without explicit reference to masks:
+
+\begin{center}
+    $I_p^\text{output} = \frac{\Sigma_{p' \in \Omega} g(|p-p'|)I_{p'}}{\Sigma_{p' \in \Omega} g(|p - p'|)} $ 
+\end{center}
+
+The new intensity of the pixel $p$ is the weighted sum of intensities of the pixels $p'$ in a neighbourhood $\Omega$ . The denominator normalises the expression, making the sum of the weights 1.
+\\
+
+Gaussian filters are often used in practise to remove noise. They often remove fine features though, resulting in the smoothing of an image. Increasing the standard deviation results in an increased smoothing effect.
+
+\subsection{Non-local Means}
+
+Gaussian is good at noise removal, but blurs the image. Instead, we will use non-local means algorithm to denoise an image.
+
+The main idea is, in a larger neighbourhood (could be entire image) search for neighbourhoods similar to the one of the pixel current being processed. We replace the current pixel with a weighted mean of pixels with similar neighbourhoods. Weights are computed according to similarity between neighbourhoods.
+
+\begin{center}
+    $I_\text{output}(i,j) = \frac{\Sigma W_\text{neighbourhood}(k,l)I_\text{input}(k,l)}{\Sigma W_\text{neighbourhood}(k,l)} $ 
+\end{center}
+
+A commonly used similarity measure is obtained by applying an exponential function of the squared distance between neighbourhoods (seen as $N^2$ vectors)
+
+This averaging process spans pixels that are not local to the target pixel, hence the name.
+\\
+
+Non-Local Means is close to state of the art noise removal. It performs well on Gaussian Noise but is slow, however several optimisations exists and can easily be parallelised.
+
+\subsection{Laplacian Mask}
+
+In continuous mathematics, the Laplacian of a function $f(x,y)$ is defined as a sum of partial derivatives. In image processing, the Laplacian is commonly implemented via either of two common discrete convolutional filters. The sum of the masks must add to 0.
+\\
+
+Consider a 1-dimensional image with three pixels with intensities $[a, b, c]$ .
+
+When we discretise a continuous function, derivatives become differences and the second order derivatives become second order differences (differences of differences)
+
+\begin{center}
+$[b-a, c-b]$ 
+\end{center}
+
+The difference of differences is:
+
+\begin{center}
+    $(c-b)-(b-a) = c -2b + a$ 
+\end{center}
+
+which is the response at the central pixel $b$ to the convolution of the image.
+
+So, the mask would be $[1, -2, 1]$ 
+\\
+
+The response to the Laplacian filter is zero at areas of the images where the intensity changes smoothly, as intensity differences are equal and second order differences are zero.
+
+When the variation is not smooth, the response is non-zero. The less smooth the higher the absolute value of the response. The highest absolute responses are found at edges. So Laplacian filter operations can highlight edges in an image. We can use this to sharpen an image by subtracting the filtered version from the original.
+
+Laplacian filters are sensitive to noise, both edges and noise are amplified. The solution is to first smooth the image with a Gaussian Filter. This combination is known as Laplacian of Gaussian (LoG)
+
+\end{document}
