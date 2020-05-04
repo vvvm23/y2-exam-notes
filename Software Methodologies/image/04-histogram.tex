@@ -1,0 +1,60 @@
+\documentclass[../image.tex]{subfiles}
+
+\begin{document}
+
+A histogram function (or distribution) of image is a function defined over all possible intensity levels. For each intensity level, its value is equal to the number of pixels with that intensity.
+
+The histogram gives the statistical distribution of image pixel intensity values from which we can infer the image's dynamic range and how well the full range is utilised.
+
+Histograms are functions describing global information extracted from the image. We can use this information to perform global image transforms.
+\\
+\vspace{0.5cm}
+    
+\textbf{Contrast Stretch} -- Stretches the pixel range over a large dynamic range, also known as normalisation.
+
+Uses for intensity values:
+
+\begin{itemize}
+    \item $a$ -- Upper pixel quantisation limit
+    \item $b$ -- Lower pixel quantisation limit
+    \item $c$ -- Maximum pixel value present
+    \item $d$ -- Minimum pixel value present
+\end{itemize}
+
+\begin{center}
+    $I_\text{output}(i,j) = (I_\text{input}(i,j) -c)( \frac{a-b}{c-d} +a )$ 
+\end{center}
+
+However, it is possible that $c \approx a$ and $d \approx b$ due to outliers (salt and pepper). This is results in contrast stretch having no effect on the image.
+
+Instead of select the limits, we select at fixed percentile points of the histogram distribution.
+
+Another method is to use is to find the most frequent image value and select the cut off as a percentage of this peak.
+
+Map values above or below the cutoff points to the cutoff
+\\
+\vspace{0.5cm}
+
+\textbf{Histogram Equalisation} -- Modifying an image via intensity transformation so that the output image has a uniform histogram distribution.
+
+In a ideally equalised image all intensity values would appear the same number of times. The cumulative function across the histogram distribution would be linear.
+
+Histogram equalisation corresponds to the following intensity transform:
+
+\begin{center}
+    $t(i) = (L / N) \cdot C_\text{input}(i)$ 
+\end{center}
+
+Where $N$ is number of pixels in the image, $L$ is the maximum dynamic range, $C(i)$ is the cumulative total of pixels up until intensity $i$ .
+
+Histogram equalisation is essentially a point intensity transform and thus can be encoded in a look up table. The output image is not necessarily full equalized and there may be unused intensity levels in the histogram due to discretisation introducing discontinuities.
+
+\textit{Full equalisation is possible by swapping pixels between intensity levels.}
+
+Histogram equalisation is fully automated and so is highly input dependant. In some images the global contrast can become over or under exposed. A solution is to generate the histogram from a well balanced sub set of the image rather than the whole image.
+
+Furthermore, we can expand this to localised histogram equalisation. Split the image into discrete, non-overlapping neighbourhoods and perform equalisation in each neighbourhood in isolation.
+
+Another technique is adaptive, perform equalisation at each pixel using overlapping local neighbourhoods. This may result in tiling artifacts it the neighbourhood is too small.
+
+\end{document}
