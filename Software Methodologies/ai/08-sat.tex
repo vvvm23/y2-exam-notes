@@ -1,0 +1,43 @@
+\documentclass[../ai.tex]{subfiles}
+
+\begin{document}
+
+Satisfiability is finding whether there exists at least one satisfying model. 
+
+Satisfiability is the dual of validity. $\psi$ is satisfiable if and only if $\neg \psi$ is not valid.
+
+\textit{ Additionally, $KB \models \Phi$ if and only if $KB \rightarrow \Phi$ is valid if and only if $\neg (KB \rightarrow \Phi) \equiv KB \wedge \neg \Phi$ is not satisfiable. }
+
+\textit{Satisfiability is important for other problems. Many other problems can be elegantly reduced to it.}
+\\
+
+The David-Putnam SAT-solving algorithm has a number of improvements over the previous algorithms.
+
+We're given $KB \wedge \neg \Phi$ and need to decide whether it is not satisfiable, hence, $KB \models \Phi$ .
+
+Suppose, we generate truth assignments as before:
+
+\begin{itemize}
+    \item If the partially built assignment already evaluates a clause $C$ to be true, we can delete $C$ and proceed.
+    \item If the partially built assignment already has some clause $C$ false, we can stop extending this assignment as it can never be true.
+\end{itemize}
+
+We can extend these observations to be heuristics:
+
+\begin{itemize}
+    \item \textbf{Pure Symbol} -- A symbol that always appears positively or negatively in every clause. We can set all instances of these to true (or false respectively)
+    \item \textbf{Unit Clause} -- A clause containing only one literal. We can immediately force this clause to be true, which in turn can make other clauses true.
+\end{itemize}
+
+We repeat these heuristics until we have no more unit clauses or pure symbols. Then, we continue as we did before.
+
+Applying these heuristics can reveal pure symbols or unit clauses that were not present previously. This is known as propagation.
+
+We can use this satisfiability solving algorithm in Wumpus World to find if $KB \models \Phi$ by testing if $KB \wedge \neg \Phi$ is not satisfiable. If it is not satisfiable, it follows that $KB \wedge \neg \Phi$ is never true and so $KB \models \Phi$ .
+\\
+
+\begin{center}
+    fin.
+\end{center}
+
+\end{document}

@@ -1,0 +1,38 @@
+\documentclass[../image.tex]{subfiles}
+
+\begin{document}
+
+Image processing is about processing visual images so that:
+
+\begin{itemize}
+    \item We can extract knowledge automatically
+    \item We can make it easier for humans to extract information
+    \item We can make it more visually appealing.
+\end{itemize}
+
+The focus of this course is the enhancement, restoration, representation and transformation of visual data to aid in interpretation by humans (or another system).
+
+\textit{This is opposed to Computer Vision, the automatic interpretation of images}
+\\
+
+An image is a multi-dimensional signal containing visual information. For example a 2D grid of 3 tuples index by $(x,y)$ could be a RGB image.
+
+The spatial resolution of an image is its dimensions.
+
+The colour resolution is the dimension of the colour-space (The number of possible colour values)
+
+The temporal resolution is the number of images captured in a given time period. (Frames per second in a video)
+\\
+
+In order to convert a real world scene to an image it must be sampled and quantized through analogue to digital conversion. This process may result in some form of Aliasing and Artifacting.
+
+Noise may also be introduced. Image processing algorithms should be made to cope with noise.
+
+Less detail in all forms of resolution means less information, but also easier to process as there is less data.
+\\
+
+Colour quantization is achieved by recording the intensity and wavelength of light on the image sensors at a given position, discretising into a binary value and mapping to a specific pixel.
+
+Pixels (picture elements) can encode other things besides from colour, such as infra-red signals and similar.
+
+\end{document}

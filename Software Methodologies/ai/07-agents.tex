@@ -1,0 +1,139 @@
+\documentclass[../ai.tex]{subfiles}
+
+\begin{document}
+
+\subsection{Agents}
+
+An agent is some logical entity that can observe its environment using its sensors and can effect it using its actuators. 
+
+A knowledge based agent is structured around their knowledge base. A knowledge base is a collection of logical formula expressed in some language used to express assertions representing the agent's knowledge.
+
+Logical agents can query their knowledge base and infer new formulae from the knowledge by some system of inference.
+
+\subsection{Wumpus World}
+
+The working example I will use is Wumpus World:
+
+\begin{itemize}
+    \item Wumpus World is a cave system (rooms connected by passages)
+    \item In a room is the Wumpus that eats anyone who enters the room.
+    \item The Wumpus can be shot by an arrow, but the Agent only has one.
+    \item Some rooms contain bottomless pits that will trap anyone except the Wumpus
+    \item In one room there is a heap of gold that the Agent wishes to reach.
+\end{itemize}
+\\
+
+Environment:
+
+\begin{itemize}
+    \item $4 \times 4$ grid of rooms
+    \item Agent starts in (1,1) facing right
+    \item Locations of gold and Wumpus are chosen randomly (except start room)
+    \item All rooms can contain a pit with probability 0.2 (except start room)
+\end{itemize}
+\\
+
+Actuator:
+
+\begin{itemize}
+    \item The agent can move forward and turn. Moving forward has no effect when facing a wall.
+    \item The agent can grab objects in the same room as it.
+    \item The agent can fire an arrow in the direction it faces once.
+\end{itemize}
+\\
+
+Sensors:
+
+\begin{itemize}
+    \item In a room containing the Wumpus and adjacent rooms, the agent will perceive a stench.
+    \item In rooms adjacent to a room containing a pit the agent will perceive a breeze.
+    \item In a room containing gold the agent will perceive a glitter.
+    \item When the agent walks into a wall, they will perceive a bump.
+    \item When the Wumpus is killed, the agent will perceive a scream.
+\end{itemize}
+
+The percepts are given to the agent as a list of boolean variables.
+\\
+
+An agent's initial knowledge base (KB) contains the rules of the environment. One of those is that the agent knows room (1,1) is safe, as they are currently in it and not dead.
+
+The agent will use the percepts to determine which rooms are guaranteed to be safe and update the knowledge base accordingly.
+
+Sometimes, it cannot guarantee a room is safe based on the current knowledge base. Our agent is cautious and so will try another known safe room first, in order to get more information in hope we can infer new safe rooms.
+
+Inferring which rooms are safe is easy for humans, but difficult computationally.
+
+\subsection{Inference Algorithms}
+
+We use propositional logic to represent, in the agent's KB, what the agent knows. 
+
+If a formula $\Phi$ evaluates to true on an assignment $M$ then we write $M \models \Phi$ 
+
+An example in Wumpus World would look like:
+
+\begin{center}
+    $((X \wedge Y) \vee \neg Y) \iff Z$ 
+
+    Where $X:$ I have an arrow, $Y:$ I smell a stench, $Z$: I am safe.
+
+    Any legitimate model $M$  must be such that $M \models ((X \wedge Y) \vee \neg Y) \iff Z$ 
+
+    \textit{This rules out some combinations of $X, Y, Z$ }
+\end{center}
+\\
+
+The agent's KB holds the facts we know about Wumpus World. We can think of the KB as a conjunction of a set of formulae. We can do this as all formulae must hold for a model to be satisfying.
+
+We shall use logical inference in order to infer new facts from the old. Inference is related to entailment, the idea that one formula follows logically to another.
+
+\begin{center}
+We write $\Phi \models \psi$ to mean $\Phi$  entails $\psi$ .
+\end{center}
+\\
+
+We are interested in inference algorithms which derive new formulae such that only entailed formulae are inferred and so that any entailed formulae can be derived by the algorithm. (Sound and Complete)
+\\
+
+If $\Phi$ is derived from the KB by some algorithm $\alpha$ we write $KB \vdash_\alpha \Phi$ .
+
+\textit{The difference between $\models$  and $\vdash$ is subtle. The former is semantic and the other is algorithmic.}
+\\
+
+Suppose we wish to know whether there is definitely a pit in a certain room. To do so, we enumerate through the models of the KB and see whether the formula $P_{x,y}$ evaluates to true in all models (Conversly, false if there is definitely no pit.)
+
+If, when enumerating, we find cases where $M \models P_{x,y}$ and also $M \models \neg P_{x,y}$ , then we cannot infer anything about $P_{x,y}$  (Room at coordinates $(x,y)$  )
+\\
+
+The number of models that need to be examined however, can be very large- up to $2^n$ for $n$ propositional symbols. The space complexity is simply $O(n)$ as only one model needs to be held in memory at once. All known inference algorithms for propositional logic are exponential time complexity as deciding whether $\Phi$ entails KB is NP-Complete.
+
+\subsection{Resolution}
+
+We can use resolution to decide where $KB \models \Phi$ . First, convert to $\neg \Phi$ to conjunctive normal form and add resulting clauses to KB.
+
+Iteratively apply resolution rule to produce new clauses and add to the KB.
+
+Continue until either no new clauses can be added (KB does not entail $\Phi$ ) or the empty clause is yielded ( KB does entail $\Phi$  )
+\\
+
+We can brute force this, but it will have exponential time in the worst case.
+
+We can apply a search algorithm to find the empty clause:
+
+\begin{itemize}
+    \item A state is a set of clauses
+    \item Initial state is $KB \wedge \neg \Phi$ 
+    \item Two actions, resolve and factor
+    \item A state transition function $(\Sigma, \text{action}, \Sigma*)$ such that:
+        \begin{itemize}
+            \item 'resolve' -- apply resolution rule of inference once to $\Sigma$ 
+            \item 'factor' -- factor $\Sigma$ to obtain $\Sigma'$ 
+            \item A goal state is any set of clauses containing the empty clause
+            \item The step cost transition is constant
+            \item The path from the initial state to a goal state is proof.
+        \end{itemize}
+\end{itemize}
+
+A good objective function $f(\Sigma)$ is the size of the smallest clause in $\Sigma$ 
+Congrats, you have entered the world of automated problem solving.
+
+\end{document}

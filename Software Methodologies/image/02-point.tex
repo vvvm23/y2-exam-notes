@@ -1,0 +1,98 @@
+\documentclass[../images.tex]{subfiles}
+
+\begin{document}
+
+As we represent images as a matrix, we can process the image by manipulating the corresponding matrix.
+
+The aims of transformation are as follows:
+\begin{itemize}
+    \item Reduce image degradations introduced during capture
+    \item Improve appearance for viewing or further processing
+    \item Identify key image features
+    \item Transform to alternate, more efficient representation
+\end{itemize}
+
+There are typically three main groups of transformation:
+\begin{itemize}
+    \item \textbf{Point} -- A single pixel at a time
+    \item \textbf{Local} -- A pixel and its local neighbourhood
+    \item \textbf{Global} -- An entire image at once
+\end{itemize}
+\\
+\vspace{0.5cm}
+
+\textbf{Addition} -- Add values to each pixel. This does not have to be the same value for all pixels.
+
+Useful for brightness adjustment and the blending of images by adding together.
+\\
+
+\textbf{Subtraction} -- Opposite to addition.
+
+Again, useful for brightness adjustment. Also can be used for finding differences in images.
+\\
+
+\textbf{Division} -- Divide each pixel by some value
+
+Uniformly scales image intensities. This can also be used for finding differences between images.
+\\
+
+\textbf{Multiplication} -- Opposite to division
+
+Can also be used to adjust image intensities.
+\\
+
+\textbf{Logical NOT} -- Inverts the image
+
+Equivalent to subtracting from max intensity. Can highlight different features and structures.
+\\
+
+\textbf{Logical AND} -- Apply AND operator.
+
+Useful for detecting differences or overlaps, highlighting regions and slicing the bit planes.
+\\
+
+\textbf{Logical OR} -- Apply OR operator
+
+Basic overlaying of images.
+\\
+
+\textbf{Logical XOR} -- Logical XOR operation
+
+Highlights only where changes have occurred and nowhere else.
+\\
+
+\textbf{Colour to Greyscale} -- Convert colour pixel into grayscale.
+
+Non invertible and lossy. Simplest way is to take weighted sum of RGB values.
+\\
+
+\textbf{Functional Point Transform} -- Processing each pixel individually using some mathematical function.
+
+$p' = f(p)$ 
+\\
+
+\textbf{Logarithmic Transform} -- $I_\text{out}(i,j) = log I_\text{input}(i,j)$ 
+
+Controls output range by $c \cdot log[1 + (e^\sigma - 1)I_\text{input}(i,j)]$ 
+
+Typically increases dynamic range of dark parts and decreases on bright.
+\\
+
+\textbf{Exponential Transform} -- Replaces each pixel value with its exponent. $p' = exp(p)$ 
+
+Inverse of logarithmic transform.
+
+We can control output range again $c \cdot [(1 + \alpha)^{I_\text{in}(i,j)} - 1]$ where $1+\alpha$ is the basis and $c$ is the scaling factor.
+
+Increases dynamic range of dark regions whilst increasing for light regions.
+\\
+
+\textbf{Power-law Transform} -- Raise each pixel a fixed power. $p' = c \cdot p^r$ 
+
+$r>1$ enhances high value intensities while compressing low. Similar to exponential
+
+$r<1$ enhances low value intensities while compressing high. Similar to logarithmic.
+
+Sometimes known as Gamma Correction.
+
+\end{document}
