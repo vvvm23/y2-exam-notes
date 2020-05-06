@@ -1,0 +1,61 @@
+\documentclass[../image.tex]{subfiles}
+
+\begin{document}
+
+\subsection{Color Spaces}
+
+Colours are represented as RGB intensities. This space can be modelled geometrically by a cube with axes R, G and B. RGB is based on human perception of the visible spectrum.
+\\
+
+Another colour space is HSV:
+
+\begin{itemize}
+    \item Hue -- Specifies the dominant wavelength. [0-360]
+    \item Saturation -- High values correspond to vibrant, pure colours. Low values are mixed by other colours [0-1]
+    \item Value - Defines colour brightness (intensity or luminance) [0-1]
+\end{itemize}
+
+HSV is often modelled by a cone.
+\\
+
+It is easier to colour threshold (convert to binary image of above/below a treshold) in HSV space than in RGB as we can simply isolate a portion of the hue colour channel. Similarly, we can use a threshold in the saturation channel to isolate pure colours. We can combine the two using a logical AND on the resulting images.
+
+Specular Highlights (Bright areas) have a very different position when thresholded in RGB space. HSV however results in a similar position in Hue as specular present in Value.
+
+Shadows are properly isolated in Saturation and value components.
+
+Colour slicing (isolating colours based on Hue and Saturation) is the basis of "blue screen" technology in movies.
+\\
+
+Another colour space is CMY, a subtractive colour model based on mixing pigments of Cyan, Magenta and Yellow to create other colours.
+
+Colours that are seen as part of the visible spectrum are the ones not absorbed by the pigments. CMY is used when applying pigments on a white background, for example ink on paper.
+
+CMY space is also modeled by a cube with axes Cyan, Magenta and Yellow.
+\\
+
+CMYK colour space is an extension of CMY.
+
+It adds a fourth component K which is pure black and absorbs all light. In CMY, black is represented at (1,1,1) but in practise this is not as dark as genuine black ink. Four colour CMYK printing gives visually superior results.
+\\
+
+L*a*b colour space is a perceptually uniform colour space. Changes in L*a*b values are corresponding which changes in human perception of colour. L*a*b colours are specified through properties of light and thus do not depend on a device that generates them. This extends both RGB and CMYK and covers all visible colours (and some non-visible!)
+\\
+
+\subsection{False Colour}
+
+We can use false colour to map scalar values to colour values.
+
+One method to do this is Intensity Slicing. Consider intensity levels $l_0< ... < l_M$ where $l_0$ corresponds to black and $l_M$ to white.
+
+We can use $M$ colours $c_0, ..., c_{M-1}$ and a pixel with intensity $s$ is assigned the colour $c_k$ if $l_k \leq s < l_{k+1}$ while $l_M$ is assigned $c_{M-1}$ 
+\\
+
+Another method is to use transfer functions. This is a more general technique of colour mapping. It uses a colour transfer function $f(s) = c$ that takes in a scalar $s$ and outputs a colour value $c$ . Any functional expression can be used to map $s$ into the colour components.
+\\
+
+We add false colour as it allows us to see differences easier than in grayscale. (How many greys can you see? How many colours can you see?)
+
+This has numerous applications, such as in medical imaging, X-ray security screening and infra-red thermal imagery.
+
+\end{document}
