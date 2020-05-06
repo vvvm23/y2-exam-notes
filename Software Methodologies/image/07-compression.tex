@@ -1,0 +1,59 @@
+\documentclass[../image.tex]{subfiles}
+
+\begin{document}
+
+\subsection{Redundancy}
+
+The goal of compression is to reduce file sizes for efficient storage and for faster transmission. In images, there is a great deal of redundancy. We can use this to compress images by targeting these redundancies:
+
+\begin{itemize}
+    \item \textbf{Coding Redundancy} -- Use of sub-optimal codes means that we may use more bits than are needed to represent pixel values. \textit{Example: Only 4 distinct values, so can reduce colour space to 2 bits.}
+    \item \textbf{Spatial Redundancy} -- Neighbouring pixels are likely to have similar values. Information may be unnecessarily replicated in the representation of spatially correlated pixels. \textit{Example: Repetition of intensity can be encoded as the intensity and number of repeats.}
+    \item \textbf{Irrelevant Information} -- Images may contain visually non-essential information that is ignored by the human visual system. \textit{Example: Fine grained texture and noise ignored by the eye.}
+\end{itemize}
+
+\subsection{Lossy and Lossless}
+
+There are two main forms of compression:
+
+\begin{itemize}
+    \item \textbf{Lossy Compression} -- A trade-off of image quality for lower file sizes.
+    \item \textbf{Lossless Compression} -- Exact replication of data when uncompressed. No loss of information.
+\end{itemize}
+
+Lossy compression should be used when images need not be reproduced exactly and an approximation is okay. This is because it introduces compression artifacts into the image, which may or may not be visible. This contributes a source of noise which could be an issue in further processing.
+
+Lossless compression is computationally more expensive and the resulting file size is often larger than a corresponding loss compression file. However, it adds no additional noise or artifacts to the image.
+
+\subsection{JPEG}
+
+JPEG is an image compression algorithm based on the Discrete Cosine Transform (DCT) and variable length encoding. It offers tuneable lossy compression and is the most widely used image compression algorithm.
+
+The 1D DCT expresses a vector of pixel intensity values as a weighted sum of cosine functions of varying frequencies.
+
+\textit{Essentially, a variant of DFT seen in Fourier Transformations.}
+
+Similarly to DFT, DCT can alson be seen as a change of basis described as the multiplication of the data vector by a special matrix, here the DCT matrix.
+
+Unlike DFT, DCT is a real transform, not a complex one. The elements of the DCT matrix are real numbers.
+\\
+
+The 2D DCT uses a set of 2D matrices as basis functions, each one corresponding to a 2D cosine function.
+\\
+\vspace{0.5cm}
+
+JPEG compressions works as follows (assuming 8-bit grayscale image ):
+
+\begin{itemize}
+    \item Subdivide the image into pixel blocks of $8 \times 8$ size. The blocks are processed one after the other from left to right, top to bottom.
+    \item Subtract pixel values by 128 to bring them into the range [-128, 127] so that DCT can map the interval onto itself.
+    \item Apply the $8 \times 8$ DCT to each block. The DCT values are computed with a higher precision than the image (usually 11 bit). \textit{The DCT matrices are preset.}
+    \item Scale and quantize the DCT values using the quantization matrix. \textit{Human vision is less sensitive to high frequency than to low. As a result of this step, high frequency are encoded with lower accuracy.}
+    \item Create a sequence of quantised DCT coefficients.
+    \item Encode the sequence of quantised coefficients obtained in previous step using Huffman based variable length encoding. \textit{Encode each coefficient's value and the number of preceding zeros.}
+\end{itemize}
+\\
+
+In terms of image quality, JPEG can be bad if set too aggressively. Repeatedly sharing JPEG images can cause recompression and reduces quality further (image mould)
+
+\end{document}
