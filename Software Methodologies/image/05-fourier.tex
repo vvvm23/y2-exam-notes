@@ -1,0 +1,202 @@
+\documentclass[../image.tex]{subfiles}
+
+\begin{document}
+
+\subsection{Fourier Transformation}
+
+The Fourier transform of an image is a global transformation. It produces a representation of the image in Fourier Space, a frequency domain when there is no room for ambiguity as to the type of transform that was used.
+
+We perform on images by applying the Discrete Fourier Transform (DFT) operator:
+
+\begin{itemize}
+    \item Decompose the image in frequency components (sinusoidal functions)
+    \item Arrange frequency components in an array of the same size as the image.
+    \item Use resulting "image" in further image processing, analysis and compression.
+\end{itemize}
+\\
+
+Some terminology:
+
+\begin{itemize}
+    \item \textbf{Spatial Domain }-- Also known as real domain or real space, images and signals are represented a spatial layout of samples that real numbers
+    \item \textbf{Frequency Domain} -- Also known as Fourier domain/space, images and signals are represented by coefficients of sinusoidal basis frequencies
+\end{itemize}
+\\
+
+For a 1 dimensional space, our basic building block is:
+
+\begin{center}
+    $A \cdot sin(\omega \cdot x + \phi)$ 
+
+    where $\omega$ is the frequency, $A$ is the amplitude and $\phi$ is the phase.
+\end{center}
+
+If we add enough of those functions together we can produce any signal.
+
+For each frequency we have one sinusoidal function in the sum.
+
+Low frequency components influence the coarse outline of the signal. Higher frequency influences the fine detail of a signal.
+
+As we increase the number of frequency components the later, higher frequency components contribute less to the coarse outline of the signal and more to the fine detail of its shape.
+\\
+
+The goal of the Fourier Transform is to understand the signal as a sum of  weighted and phase shifted frequencies by re-parametrising the signal in terms of these frequencies.
+
+$F(\omega)$ is called the Fourier transform of $f(x)$ . 
+\\
+
+\begin{center}
+    The Fourier Transform $M * f(x) = F(\omega)$ is a change in mathematical basis.
+
+    $M$ is the set of basis functions, $N$ samples from each sinusoidal function form one row of the $N \times N$ matrix.
+
+    $f(x)$ is the spatial domain representation, $N$ samples arranged as a vertical vector. 
+
+    $F(x)$ is the Fourier domain representation, $N$ samples arranged also as a vertical vector.
+\end{center}
+\\
+
+\textit{The inverse Fourier transform is therefore represented as $M^{-1} * F(\omega) = f(x)$  }and is again, a change in basis.
+\\
+
+For every frequency $\omega$ the Fourier transform at that point $F(\omega)$ is defined by the amplitude $A$ and the phase $\phi$ of the corresponding sine. While we can use two real numbers to represent this, mathematically is is very convenient to use complex numbers:
+
+\begin{center}
+    $F(\omega) = R(\omega) + iI(\omega)$ 
+
+    $A = \pm \sqrt{R(\omega)^2 + I(\omega)^2}$ 
+
+    $\phi = tan^{-1} \frac{I(\omega)}{R(\omega)} $
+
+\end{center}
+
+\textit{By taking integrals instead of infinite sums we can extend Fourier Transform to continuous functions}
+\\
+
+We can extend Fourier Transform from 1D signals to 2D images using 2D sine waves as a basis function. Again, any image can be reconstructed as a weighted sum of different 2D frequencies aligned in different phases. 
+\\
+
+\subsection{Fast Fourier Transform}
+
+Discrete Fourier Transform can be computed efficiently via Fast Fourier Transform (FFT) algorithm:
+
+\begin{itemize}
+    \item 1D FFT is $O(Nlog_2N)$ 
+    \item 2D FFT is a series of $2N$ 1D FFTs and so is $O(N^2log_2N)$ 
+\end{itemize}
+
+The special structure of a DFT matrix means that multiplication of a 1D signal (an $N \times 1$  vector) by the DFT matrix can be done faster than general matrix multiplication via the FFT algorithm.
+\\
+
+\subsection{Visualisation}
+
+The output $V_{n,m}$ of the DFT on an input image is a complex number valued output image containing the coefficients of the DFT of the input image. This is known as the Fourier Spectrum of the input image and its dimensions are identical to the input image.
+
+The Fourier Spectrum can be visualised as the real and imaginary parts of a complex image:
+
+\begin{center}
+$F_{n,m} = G_{n,m} + iH_{n,m}$ 
+
+where $G_{n,m}$ is the real part of the spectrum
+
+and $H_{n,m}$ is the imaginary part of the spectrum .
+
+\end{center}
+\\
+
+We could visualise the amplitude spectrum:
+
+\begin{center}
+    $|F_{n,m}| = \sqrt{G^2_{n,m} + H^2_{n,m}}$ 
+\end{center}
+
+or the phase spectrum:
+
+\begin{center}
+    $\phi_{n,m} = tan^{-1}( \frac{H_{n,m}}{G_n,m}  )$ 
+\end{center}
+
+or power spectrum:
+
+\begin{center}
+    $|F_{n,m}|^2$ 
+\end{center}
+\\
+
+The mean intensity of the image is given by Fourier Coefficient at $F(0,0)$ and is known as the DC-component. By convention it is at the centre of the image.
+
+The highest frequency present is at $F(N-1, N-1)$ 
+
+The magnitude is presented on a logarithmic scale as the floating point range is very large.
+
+Lower frequencies are close to the centre of the magnitude image. They are larger than higher frequencies, so more information in lower frequencies.
+
+The two predominant directions in the magnitude image corresponds to patterns of the original image.
+
+The phase spectrum's vertical and horizontal features also correspond to image patterns. In general however, it does not contain much structural image (but is crucial to rebuild the original image)
+\\
+
+By editing the Fourier domain image we can remove certain frequencies by setting their magnitude to zero. This can be useful for smoothing an image or obtaining high frequency noise detail.
+\\
+
+Convolution in the spatial domain reduces to multiplication in the frequency domain.
+
+\begin{center}
+$I_A * I_B =  DFT^{-1}(DFT(I_A) \cdot DFT(I_B))$ 
+\end{center}
+
+This can be used for speeding up computationally expensive convolution operations.
+\\
+
+DFT can result in "ringing" artifacts. We can reduce the effect of these by applying the transform locally rather than globally so that residual artifacts become tolerable.
+
+\subsection{Filtering}
+
+As I said before, some operations which are complex in the spatial domain can be computed simpler and more efficiently in Fourier Space.
+
+For example for edge detection, we previously used a Laplacian kernel to find edges in the image. In Fourier Space however, we can simply just turn off all low-frequency coefficients by multiplying them by 0 and so preserve only the high frequency edges.
+
+We can accomplish this with a high pass filter:
+
+\begin{center}
+    \begin{math}
+        H(k_x, k_y) =
+        \begin{cases}
+            0, & \sqrt{k^2_x + k^2_y} \leq K \\
+            1, & \sqrt{k^2_x + k^2_y} > K \\
+        \end{cases}
+    \end{math}
+\end{center}
+
+We multiply the Fourier image by this mask to find the filtered Fourier image. Then, we can convert back to the original image.
+
+This, however, results in a ringing effect due to the sharp cut-off of frequencies in the Fourier Domain.
+\\
+
+To resolve, we can use a smooth approximation to the high pass filter:
+
+\begin{center}
+    $B(k_x, k_y) = \frac{1}{1+( \frac{K}{\sqrt{k^2_x + k^2_y}}  )^{2n}} $ 
+
+    where $n$ is a user defined positive integer called the order of the filter.
+\end{center}
+
+As $n$ increases, the filter approaches the ideal filter with cut off value $K$ . The result may have both positive and negative values. For display, a constant is added to each pixel.
+\\
+
+Similarly, we can use low-pass filtering for noise removal and image smoothing. Again, this can result in ringing artifacts. The solution is to use low pass filters which are continuous in the Fourier Domain.
+
+We can use a Gaussian low pass filter:
+
+\begin{center}
+    $G(k_x, k_y) = exp[-(k^2_x + k^2_y) / 2 \sigma^2]$ 
+
+    where $\sigma$ is the width of the filter at $1/e$ . 
+\end{center}
+
+It controls the range of frequencies allowed through the filter (bandwidth)
+\\
+
+Alternatively, use the Butterworth filter again, this time with exponent $-2n$ 
+
+\end{document}
