@@ -29,7 +29,7 @@ Most deadlock detection schemes operate by the finding cycles in the transaction
 Another issue is phantom deadlocks, a deadlock that is detected but is not really a deadlock. This is caused by global deadlock detectors not being updated quick enough and so the wait-for graph may no longer be valid anymore.
 \\
 
-A better solution is Edge Chasing. We do not construct a global wait-for graph. Instead, each server attempts to find cycles by forwarding probe messages. A probe message consists of a transaction wait-for relationship representing a local path in the global wait-for graph.
+A better solution is Edge Chasing. We do not construct a global wait-for graph. Instead, each server attempts to find cycles by forwarding probe messages. A probe message consists of a transaction wait-for relationship representing a local path in the global wait-for graph. Non-blocked processes can simply discard the probe. Blocked processes forward to the processes it depends on. If at some point the original server receives its own probe, we know there is a circular waiting loop and so there is a deadlock.
 
 \subsection{Correctness}
 
@@ -41,6 +41,10 @@ Operations are linearisable if the interleaved sequence of operations meets the 
 \\
 
 Linearisability means there exists a virtual canonical execution, the interleaved operations against a virtual single image of shared objects and that each client sees a view of the shared objects that is consistent with that single image. 
+
+Linearisability models the indefinite incoming and completion time of each system event, where the occurrences of different events may be logically overlapping but they should not have been in reality. Linearisability formulates a sequential order on a set of events given their overlapping conditions.
+
+\textit{In plain English, under linearisability, writes should appears to be instantaneous. Once a write completes, all future reads should return the value of that write or the value of a later write. }
 
 \subsection{Consistency Control}
 
