@@ -20,6 +20,10 @@ We must escape the flag so it is not confused with occurrences in the body.
 
 We can escape either using a special escape byte or escape bit. (Byte and bit stuffing respectively.)
 
+\textit{Byte stuffing adds a special escape byte before any occurences of the flag pattern within the message payload.}
+
+\textit{Bit stuffing will add bits to break up flag patterns in the message payload. For example, if the flag pattern is 01111110, whenever a 0 bit is followed by 5 consecutive 1s in the message, an extra 0 bit is stuffed to the end of the 5 1s, resulting in 0111110. When the receiver sees this pattern, they know they should unstuff. }
+
 \subsection{Error Correction}
 
 If we include enough redundant data we may be able to deduce the original meaning. 
