@@ -1,0 +1,70 @@
+\documentclass[../alg.tex]{subfiles}
+
+\begin{document}
+
+An adjacency matrix representation of a graph with edge weights is a square matrix $A$ where:
+
+\begin{center}
+    \begin{math}
+        A_{i,j} = 
+        \begin{cases}
+            w, &\text{ if there is an edge of weight } w \text{ between } i, j\\
+            0, &\text{ if there is no edge }
+        \end{cases}
+    \end{math}
+\end{center}
+
+The shortest path between vertices $u$ and $v$ is denoted $\delta(u,v)$ .
+
+We can assume the shortest paths we find will not contain any positive cycles (as we can simply omit the cycle to obtain a smaller length.)
+
+We can also assume there will be no negative cycles (as we can loop around forever, leading to $\delta(u,v) = - \infty$ )
+\\
+
+Our aim is to find an algorithm that finds the shortest path from a specific source vertex $s$ to all other vertices in the graph. \textit{A generalisation of BFS}
+
+The output will be arrays $d$ and $\pi$ where $d(v) = \delta(s,v)$ and $\pi(v)$ is the predecessor of $v$ .
+
+We will also relax the problem and assume all weights are non-negative.
+\\
+
+Opposed to BFS, at every step $d(v)$ is an estimate of $\delta(s,v)$ and is updated as shorter paths are found. Initially, all are $\infty$ . Only at the end do we have $d(v) = \delta(s,v)$ . During runtime, $d(v) \geq \delta(s,v)$ .
+
+At every step, test whether we can improve the current $d(v) = \delta(s,v)$ by going through $u$ . If so, updated $d(v)$ and $\pi(v)$ .
+\\
+
+Dijkstra's Algorithm maintains lists $S$ and $Q$ of vertices already found and all others respectively. It takes the element from $Q$ with smallest $d$ to inspect next and then carries out the procedure above. This repeats until $Q$ is empty.
+
+Initialisation is done in $O(V)$ time. This is where we populate $d$ and $\pi$ .
+
+Finding the minimum $v$ in $Q$ takes $O(V)$ time. We simply scan the list.
+
+This is done $V$ times so $O(V^2)$ .
+
+Relaxation takes $O(E)$ time in total as all edges are relaxed once.
+
+So, in total the time complexity is $O(V+V^2+E) = O(V^2)$ 
+\\
+
+Some properties of shortest paths and relaxation:
+
+\begin{itemize}
+    \item For all edges $(u,v)$ we have that $\delta(s,v) \leq \delta(s,u) + w(u,v)$ . \textit{This is a Triangle Inequality.}
+    \item Any subpath of the shorter path is also a shortest path. \textit{Optimal Substructure.}
+    \item For every $v$ , we always have $d(v) \geq \delta(s,v)$ . \textit{Upper Bound Property}
+    \item If $\delta(s,v) = \infty$ , $d(v) = \infty$ at every iterations. \textit{No path property.}
+    \item If there is a shorter path from $s$ to $v$ with edge $(u,v)$ and if $d(u) = \delta(s,u)$ then we obtained $d(v) = \delta(s,v)$ when $(u,v)$ was relaxed. \textit{Convergence Property.}
+\end{itemize}
+\\
+
+Correctness of Dijkstra's Algorithm is reliant on that, at the start of every iteration, $\forall v \in S, d(v) = \delta(s,v)$ .
+
+\begin{itemize}
+    \item \textbf{Initialisation} -- At start, $S = \emptyset$ , so trivially true.
+    \item \textbf{Maintenance} -- $d(u) = \delta(s,u)$ whenever $u$ is added to $S$ .
+    \item \textbf{Termination} -- $S$ contains every vertex, so $d(v) = \delta(s,v)$ for all $v$ in graph.
+\end{itemize}
+
+\end{document}
+
+

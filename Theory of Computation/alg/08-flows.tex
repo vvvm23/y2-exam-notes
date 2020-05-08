@@ -1,0 +1,96 @@
+\documentclass[../alg.tex]{subfiles}
+
+\begin{document}
+
+\subsection{Flow Networks}
+
+A common algorithmic scenario is to transfer some material from a source (produces material) to a sink (consumes material). For example, water through pipes, electrical currents, etc.
+
+We can model this using graphs. Vertices other than the source/sink are junctions. Material flows through them. Total flow entering must equal flow leaving. Edges have a given capacity.
+
+We wish to compute the greater possible rate of transportation from source to sink.
+
+We define a flow network as follows:
+
+\begin{itemize}
+    \item $G=(V,E)$ a directed graph
+    \item Vertex $s \in V$ and sink $t \in V$ 
+    \item $\forall(u,v) \in E$ have non-negative capacity $c(u,v)$ .
+    \item $\forall(u,v) \notin E$ , $c(u,v)$ = 0.
+    \item $\forall v \in V$ there is a path $s \rightarrow ... \rightarrow t$ . In other words, $G$ is connected, therefore $|E| \geq |V|-1$ 
+\end{itemize}
+\\
+
+A flow in $G$ is a real value function $f: V \times V \rightarrow \mathbb{R}$ ( $f$ gives current flow along an edge ) that satisfies the following properties:
+
+\begin{itemize}
+    \item \textbf{Capacity Constraint} -- $\forall u,v \in V, f(u,v) \leq c(u,v)$ 
+    \item \textbf{Skew Symmetry} -- $\forall u,v \in V, f(u,v) = -f(v,u)$ 
+    \item \textbf{Flow Conservation} -- $\forall u \in V - \{s,t\}, \sum_{v \in V} f(u,v) = 0 $ . \textit{Total flow out of any vertex, except source and sink, is 0.}
+\end{itemize}
+
+Given the above, the value of flow $f$ is defined as $|f|$ , the total flow leaving the source.
+\\
+
+Sometimes in real world problems we can send (for example) 8 from $A$ to $B$ and 3 from $B$ to $A$ . This, however, violates skew symmetry. In order to solve this, we perform cancellation:
+
+\begin{center}
+    $f(A,B) = 8-3=5$ \hfill $f(B,A) = -f(A,B) = -5$ 
+\end{center}
+
+\subsection{Maximum Flow}
+
+One method of finding maximum flows is the Ford-Fulkerson method:
+
+\begin{itemize}
+    \item Start with $f(u,v) = 0, \forall u,v \in V $ 
+    \item At each iteration increase flow by finding an augmenting path. This is a path from $s$ to $t$ which we can increase flow.
+    \item Augment flow along this path.
+    \item Repeat until no augmenting path can be found.
+\end{itemize}
+\\
+
+One implementation of this uses residual networks. Residual networks consist of edges that can admit more flow.
+
+More formally, amount of additional flow $c_f(u,v)$ before we exceed capacity $c(u,v)$ is:
+
+\begin{center}
+    $c_f(u,v) = c(u,v) - f(u,v)$ 
+\end{center}
+
+As flow can be negative, residual capacity can be greater than $c(u,v)$ . This is interpreted as 'pushing' in the opposite direction, decreasing flow.
+\\
+
+Given a flow network $G$ and flow $f$ , the residual network is $G_f = (V, E_f)$ with $E_f = \{ (u,v) \in V \times V | c_f(u,v) > 0 \}$ 
+
+More formally, if $f'$ is a flow in $G_f$ , then the flow sum $f+f'$ with $(f+f')(u,v) = f(u,v) + f'(u,v)$ is a flow in $G$ with value $|f+f'| = |f| + |f'|$ .
+
+Flow can be increased by the minimal residual capacity along an augmenting path.
+\\
+
+The running time is greatly dependant on how augmenting paths are determined. The value of flow increases every iteration but perhaps too slow and never converges. This can, however, only happen if the capacities are irrational.
+
+If capacities are small then this can be solved in polynomial time. If they are integers it always terminates as flow increases by $\geq 1$ each iteration.
+
+A truly polynomial algorithm is Edmonds-Karp algorithm. The augmenting path $P$ is always chosen to be shortest path from $s$ to $t$ (using BFS) in $G_f$ , regardless of the flow that actually fits in this path $G$ . This results in $O(V\cdot E^2)$ 
+\\
+
+\subsection{Network Cuts}
+
+A cut of a flow network is a partition of $V$ into the sets $S$ and $T=V-S$ such that $s \in S$ and $t \in T$ .
+
+If $f$ is a flow in $G$ then $f(S,T)$ is the net flow across cut $(S,T)$ and its capacity is $c(S,T)$ . When calculating $f$ and $c$ for $(S,T)$ we can ignore values not crossing the cut as they are cancelled out by skew-symmetry.
+
+A minimum cut is a cut with minimum capacity over all possible cuts. Network flow is the same across any cut. \textit{ $\forall (S,T), f(S,T) = |f|$  }
+
+The corollary, the value of $f$ in $G$ is upper bounded by the capacity of any cut $(S,T)$ in $G$ . Therefore, maximum flow $\leq$ minimum cut.
+
+Therefore, the following statements are equivalent:
+
+\begin{itemize}
+    \item $f$ is a maximum flow in $G$ 
+    \item The residual network $G_f$ contains no augmenting paths.
+    \item $|f| = c(S,T)$ for some cut $(S,T)$ of $G$ 
+\end{itemize}
+
+\end{document}
