@@ -1,0 +1,145 @@
+\documentclass[../alg.tex]{subfiles}
+
+\begin{document}
+
+In the past we have mainly studied optimisation problems- finding the best solution among all legal solutions and return the one with the best value. We found fast algorithms for all of these problems, but the situation is not always like this.
+
+Decision problems are a major variation of optimisation problems. The answer is not a value but just YES/NO. Every optimisation problem has a decision counterpart as we are simply asking if there exists a solution. Hence, if the optimisation has a fast algorithm to solve it, there is also a fast algorithm to solve its corresponding decision problem.
+\\
+
+\subsection{Encoding Problems}
+
+The standard way to define a decision problem is to describe a generic instance and YES/NO question about each instance. To input problems, each instance must be encoded as a string of symbols over some alphabet using an encoding scheme. 
+
+An alphabet $\Sigma$ is a finite set of symbols.
+
+A string over $\Sigma$ is a finite sequence of symbols from $\Sigma$ .
+
+A language over $\Sigma$ is any set of strings over $\Sigma$ .
+
+For a problem $\Pi$ and an encoding scheme $e$ with alphabet $\Sigma$ , the set of all strings corresponding to instances with answer YES is denoted $L(\Pi, e)$ and called the language associated with $\Pi$ and $e$ .
+
+For decision problems, we just want to decide whether the encoding of a given instance belongs to the language $L(\Pi, e)$ 
+\\
+
+\subsection{Problem Classes}
+
+There are many problems which cannot be quickly solved. These are known as intractable problems. Problems that can be solved quickly are tractable. There are also decidable and undecidable problems. Every decidable problem has some algorithm that solves it.
+
+In order to classify the complexity of a problem we must use some complexity measure. The best way to do this is to measure the efficiency of the most efficient possible algorithm to solve it. By considering Turing Machines as our model of computation we can define two forms of complexity:
+
+\begin{itemize}
+    \item \textbf{Time Complexity} -- Given a TM $T$ , it is the function $\text{Time}_T$ such that $\text{Time}_T(x)$ is the number of steps taken by the computation $T(x)$ 
+    \item \textbf{Space Complexity} -- Given a TM, $T$ , it is the function $\text{Space}_T$ such that $\text{Space}_T(x)$ is the number of distinct tape cells visited during computation $T(x)$ .
+\end{itemize}
+    
+\textit{If $T(x)$ does not halt, then both are undefined.}
+\\
+
+Some decision problems are considered to be equivalent. As in, the solution to one is the same as another. One example of this is the decision problems \textit{Independent Set} and \textit{Vertex Cover}.
+
+\textit{Another example is Clique and Independent Set}
+
+\subsection{Complexity Classes}
+
+The time complexity class $\text{TIME}[f]$ is defined to be the class of all problems for which there exists an algorithm with time complexity in $O(f)$ . It is sometimes called $\text{DTIME}[f]$ 
+
+The complexity class $P$ contains all classes $\text{TIME}[t(n)]$ where $t(n)$ is a polynomial of finite degree.
+
+\begin{center}
+    $P = \bigcup_{k \geq 0}\text{TIME}[n^k]$ 
+\end{center}
+
+The class $P$ is a reasonable mathematical model of the class of problems which are tractable and solvable in practice. However, it is possible that degree of the polynomial or the hidden constants may be very large, making it unsolvable in practice.
+\\
+
+For other models of computation besides regular TMs, the complexity class $P$ is the same because of the following two lemmas:
+
+\begin{itemize}
+    \item We can simulate $t$ steps of $k$ -tape TM with an equivalent one-tape TM in $O[t^2]$ . 
+    \item We can simulate $t$ steps of a two-way infinite $k$ -tape machine ith an equivalent $k$ -tape TM in $O[t]$ steps.
+\end{itemize}
+
+Additionally, the complexity class $P$ is the same for other encodings of the problem because of the following lemma:
+
+\begin{center}
+    For any number $n$ , the length of the encoding $n$ in base $b_1$ and the length of the encoding of $n$ in base $b_2$ are related by constant factor, provided $b_1, b_2 \geq 2$ .
+\end{center}
+\\
+
+The class $P$ is said to be robust -- it does not depend on the exact details of the computational model or encoding.
+
+The most direct way to show that a problem is in $P$ is to give a polynomial time algorithm which solves it. Even a naive solution can provide a good insight into how to solve it efficiently.
+
+To find such an algorithm we generally need to identify an approach to the problem that is considerably better than brute-force search.
+
+\subsection{Reduction}
+
+Some of the most important computational problems concern logical formulas.
+
+A formula $f$ is said to be in conjunctive normal form if:
+
+\begin{center}
+    $f = C_1 \wedge ... \wedge C_m$ 
+\end{center}
+
+Where each $C_i$ is a clause which is a disjunction of literals:
+
+\begin{center}
+    $\forall C_i \in f, C_i = (I_{i_1} \vee ... \vee I_{i_k})$ 
+\end{center}
+
+and a literal is either a variable or its negation.
+
+If $f$ has at most $k$ literals per clause then it is in $k$ -CNF.
+\\
+
+The logical formula $f$ is satisfiable if there exists an assignment to the variables that makes $f$ true. $f$ is true if and only if all clauses are true. This brings forth two decision problems:
+
+\begin{itemize}
+    \item \textbf{Satisfiability} -- Given a CNF formula $f$ , is $f$ satisfiable?
+    \item \textbf{ $k$ -Satisfiability }-- Given a CNF formula $f$ that is $k$ -CNF, is $f$  satisfiable?
+\end{itemize}
+
+2-Satisfiability is in $P$ , proof is in slides.
+\\
+
+Another way to show that a problem is in $P$ is to use reduction. Informally, a problem $P$ is reducible to a problem $Q$ if we can somehow use methods that solve $Q$ in order to solve $P$ .
+
+\begin{center}
+    A language $L_1$ is polynomially reducible to $L_2$ , denoted $L_1 \leq L_2$ , if a polynomial-time computable function $f$ exists such that $x \in L_1 \iff f(x) \in L_2$ 
+\end{center}
+\\
+
+Hence,
+
+\begin{center}
+    $L_1 \leq L_2$ and $L_2 \in P \rightarrow L_1 \in P$  
+\end{center}
+
+The main idea is that the composition of polynomials is also a polynomial.
+
+The proof is as follows:
+
+\begin{itemize}
+    \item Let $A_2$ be a polynomial-time algorithm that decides $L_2$ 
+    \item Let $f$ be a polynomial-time reduction algorithm from $L_1$ to $L_2$ 
+    \item We construct a polynomial-time algorithm $A_1$ that decides $L_1$ :
+        \begin{itemize}
+            \item Given an input $x \in {0,1}*$ , compute $f(x)$ in polynomial time.
+            \item Use algorithm $A_2$ to decide whether $f(x) \in L_2$ 
+            \item If $f(x) \in L_2$ then output YES, else NO
+        \end{itemize}
+\end{itemize}
+\\
+
+An example of reduction is $k$ -Colourability. Recall that a function $f: V \rightarrow \{1, ..., n\}$ is a colouring if adjacent vertices are assigned different colours. The decision problem equivalent asks if there is a colouring of $G$ using at most $k$  colours.
+
+We can reduce 2-Colourability to 2-Satisfiability and so show that 2-Colourability is also in $P$ . For each vertex $v_i$ of the graph we create a variable $x_i$ . For each edge $(v_i, v_j)$ we add two clauses $x_i \vee x_j$ and $\neg x_i \vee \neg x_j$ . This is a translation from 2-Colourability to 2-Satisfiability and is computable in polynomial time. We can then solve the resulting formula using 2-Satisfiability algorithm.
+\\
+
+Some problems have been shown to be in $P$ by non-constructive arguments (proving a polynomial time algorithm must exist, but not nessecarily building it.)
+
+In these cases, we may not even know how to find the intractable solution, but we know a tractable one must exist.
+
+\end{document}
