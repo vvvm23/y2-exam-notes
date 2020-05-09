@@ -1,0 +1,53 @@
+\documentclass[../alg.tex]{subfiles}
+
+\begin{document}
+
+So far we have been concerned with the complexity classes of decision problems. It is often natural to look at optimisation versions of the same problem. However, an algorithm for optimisation problem would provide an algorithm for the decision problem. If the decision problem is $NP$-Complete, the optimization problem is $NP$-hard.
+
+If an optimisation problem is $NP$-hard we generally believe it to be intractable. There are some ways to cope with intractable problems so we can still "solve" them:
+
+\begin{itemize}
+    \item Restrict the input to a special case we are interested in or a size that is still computable.
+    \item Use heuristics to get a good estimate with faster speed but no guarantees about performance.
+    \item Use approximation algorithms, algorithms that may not find optimal solutions but are guaranteed to find within a certain factor.
+\end{itemize}
+
+\subsection{Restricting the Input}
+
+Recall from before that a planar graph is one that can be drawn in a plane without edges crossing. We know that every planar graph is 4-colourable, so 4-colouring for planar graph always returns yes.
+
+For triangle-free planar graphs, this can be reduced to a 3-colouring. Hence, 3-Colouring is trivial for triangle-free planar graphs.
+
+Also recall that colouring is polynomial time solvable for co-graphs.
+
+\subsection{Heuristics}
+
+An example of a heuristic for Colouring is First-Fit.
+
+\begin{itemize}
+    \item Order the vertices of an $n$-vertex graph $G$ as $v_1, ..., v_n$ 
+    \item Colour the vertices one by one in that order by assigning the smallest available colour.
+    \item So $v_i$ gets the smallest colour $x$ not used by $N(v_i) \cap \{v_1, ..., v_{i-1}\}$ 
+\end{itemize}
+
+\subsection{Approximation Algorithms}
+
+An algorithm is a $k$-approximation if it always find a solution that is a factor of $k$ within the optimum.
+
+We can find a nearly optimal vertex cover using an approximation algorithm. The algorithm in the slides is a 2-approximation for Vertex Cover.
+\\
+
+Another approximation algorithm \textit{Metric Travelling Salesman Problem}. 
+
+This constructs a tour that includes every vertex and starts and ends at the same city using only the edges of the minimum spanning tree. Then, modify the tour by removing repeated cities but keeping the order the same. Output the modified tour.
+
+This algorithm is again a 2-approximation for its target problem. This is because the MST has weight at most $K$ . As the tour along the MST uses each edge exactly twice, it will have weight $2K$ . So when we modify the tour by removing repeated edges, the resulting tour is at most $2K$ .
+\\
+
+The Maximum Cut Problem is, given a graph $G = (V,E)$ , partition $V$ into two sets $A$ and $B$ so that the number of edges joining $A$ to $B$ is maximised.
+
+The approximation to this problem will move a vertex from one partition to another if flipping it will increase the size of the cut. This approximation has polynomial running time.
+
+This approximation is a 2-approximation. Upon termination, all vertices have at least $ \frac{1}{2} d(v)$ incident edges that join $A$ to $B$ , where $d(v)$ is the number of incident edges on vertex $v$. This is true else $v$ is light. As this is true for all vertices, the size of the cut found is at least $ \frac{1}{2} |E|$ . The optimum solution is at most $|E|$ so we are within a factor of 2.
+
+\end{document}

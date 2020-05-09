@@ -1,0 +1,205 @@
+\documentclass[../alg.tex]{subfiles}
+
+\begin{document}
+
+We have seen the class $P$ for tractable problems, but what about for problems where no polynomial time algorithm is known?
+
+What about for problems where no polynomial time algorithm is known but every yes-instance of such problem has an easily checkable certificate.
+
+\textit{For example, a satisfying arrangement can be checked in polynomial time regardless of the size and number of clauses. Similar argument for colourings.}
+\\
+
+\subsection{Verifiers}
+
+A verifier $V$ is a machine which halts on all inputs for a language $L$ if:
+
+\begin{center}
+    $L = \{ w | V$ accepts '$w;c$' for some string $c \}$ 
+\end{center}
+
+The string $c$ is called a certificate (or witness) for $w$ .
+
+A verifier is said to be polynomial-time if it is a polynomial-time TM and there is a polynomial $p(x)$ such that, for any $w \in L$ , there is a certificate $c$ with $|c| \leq p(|w|)$ .
+\\
+
+The class of languages that have polynomial-time verifiers is called $NP$ .
+
+We can get an alternative definition of the class $NP$ by considering non-deterministic machines. 
+
+Recall that if $NT$ is a non-deterministic TM then $NT(x)$ denotes the tree of configurations which can be entered with input $x$ and $NT$ accepts $x$ if there is some accepting path in $NT(x)$ 
+
+The time complexity of a non-deterministic Turing machine $NT$ is the function $\text{NTime}_{NT}$ such that $\text{NTime}_{NT}(x)$ is the number of steps in the shortest accepting of $NT(x)$ is there is one, otherwise it is the number of steps in the shorter rejecting path. 
+
+\textit{If some paths do not halt then the time complexity is undefined}.
+\\
+
+\subsection{NP Complexity}
+
+For any function $f$ we say that the non-deterministic time complexity of a decidable language $L$ is $O(f)$ if there exists a non-deterministic TM $NT$ which decides $L$ and constants $n_0$ and $c$ such that for all inputs $x$ with $|x| > n_0$ :
+
+\begin{center}
+    $\text{NTime}_{NT}(x) \leq c \cdot f(|x|)$ 
+\end{center}
+
+
+The non-deterministic time complexity class $\text{NTIME}[f]$ is defined to be the class of all problems for which there exists an algorithm with non-deterministic time complexity in $O(f)$ 
+
+Hence, an alternative definition to $NP$ is as follows:
+
+\begin{center}
+    $NP = \bigcup_{k \geq 0} \text{NTIME}[n^k]$ 
+\end{center}
+\\
+
+The two different definitions of $NP$ are equivalent. The proof is as follows:
+
+\begin{itemize}
+    \item If $L \in \text{NTIME}[n^k]$ then there is a non-deterministic machine $NT$ such that $x \in L$ if and only if there is an accepting computation path in $NT(x)$ . Furthermore, the length of these paths is $O(|x|^k)$ 
+    \item Using these computation paths as certificates we can construct a polynomial time verifier for $L$ which simply checks that each step of the computation path is valid.
+    \item Conversely, if $L$ has a polynomial-time verifier $V$ then we can construct a non-deterministic machine that first 'guesses' the value of the certificate by making a series of non-deterministic choices. We then simulate $V$ with that certificate.
+    \item Since the length of the certificate is polynomial in the length of the input, this machine is a non-deterministic polynomial-time decision procedure for $L$ .
+\end{itemize}
+\\
+
+The question of whether or not $P = NP$ is one of the biggest open problems in Computer Science. It is equivalent to determining whether or not the existence of a short solution guarantees an efficient way to find that solution.
+\\
+
+\subsection{NP-Completeness}
+
+Any complexity class can be partitioned into equivalence classes via polynomial-time reduction. Each class contains problems that are reducible to each other. These equivalence classes are partially ordered by reduction. 
+
+Problems in maximal class are called complete, there is no problem in the class which is strictly harder.
+
+$NP$ -Complete problems are the hardest problems in $NP$ . They are all equally difficult an efficient solution to one would solve them all at once ( \textit{as they can all be reduced to one another as they are in the same equivalence class} )
+\\
+
+To show that $L$ is $NP$ -complete we must show that every language in $NP$ can be reduced to $L$  in polynomial time. Once we have one $NP$ -Complete language $L_0$ we can show any other language $L$ is $NP$ -Complete just be showing that $L_0 \leq L$ 
+\\
+
+The first major step was the proof by Cook-Levin that Satisfiability is $NP$-Complete. It then follows that $P = NP$ if and only if Satisfiability is in $P$ .
+\\
+
+If $P \neq NP$ then $NP$ contains infinitely many polynomial-time inequivalent problems. This implies that unless $P = NP$ then class $NP$ contains infinitely many problems that are neither in $P$ nor $NP$-Complete. Such problems are called $NP$-intermediate.
+
+Hence, if we prove that some problem is $NP$-intermediate then that would imply that $P \neq NP$ . There are three main problems in $NP$ whose complexity is undecided and so are possible candidates.
+
+\begin{itemize}
+    \item Linear Programming
+    \item Primes/Composite
+    \item Graph Isomorphism
+\end{itemize}
+
+\subsection{Polynomial-time Reductions}
+
+Problem $X$ polynomially reduces to problem $Y$ if an arbitrary instance of problem $X$ can be:
+
+\begin{itemize}
+    \item Transformed to an instance of problem $Y$ in a polynomial number of steps and then:
+    \item Solved using a polynomial number of calls to an oracle that solves problem $Y$ .
+\end{itemize}
+
+To prove that a problem $\Pi$ is $NP$-Complete we now just have to perform two steps: show that $\Pi$ belongs to $NP$ and to find a known $NP$-Complete problem $\Pi'$ and show $\Pi' \leq \Pi$ 
+
+If we can't show that $\Pi$ belongs to $NP$ but can find the reduction, then we say that $\Pi$ is $NP$-hard.
+\\
+
+There are three general methods to prove that an $NP$-Complete problem $\Pi'$ is polynomial-time reducible to a problem $\Pi$ :
+
+\begin{itemize}
+    \item \textbf{Restriction} -- Show that $\Pi'$ is a subproblem of $\Pi$ 
+    \item \textbf{Local Replacement} -- Show that every basic unit in an instance of $\Pi'$ can be replaced by a different structure in a uniform way to obtain an instance of $\Pi$ .
+    \item \textbf{Component Design} -- Show that the constituents of an instance of $\Pi$ can be used to design components that can be combined to encode instances of $\Pi'$ 
+\end{itemize}
+\\
+
+The problem Vertex Cover is in $NP$ (where the certificate is the list of vertices in the cover)
+
+The Vertex Cover problem is, given a graph $G$ and a natural number $k$ , is there a set $W \subseteq V$ with $|V| \leq k$ such that for each edge $(i,j) \in E, \{i,j\} \cap W \neq \emptyset$ 
+
+To show that Vertex Cover is $NP$-Complete we shall reduce Satisfiability to Vertex Cover.
+\\
+
+Given a formula $f$ with $n$ variables and clauses $C_1, ..., C_m$ :
+
+\begin{itemize}
+    \item For each variable $x$ create two adjacent vertices $x^t$ and $x^f$ to represent the literals $x$ and $\neg x$ 
+    \item For each clause $C_j$ of size $n_j$ create a complete subgraph $G_j$ with vertices connected to corresponding literals.
+    \item Set $k = n + \sum^{m}_{j=1} (n_j-1)$ 
+\end{itemize}
+
+This construction of a graph from a formula can be carried out in polynomial time.
+\\
+
+There exists a truth assignment that satisfies $f$ if and only if there exists a vertex cover of the constructed graph with size at most $k$ .
+
+Proof in $\rightarrow$ :
+
+\begin{itemize}
+    \item At leas tone of each pair $(x^f, x^t)$ must be in the cover.
+    \item At least $n_j - 1$ vertices from each complete graph $G_j$ must be in the cover.
+    \item If the formula is satisfiable, then choose the cover by choosing each literal assigned true plus all but one vertex in each $G_j$ . Omit a vertex connected to a satisfied literal.
+\end{itemize}
+\\
+
+Proof in $\leftarrow$ :
+
+\begin{itemize}
+    \item Conversely, if a vertex cover exists, assign each boolean variable according to whether $x^t$ or $x^f$ is in $W$ 
+    \item By the choice of $k$ there must be exactly one vertex in each clique (each $C_j$ ) which is not in $W$ . This vertex must be adjacent to a literal-vertex in $W$ , hence the clause is satisfied.
+\end{itemize}
+
+Therefore, since Satisfiability is $NP$-Complete, it follows that Vertex Cover is $NP$-Complete.
+\\
+
+Similarly, Clique is $NP$-Complete as we can reduce Vertex Cover to Clique. As we we know now that Vertex Cover is $NP$-Complete (?)
+
+Also similarly, the Hitting Set problem is $NP$-Complete as if we set $k=2$ then we get the Vertex Cover problem again.
+\\
+
+We can also show that 3-Satisfiability is $NP$-Complete by reducing Satisfiability to 3-Satisfiability. We do this by replacing every clause $C = x_1 \vee ... \vee x_k$ with, for $k>3$ :
+
+\begin{center}
+    $C' = (x_1 \vee x_2 \vee y_1) \wedge ... \wedge (\neg y_{k-3} \vee x_{k-1} \vee x_k)$ 
+\end{center}
+
+$C$ is satisfiable if and only if $C'$ is, since at least one of the literals other than the 'y's must be true.
+\\
+
+Another example is $NP$-Completeness of 3-Colouring. This is trivially in $NP$ as the colouring itself is the certificate. To show completeness, we shall reduce 3-Satisfiability to 3-Colouring.
+
+Given a 3CNF formula $f$ . Encode it as a graph $G_f$ such that the graph has a proper 3-Colouring if and only if $f$ is satisfiable.
+
+\begin{itemize}
+    \item Define three colours, ground, true and false.
+    \item Introduce a 3-clique of designated vertices $v_g, v_t$ and $v_f$ . By symmetry, assume that they are always coloured ground, true and false respectively.
+    \item For each variable $x$ , introduce two vertices $x_p$ and $x_n$ for $x$  and $\neg x$ respectively and add all edges between $x_p, x_n$ and $v_g$ . Hence, one of $x_p$ and $x_n$ must be true and the other false (as $v_g$ is defined to be ground.)
+    \item For each clause $C$ , say $C=(x \vee \neg y \vee z)$ , connect vertices $x_p, y_n$ and $z_p$ to $v_t$ via a merging of nodes via edges. (See image)
+    \item We claim that a 3-Colouring of $G_f$ can be translated into a satisfying assignment for $f$ and then other way round.
+\end{itemize}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=4in]{alg/images/reduction.png}
+\end{figure}
+
+
+The proof of the last step is as follows:
+
+\begin{itemize}
+    \item As $v_g, v_t, v_f$ form triangle we may assume that $c(v_g)=1, c(v_t)=2$ and $c(v_f)=3$ 
+    \item For every variable $x$, $c(x_p) \in \{2,3\}$ and $c(x_n) \in \{2,3\}$ as $x_p$ and $x_n$ are both adjacent to $v_g$ .
+    \item As $x_p$ and $x_n$ are adjacent, this means if one is one colour, the other must be the remaining colour.
+    \item Let $\tau$ be the truth assignment of $f$ that sets $x$ to be true if $c(x_p)=2$ and false if $c(x_p)=3$ 
+    \item We claim that $\tau$ is satisfying. Suppose it is not for contradiction. Say $C$ is a clause whose three literals $l_1, l_2, l_3$ are all false. Let $C = (x \vee \neg y \vee z)$ . Then $c(x_p) = c(y_n) = c(z_p) = 3$
+    \item As $c(v_t)=1$ , the C-vertex adjacent to $z_p$ has colour 2, which means that its C-neighbour has colour 3. But now as $c(x_p) = c(y_n) = 3$ the three remaining C-vertices all have colour 1 or 2. As they form a triangle, at least 2 will be coloured alike in all possible colourings. This is a contradiction as $c$ is a 3-colouring of $G_f$ . Hence, our initial assumption is false.
+\end{itemize}
+
+Now suppose $f$ has a satisfying truth assignment $\tau$ . We define a mapping $c$  as follows:
+\begin{itemize}
+    \item Set $c(v_g) = 1, c(v_t) = 2$ and $c(v_f)=3$ 
+    \item If $x$ is true, set $c(x_p)=2$ and $c(x_n)=3$ . Vice versa if $x$ is false.
+    \item For every clause $C$ do as follows. Let $C = (x \vee \neg y \vee z)$ . As $\tau$ is satisfying, at least one of $x, \neg, z$ is true. This means at least one of them gets colour 2. Then we can colour the five C-vertices with colours 1,2,3 in such a way that no two adjacent vertices are coloured alike.
+    \item Above is trivial, so we can conclude that $c$ is a 3-colouring of $G_f$ 
+\end{itemize}
+
+\end{document}
