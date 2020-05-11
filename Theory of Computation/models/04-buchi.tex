@@ -1,0 +1,93 @@
+\documentclass[../models.tex]{subfiles}
+
+\begin{document}
+
+A reminder on the definition of a Finite-state Automaton (FA):
+
+\begin{itemize}
+    \item A finite input alphabet $\Sigma$
+    \item A finite set of states $Q$
+    \item A transition relation $\Delta \subseteq Q \times \Sigma \times Q$
+    \item A start state $q_0 \in Q$ 
+    \item A set of accepting states $F \subseteq Q$
+\end{itemize}
+
+If the input is finite ( $\Sigma^*$ ) we have a non-deterministic finite automata.
+
+If the input is infinite ( $\Sigma^\omega$ ) we have a Buchi Automaton.
+
+If $\Delta$ is a partial function $Q \times \Sigma \rightarrow Q$, we have a Deterministic Automaton. (As every state and symbol can only transition to one other state, due to the function being partial)
+\\
+
+An NFA or DFA accepts a finite word $w_1,...,w_n \in \Sigma^*$ if there is a sequence of states $r_0,...,r_n$ satisfying the following conditions:
+
+\begin{itemize}
+    \item $r_0 = q_0$
+    \item $(r_i, w_{i+1}, r_{i+1}) \in \Delta$ for every $i, 0 \leq i \leq n-1$
+    \item $r_n \in F$
+\end{itemize}
+\\
+
+Buchi Automation accepts $w_1,w_2,... \in \Sigma^\omega$ if there is a sequence of states $r_0, r_1, ... \in Q^\omega$ satisfying the following conditions:
+
+\begin{itemize}
+    \item $r_0 = q_0$
+    \item $(r_i, w_{i+1}, r_{i+1}) \in \Delta$ for every $i, i > 0$
+    \item There are infinitely many $r_i$ in $F$.
+\end{itemize}
+\\
+
+A language is called regular if some DFA/NFA recognises it. A language is regular if and only if it could be described by a regular expression.
+
+A regular expression is built upon basic ones, which are any $s \in \Sigma$, the empty symbol $\epsilon$ or the empty language $\emptyset$ , using the following basic operations:
+
+\begin{itemize}
+    \item $A \bigcup B$
+    \item $A \circ B$ or simply $AB$
+    \item $A^*$
+\end{itemize}
+\vspace{0.5cm}
+\\
+
+An $\omega$-regular expression is built upon regular languages using the following operations:
+
+\begin{itemize}
+    \item $A \bigcup B$ where both $A$ and $B$ are $\omega$-regular 
+    \item $AB$ where $A$ is regular and $B$ is $\omega$-regular 
+    \item $A^\omega$ which is $\{a_1...|a_i \in A\}$ . In other words, an infinite sequence of words from $A$, where $A$ is regular and doesn't contain the empty word.
+\end{itemize}
+
+An $\omega$-language is $\omega$-regular if and only if some non-deterministic Buchi Automaton recognises it.
+\\
+
+Examples of $\omega$-regular languages:
+
+\begin{itemize}
+    \item $\Sigma = \{0,1\}$:
+        \begin{itemize}
+            \item $L_1 = \{a \in \Sigma^\omega | a \text{ contains infinitely many 0s}\}$
+            \item $L_2 = \{a \in \Sigma^\omega | a \text{ contains finitely many 1s}\}$
+        \end{itemize}
+    \item $\Sigma = \{0,1,2\}$:
+        \begin{itemize}
+            \item $\{ a \in \Sigma^\omega | a \text{ contains infinitely many 1s and 2s but finitely many 0s }\}$
+        \end{itemize}
+\end{itemize}
+\\
+\vspace{0.5cm}
+
+Let $A$ be a regular language. The limit of $A$, $\text{lim}A$ is the language $\{ a \in \Sigma^\omega | a \text{ has infinitely many prefixes in } A \}$
+
+\textit{This means, any word in $\text{lim}A$ must be a $\omega$-word as a finite word would always have finitely many prefixes.}
+
+For example:
+
+\begin{center}
+    Let $U_1 = 0110^* | (00)^+$. Then $\text{lim}U_1$ consists of only two $\omega$-words, 0110000... and 0000...
+
+    Let $U_2 = 0^*1$, then $\text{lim}U_2 = \emptyset$
+
+    \textit{This is because $U_2$ must end in a 1 and so cannot be a prefix of any infinite word.}
+\end{center}
+
+\end{document}
