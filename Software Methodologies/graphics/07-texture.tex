@@ -49,9 +49,18 @@ We can also provide a normal mapping alongside the texture to represent the norm
 We can can also provide a bump map instead of a normal map. This encodes the heights of the surface. The heights encode the amount by which to perturb the surface in order to describe the object's surface. 
 
 A bump map will modify the geometric normal whereas a normal map replaces the normal. The former is harder to implement but easier to specify. Vice versa for normal maps.
+
+\textit{A normal map is a type of bump map.}
+
 \\
 
-A final alternative is to use a displacement mapping. This actually moves the surface points. The new geometry must be displaced before visibility is determined so must be done as a preprocessing step.
+A final alternative is to use a displacement mapping. This actually alters the geometry. The new geometry must be displaced before visibility is determined so must be done as a preprocessing step.
+
+\textit{In other words, displacement mapping alters the geometry wheras bump mapping only modifies the surface of a piece of geometry.}
+
+\textit{The difference between displacement and normal maps becomes apparent when viewed edge on: normal mapped surfaces will appear flat wheras displacement will have detail.}
+
+\textit{Essentially, normal and bump maps create the appearance of surface detail by changing the normals wheras displacement maps actually add new geometry at render time.}
 \\
 
 We can use environment maps to simulate reflections by using the direction of the reflected ray to index a spherical texture map at infinity.

@@ -140,6 +140,8 @@ It is similar for 3D Transformations, but is tedious to write here. Just google 
 
 Instead of moving the camera, we move the world around it. (Funny Futurama Reference). We use a view transform matrix to do so. The scope of the mathematics is beyond this module. Instead, we can use inbuilt WebGL functions to compute this for us.
 
+The transform from world coordinates to eye coordinates is called the viewing transformation. Eye coordinates are a natural system for making a picture of the world as seen by the viewer.
+
 \subsection{Projection Transform}
 
 Normally we will use perspective transformation. This transforms objects so that distance objects will appear smaller. In contrast, orthogonal transformations will not cause distance objects to appear smaller. This is useful in 2D applications.
