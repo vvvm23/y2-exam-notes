@@ -21,11 +21,41 @@ Given training data $(x_i, y_i)$ for $i = 1, ..., N$ with $x_i \in\mathbb{R} $an
 \end{center}
 \\
 
+The decision rule is as follows:
+
+\begin{center}
+    $w \cdot u + b \geq 0$ is a positive case
+\end{center}
+
+When training, positive examples must be more than 1. Similarly, negative examples must be less than -1. In other words, all training examples must be beyond the hard margin.
+
 One issue with pure hyperplane solutions is that there is no notion of an optimal solution as many planes can fit the training data well, but may not fit new data well. Therefore, we must pick the hyperplane with the largest margin between training examples in order to maximise the chance of performing well on unseen data. 
 
-\textit{We can think of an SVM classifier as fitting the widest possible street between the classes, known as large margin classification. We aim to seperate the classes and also stay as far away from the closest training instance as possible.}
+\textit{We can think of an SVM classifier as fitting the widest possible street between the classes, known as large margin classification. We aim to separate the classes and also stay as far away from the closest training instance as possible.}
+
+In other words, we want to minimise $||w||$ to maximise the width given the constraint $y_i(x_i \cdot w + b) - 1 \geq 0$ where $y_i$ is $-1$ or $1$ for negative and positive cases respectively. 
 
 Note that adding more training instances "off the street" will not change the decision boundary at all. It is fully determined (or "supported") by the instances located on the edge of the street, known as support vectors.
+\\
+
+If we were to formulate as an optimisation problem with the constraint built in, we wish to minimise:
+
+\begin{center}
+    $L = \frac{1}{2} ||w||^2 - \sum{i}\alpha_i[y_i(w \cdot x_i + b) - 1] $
+\end{center}
+
+Where $\alpha_i$ is only non-zero for support vectors.
+
+\textit{Essentially, we want to minimise $w$ in order to maximise width (as a smaller $w$ means a shallow slope). We can always minimise the sum if there is some vector with a non-zero $\alpha_i$ that is not equal to 0 (exactly on the boundary)}. This enforces the support vector convention.
+\\
+
+By differentiating by $w$ we obtain that $w = \sum\alpha_i y_i x_i$. So, $w$ is a linear sum of the support vectors. By substituting this result into the previous results we can obtain the dual problem.
+
+\begin{center}
+    $\text{min}_\alpha \frac{1}{2} \sum^{m}_{i=1} \sum^{m}_{j=1} \alpha_i \alpha_j t_i t_j x_i \cdot x_j - \sum^{m}_{i=1} \alpha_i$
+\end{center}
+
+In other words, find the vector $\alpha$ that minimises the equation and use it to compute $w$. This is more efficient to compute and also allows for kernel tricks (more later.)
 \\
 
 Some definitions:
@@ -51,7 +81,20 @@ Hard margin only works if the data is linearly separable. It is also quite sensi
 We introduce slack variables to relax the separation constrains. This still means it will try to limit margin violations (examples that end up in the middle or wrong side of the street) while also allowing some flexibility for examples that cross the boundary to still be classified.
 \\
 
+So our optimisation problem becomes (with separate constraint):
+
+\begin{center}
+    \begin{math}
+        \text{minimise}_{w,b \zeta} \frac{1}{2} w^Tw + C \sum^{m}_{i=1} \zeta_i
+
+        \text{subject to } y_i(w^Tw + b) - 1 + \zeta \geq 0
+    \end{math}
+\end{center}
+
+
 We control the balance between keeping the margin as large as possible while limiting margin violations by controlling a parameter $C$. Small $C$ allows constraints to be easily ignored, hence results in a large margin. Large $C$ makes constraints hard to ignore, resulting in a narrow margin. $C = \infty$ results in a hard margin problem.
+
+\textit{This is because a higher $C$ results in more emphasis in the objective on minimising slack, making the hard constraints harder to ignore. Similarly, lower $C$ results in more emphasis on minimising $w$ resulting in a larger margin.}
 
 \subsection{Non-Linear Separable SVM}
 
@@ -65,6 +108,8 @@ Although linear SVM classifiers are efficient, many datasets are not even close 
 \textbf{Feature Map} - The function used to transform the feature vectors.
 \\
 
-Another option is to use a polynomial kernel. It provides the same result as if we added polynomial features without creating a huge number of features, and so making the model too slow to train, through a process known as "kernel trick".
+Another option is to use a feature map to map one vector into another feature space. This can allow for non-linear data to be fitted by an SVM. The function that maps to the new feature space is defined as $\Phi$. Given this $\Phi$ there is a kernel function that simulates the transformation without actually performing it, making it more computationally efficient.
+
+\textit{If we go back to the dual form, if we perform a transformation $x_i^Tx_j$ will become $\Phi(x_i)^T\Phi(x_j)$. However, with a kernel map, we can simulate the transformation and the dot product all within the kernel function, so it will instead by $K(x_i,x_j)$, where $K$ is the kernel function. This is why we need the dual form to perform the kernel trick.}
 
 \end{document}

@@ -25,6 +25,15 @@ We can use ratios of odds to determine if there is a relationship between featur
 
 Logistic Regression is similar to Linear Regression in the sense that it predicts True/False. Instead though, it fits an "S" shaped logistic curve. The curve is strictly between 0 and 1.
 
+\textit{To be more precise, Logistic Regression, like Linear Regression, computes a weighted sum of input features. However, it differs as it outputs the logistic of this result}
+
+\begin{center}
+    $\hat{p} = h_\Theta(x)=\sigma(x^T\Theta)$
+\end{center}
+
+When $\hat{p}$ exceeds some threshold $t$ we say it is a positive prediction. Else, it is negative.
+\\
+
 We use Maximum Likelihood to optimise the curve to fit the data the best. The steps for this are as follows:
 
 \begin{itemize}
@@ -35,5 +44,19 @@ We use Maximum Likelihood to optimise the curve to fit the data the best. The st
     \item Now, calculate the likelihood that the event will happen and will not happen for the positive and negative examples respectively.
     \item Adjust the curve in order to maximum this likelihood.
 \end{itemize}
+
+\textit{The goal of training is to set the parameter vector $\Theta$ such that the model estimates high probabilities for positive instances and low probabilities for negative instances.}
+
+So the cost function is as follows:
+
+\begin{center}
+    $c(\Theta) = \begin{cases}
+        -log(\hat{p}), &\text{ if }y=1\\
+        -log(1-\hat{p}), &\text{ if }y=0
+        
+    \end{cases}$
+\end{center}
+
+The cost function over the whole training set is simply the average over all instances. There is no equation that minimises this cost function, but we can use Gradient Descent as the cost function is convex and so is guaranteed to find the global minimum. Just take the derivative with respect to the parameter vector.
 
 \end{document}

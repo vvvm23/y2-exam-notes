@@ -74,17 +74,33 @@ For a convex problem (think bowl shaped) weights can start anywhere. This may no
 
 We could compute gradients over the entire dataset on each step, but this is often unnecessary. It is often better to compute the gradient on a small subset of examples in each step.
 
-\textbf{Stochastic Gradient Descent} - One example at a time
+\textbf{Batch Gradient Descent} -- Use the entire dataset each step.
+
+\textbf{Stochastic Gradient Descent} - One example at a time. This leads to random movements and so the final values will be good but not optimal.
+
+\textit{This randomness can help with escaping local minimas.}
 
 \textbf{Mini-Batch Gradient Descent} - Batches of examples where loss \& gradients are averaged over each batch.
+
 \\
 
 This strategy repeats iteratively until the model converges.
 \\
 
 We often multiply the gradients by some learning rate in order to make incremental steps. Too small of a learning rate can lead to convergence taking a long time. Too high of learning rate leads to weights forever overshooting the minimum.
+
+\textit{One compromise is to gradually reduce the learning rate over time.}
+
 \\
 
 An alternative to Gradient Descent when using a Linear Regression model is to use the Normal Equation to directly compute the minimum result. This is only useful for when the number of examples can fit into memory and the number of features is small, as complexity rises with number of features quickly.
+
+\subsection{Polynomial Regression}
+
+Sometimes the data will be far more complex than a simple straight plane. We can actually use a linear model to fit non-linear data. To do this, we can create additional features that are the square (or higher degree) of the source feature as new features.
+
+We can now fit the linear model with these new features to fit non-linear data.
+
+We can also add combinations of features, such as $ab$, $a^2b$, etc. in order to find relationships between features.
 
 \end{document}
