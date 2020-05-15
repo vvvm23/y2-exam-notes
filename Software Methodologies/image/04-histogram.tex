@@ -47,6 +47,15 @@ Histogram equalisation corresponds to the following intensity transform:
 
 Where $N$ is number of pixels in the image, $L$ is the maximum dynamic range, $C(i)$ is the cumulative total of pixels up until intensity $i$ .
 
+For example, if $L=100$, $C(50) = 0.8N$ then:
+
+\begin{center}
+    $t(50) = (L/N)\cdot 0.8N=100\cdot 0.8 = 80$
+\end{center}
+
+So all pixels with intensity 50 are mapped to 80.
+\\
+
 Histogram equalisation is essentially a point intensity transform and thus can be encoded in a look up table. The output image is not necessarily full equalized and there may be unused intensity levels in the histogram due to discretisation introducing discontinuities.
 
 \textit{Full equalisation is possible by swapping pixels between intensity levels.}
