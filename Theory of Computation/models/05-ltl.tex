@@ -94,5 +94,52 @@ That is, if all runs of $\tau$ satisfy $\phi$ ( $\text{Traces}(\tau) \subseteq \
 \\
 
 So if both the runs of $\tau$ and the models of $\phi$ are represented as Buchi Automaton, we can construct the intersection and check for emptiness. If it is empty, $\tau \models \phi$ otherwise return the run of $\tau$ that falsifies $\phi$.
+\\
+
+Transforming a TS into a Buchi Automaton is trivial. Simply move each label from the state onto all outgoing transitions and introduce a new start state (of the automaton) instead of multiple ones (of the TS)
+
+Constructing the intersection of two BA is easy (making sure that we alternate infinitely often in the accepting states of the two) and so is checking a BA for emptiness (the language recognised by the Buchi Automaton is non-empty if and only if there is a final state reachable from the start state that lies on a cycle)
+
+Transforming an LTL formulae into an equivalent BA is not so easy. We first translate into a Generalised BA that has multiple accepting states with an acceptance condition is that a state from each set is visited infinitely often. A GBA can then be transformed into an equivalent BA.
+\\
+
+\subsection{LTL into Buchi}
+
+A state has two components:
+
+\begin{itemize}
+    \item A subset of the AP consisting of all the variables that are true that records the current state of the world, which is the last input symbol seen.
+    \item A subset of all sub-formulae of the $\phi$ that should be true in the future from this state onward.
+    \item \textit{For example, if $\phi = \bigcirc(\neg b \vee ((a \wedge b) \bigcup \neg b))$ then all sub-formulae are:}
+        \begin{itemize}
+            \item $\neg b$
+            \item $a \wedge b$
+            \item $(a \wedge b) \bigcup \neg b$
+            \item $\neg b \vee ((a \wedge b) \bigcup \neg b)$
+            \item $\bigcirc (\neg b \vee ((a \wedge b) \bigcup \neg b))$
+        \end{itemize}
+    \item A state must be propositionally consistent
+\end{itemize}
+\\
+
+A transition from $s_1$ into $s_2$ labelled by $a \in 2^{AP}$ is added if:
+
+\begin{itemize}
+    \item The label $a$ matches the first component of the state $s_2$ and-
+    \item The state $s_1$ has the sum formula $\bigcirc \psi$ if and only if the state $s_2$ has the sub-formula (or AP) $\psi$. (This handles the Next operator). and -
+    \item Whenever the state $s_1$ has the sub-formula $\phi_1 \bigcup \phi_2$:
+        \begin{itemize}
+            \item The state $s_1$ has $\phi_2$ or
+            \item The state $s_1$ has $\phi_1$ and the state $s_2$ has $\phi_1 \bigcup \phi_2$
+            \item \textit{This partly handles the Until operator}
+        \end{itemize}
+\end{itemize}
+
+The expansion of the until operator doesn't guarantee that $\phi_2$ eventually happens. Thus, any infinite run that always has $\phi_1 \bigcup \phi_2$ but never $\phi_2$ is inconsistent. We can prevent this inconsistency though by insisting every run has states that have $\phi_2$ or haven't $\phi_1 \bigcup \phi_2$ infinitely often.
+
+Thus, for every sub-formula of the form $\phi_1 \bigcup \phi_2$ we introduce an accepting set of states that contains every state that has $\phi_2$ or hasn't $\phi_1 \bigcup \phi_2$.
+\\
+
+Finally, we introduce a start state $s_0$ that has a transition to a state $s$ which is labelled with the first component of $s$ only if the formula $\phi$ is in the second component of $s$.
 
 \end{document}
