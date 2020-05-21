@@ -1,0 +1,47 @@
+\documentclass[[../java.tex]{subfiles}
+
+\begin{document}
+
+\subsection{Subclasses}
+
+Inheritance is where we define a superclass and define subclasses based on this subclass. The superclass defines common attributes and the subclasses inherit these attributes. The subclasses can then add their own attributes.
+
+\textit{Example, one Disk super class and DVD and CD subclasses.}
+
+We use the extends keyword in Java to create a subclass by extending the superclass.
+
+Subclass constructors must always contain a super call. If none is written, the compiler inserts one without parameters. Therefore, it can only work if the superclass has a constructor without parameters. It also must be the first statement in the subclass constructor.
+
+The subclasses can be a super class to more subclasses, allowing for deeper hierarchies.
+\\
+
+Inheritance helps with avoiding code duplication and allows for easier maintenance and extendibility.
+\\
+
+\textbf{Substitution} -- Where objects of subclasses can be used where objects of super-types are required such as in parameters.
+
+\subsection{Polymorphism}
+
+Object variables in Java are polymorphic. They can hold objects of more than one type. They can hold objects of their declared type or of subtypes of the declared type.
+
+We can assign subtypes to supertypes but not the other way around. To do this, we can cast the superobject. The object is not changed in anyway. Runtime checks are made to ensure that the object really is of that type.
+\\
+
+All collections are polymorphic, the elements are of supertype Object. As all classes are subtypes of Object, collections can accepts any object. However, primitive types are not objects and must be wrapped into an object in order to be used in a polymorphic way. In practise, autoboxing and unboxing does this for us.
+\\
+
+Methods can also be polymorphic. Superclass and subclass define methods with the same signature and each has access to the fields of its class. The Superclass satisfies the static type checking of the method and the subclass method at runtime overrides the superclass version.
+
+When we call a method on an object we move up the parent-child class relationships until we find the first version of the method we called and use that one.
+
+An overridden method can still be called from the method that overrides it by calling using \texttt{super}.
+
+Method calls are polymorphic as the actual method called depends on the dynamic object type.
+\\
+
+Common examples of overridden methods are \texttt{.toString} and equality operators.
+\\
+
+The access level of a method or attribute determines whether it can be accessed by its subclasses. Private means only the object itself can access it. Protected means that the object and its subclasses can access it. Public means anything can access it.
+
+\end{document}

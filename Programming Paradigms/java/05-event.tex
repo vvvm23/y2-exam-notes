@@ -1,0 +1,11 @@
+\documentclass[../java.tex]{subfiles}
+
+\begin{document}
+
+In GUI based applications, events correspond to user interactions with components such as clicking a button. This causes an \texttt{ActionEvent}. An object implements the \texttt{EventHandler} interface that defines a \texttt{handle} method. It registers as a handler with \texttt{setOnAction}. To define a method by itself with a class we can use nested classes or anonymous classes (a one-off object with no name). Both have access to their enclosing class.
+
+We can use anonymous classes to use interfaces and override their \texttt{handle} method to handle events.
+
+\textit{We could also use functions as values and pass them to \texttt{setOnAction} like the other methods.}
+
+\end{document}

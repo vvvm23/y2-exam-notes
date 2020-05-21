@@ -1,0 +1,19 @@
+\documentclass[../java.tex]{subfiles}
+
+\begin{document}
+
+Abstract methods have \texttt{abstract} in their signature. They have no method body. If a class has an abstract method it makes it an abstract class and so cannot be instantiated. Concrete subclasses must complete the implementation of an abstract superclass.
+
+Abstract methods allow static type checking to pass without requiring an implementation.
+\\
+
+In some OO languages a class can inherit directly from multiple ancestors. Java forbids it for classes but allows it for interfaces as there is no competing implementations.
+
+An interface is like a class but all methods are abstract, there are no constructors and all methods and fields are public (or static (or final?))
+
+Interfaces provide a strong separation between functionality and implementation. Clients interact independently of the implementation, but clients can choosen from alternative implementations.
+\\
+
+One use of interfaces is to implement the collections class that provides methods that can be used on any collection such as finding the max, sorting and searching. In order to do this, the type \texttt{T} must implement the \texttt{Comparable<T>} interface to allow types top be compared.
+
+\end{document}
