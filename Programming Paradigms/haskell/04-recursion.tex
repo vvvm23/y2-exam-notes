@@ -1,0 +1,110 @@
+\documentclass[../haskell.tex]{subfiles}
+
+\begin{document}
+
+\subsection{Recursion}
+
+We can use recursion to solve problems. If a given instance of a problem can be solved directly, solve it directly. Else, reduce it to oneor more simpler instances of the same problem and try to solve these.
+\\
+
+Five (loose) steps for writing recursive functions:
+
+\begin{itemize}
+    \item Define the type
+    \item Enumerate the cases
+    \item Define the simpler or base cases
+    \item Define the reduction of other cases to simpler ones
+    \item Generalise and simplify
+\end{itemize}
+\\
+
+Both purely iterative and purely recursive languages are Turing complete. Hence, it is always possible to transform from one representation to another. Which is more convenient depends on the algorithm and programming language.
+\\
+
+To move from recursion to iteration, write looping constructs and manually manage function call stack. When moving from iteration to recursion, turn look variables into additional function arguments and write tail recursive functions.
+\\
+
+Usually a stack is used to manage nested function calls. Each entry on the stack uses memory, too many entries can cause errors (stack overflow!).
+
+In traditional imperative languages we often try to avoid recursion as function calls are more expensive than just looping. Deep recursion can result in stack overflow. In contrast, Haskell is fine with much deeper recursion. We still prefer to avoid recursion trees that are too deep though.
+\\
+
+Since it is natural to write recursive functions, it makes sense to think about classifying the different types of recursion. 
+
+\begin{itemize}
+    \item \textbf{Linear Recursion} -- The recursive call contains only a single self reference. Function just calls itself repeatedly until it hits the base case.
+    \item \textbf{Multiple Recursion} -- The recursive call contains multiple self references.
+    \item \textbf{Direct Recursion} -- The function calls itself recursively. Basically the same as Linear Recursion.
+    \item \textbf{Mutual (Indirect) Recursion} -- Multiple functions call each other recursively.
+\end{itemize}
+
+A special case is Tail Recursion. A function is tail recursive if the last result of a recursive call is a result of the function itself. Essentially, the last thing a tail recursive function does is call itself with new arguments or return a value.
+
+Such functions are useful because they have trivial translation into loops. Some languages will transform this into a loop-like implementation automatically in tail call elimination.
+
+In Haskell, other techniques are used instead.
+
+\subsection{Higher Order Functions}
+
+We've seen many functions that are naturally recursive. We will now look at higher order functions (A function that does either takes one or more functions as arguments or returns a function as a result (or both)) that capture many of these patterns.
+
+\textit{Due to currying, every function of more than one argument is a higher-order in Haskell}
+\\
+
+These are useful as common programming idioms can be written as functions in languages that support this. (Representing commnon programming techniques as a function that we can reuse)
+
+It also allows for domain specific languages to be defined with collections of higher order functions.
+
+It also allows the assigning of algebraic properties to higher order functions which allows us to reason about programs (provably correct or automatically generated programs.)
+\\
+
+Many linear recursive functions on lists can be written using higher order library functions.
+
+One example is \texttt{map}, applying a function to a list:
+
+\begin{center}
+
+    \texttt{map :: (a -> b) -> [a] -> [b]}
+
+    \texttt{map \_ [] = []}
+
+    \texttt{map f xs = [f x | x <- xs]}
+
+\end{center}
+
+or \texttt{filter}, removing entries from a list
+
+\begin{center}
+
+    \texttt{filter :: (a -> Bool) -> [a] -> [a]}
+
+    \texttt{filter \_ [] = []}
+
+    \texttt{filter p xs = [x | x <- xs, p x]}
+
+\end{center}
+\\
+
+We can use function composition to avoid deep nesting of brackets when combining functions. This can be useful for writing compositions to be passed to other higher order functions. Haskell uses the (.) operator for this.
+\\
+
+Another set of higher order functions are the folds. These process a data structure in some order and build a return value. The most common forms are \texttt{foldr} and \texttt{foldl} which are right and left associative respectively.
+
+\begin{center}
+
+    \texttt{foldr :: (a -> b -> b) -> b -> [a] -> b}
+
+    \texttt{foldr f z [] = z}
+
+    \texttt{foldr f z (x:xs) = x `f` (foldr f z xs)}
+
+\end{center}
+
+\textit{z acts as a base case.}
+\\
+
+Folds capture many linear recursive patterns in a clean way and have efficient library implementations (program optimisations). We can apply them to all \texttt{Foldable} types, not just lists (for example, trees).
+
+\texttt{foldr} is usually the preferred choice. It works for infinite lists and can terminate early. \texttt{foldl'} doesn't work on infinite lists as we need to start from the end and it also cannot terminate early.
+
+\end{document}

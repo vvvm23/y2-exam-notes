@@ -1,0 +1,104 @@
+\documentclass[../haskell.tex]{subfiles}
+
+\begin{document}
+
+\subsection{$\lambda$-expressions }
+
+As well as giving function names, we can alternatively construct them without names using lambda expressions:
+
+\begin{center}
+
+    \texttt{\backslash x -> x + x}
+
+\end{center}
+
+Use of $\lambda$ for nameless functions comes from lambda calculus which is a theory of functions. In Haskell, it is a way of formalising the idea of lazy evaluation.
+
+$\lambda$ expressions are useful for defining functions with currying or when returning a function as a result of another function. It also useful where the function is only used once.
+
+It is always possible to translate between named functions and arguments and the approach using $\lambda$-expressions of one arguments. Just move the arguments to the right hand side and put inside a lambda function, repeating with the remainder until you're done.
+
+Pattern matching is supported in the argument list in exactly the same way as other functions.
+
+\subsection{List Patterns}
+
+Every non-emptyt list is created use of the (:) operator that adds an element to the start of a list.
+
+\begin{center}
+
+    \texttt{[1,2,3,4] = 1 : (2: (3: (4: [])))}
+
+\end{center}
+
+This is a representation of a linked list. Operations on lists must therefore traverse the lis, so \texttt{length} and \texttt{reverse} and similar are linear in the length of the list. Getting the head or tail is constant time.
+
+Lists can be used for pattern matching in function definitions. We can use the list constructor syntax (:) for matching:
+
+\begin{center}
+
+    \texttt{startsWithA :: [Char] -> Bool}
+
+    \texttt{startsWithA ('a':\_) = True}
+
+    \texttt{startsWithA \_ = False}
+
+\end{center}
+
+\texttt{('a':\_)} matches any list of length at least 1 whose first entry is 'a'.
+
+This can be extended to multiple entries ( \texttt{startsWithAB ('a':'b':\_) = True} )
+\\
+
+As well as matching literal values we can also match a pattern and bind the values. 
+
+\begin{center}
+
+    \texttt{sumTwo :: Num a => [a] -> a}
+
+    \texttt{sumTwo (x:y:\_) = x + y}
+
+\end{center}
+
+Remember, cannot repeat variable names in bindings, so \texttt{sumThree (a:a:b:\_) = a + a + b} is not allowed.
+
+\subsection{List Comprehensions}
+
+In mathematics we often use comprehensions to construct sets from old ones. Haskell supports similar notation for constructing lists:
+
+\begin{center}
+
+    \texttt{[x |x <- [1..5], x `mod` 2 == 0]}
+
+\end{center}
+
+\texttt{x <- [1..5]} is called a generator.
+\\
+
+Comprehensions can contain multiple generators, separated by commas. Variables in the later generator change faster. This is similar to nested loops. Later generators can reference variables from earlier generations.
+
+As well as binding variables to values with generators we can restrict the values using guards. A guard can be any function that returns a Bool. Guards and generators can be freely interspersed but guards can only refer to variables to their left.
+\\
+
+The left hand side of a generator expression need not be a single variable. It also allows for pattern matching. For example:
+
+\begin{center}
+
+    \texttt{sorted :: Ord a => [a] -> Bool}
+
+    \texttt{sorted xs = and [x <= y | (x,y) <- pairs xs]}
+
+\end{center}
+
+In this case the left side of the generator is \texttt{x <= y}. This will evaluate to either True or False. The resulting list will then be "and-ed"
+
+\textit{pairs is created using zip and returns a list of all pairs of adjacent elements from a list.}
+
+\begin{center}
+
+    \texttt{pairs :: [a] -> [(a,a)]}
+
+    \texttt{pairs xs = zip xs (tail xs)}
+
+\end{center}
+
+\end{document}

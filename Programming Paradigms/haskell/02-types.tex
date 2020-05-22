@@ -1,0 +1,171 @@
+\documentclass[../haskell.tex]{subfiles}
+
+\begin{document}
+
+\subsection{Variable Types}
+
+Mathematics and programming rely on the notion of types. It tells us how to interpret a variable and provides restrictions on valid operations. As all date is ultimately bit sequences, types are required to know what the sequence means, how to implement operations on them (for example, addition), check for correctness of the code and to document the code's semantics.
+
+Haskell is strongly, statically typed. Every well-formed expression has exactly one type that are known at compile time.
+
+In Haskell, notation for defining what type something is as follows:
+
+\begin{center}
+    \texttt{e :: T} ( \texttt{e} is of type \texttt{T} )
+
+    \texttt{False :: Bool} ( \texttt{False} is of type \texttt{Bool} )
+
+    \texttt{not :: Bool -> Bool} ( \texttt{not} is of type \texttt{Bool -> Bool} )
+\end{center}
+
+Translators must check for type correctness. For example \texttt{foo = 1 + "f"} is invalid in statically typed languages. In dynamically typed languages we can only detect invalid types if we use them.
+
+In Haskell, the translator can infer the types of variables based on the operations used. Every well formed expression has a type, which can be automatically calculated at compile time using type inference. All type errors are found at compile time, which makes programs safer and faster by removing the need for type checks during run time.
+\\
+
+Haskell includes a number of basic types and also collections such as lists (sequences of values of the same type). The type we use is unrestricted, in fact we can even have lists of lists. Another collection is a tuple, a sequence of values of different types. The type of the components is also unrestricted.
+\\
+
+\subsection{Function Types}
+
+Functions have types in all programming languages, but Haskell makes this particularly explicit. Functions essentially map from one (or more) types to another.
+
+\begin{center}
+    \texttt{not :: Bool -> Bool}
+
+    \texttt{and :: [Bool] -> Bool}
+
+    \texttt{add :: (Int, Int) -> Int}
+\end{center}
+\\
+
+An alternative way of looking at this is, since functions are first class objects (no restrictions on how an object is used), functions of more than one argument are typically written in Haskell as functionals.
+
+\begin{center}
+    \texttt{add :: Int -> (Int -> Int)}
+
+    \texttt{add} takes an Int and returns a function which takes an Int and returns an Int.
+\end{center}
+
+\textit{This idea comes from the formalisation of Lambda Calculus}
+\\
+
+An informal definition of Currying is the process of turning a function of $n$ arguments into a function of $n-1$ arguments. This makes it easier to reason about functions with only one variable, provides additional flexibility in programming as composing functions becomes simpler and allows for partial evaluation (binding some variables in a function to a value)
+
+\begin{center}
+    \texttt{add' :: Int -> (Int -> Int)}
+
+    \texttt{add' x y = x+y}
+
+    \texttt{add'} takes an integer \texttt{x} and returns a function \texttt{add' x}. In turn, this function takes an integer \texttt{y} and returns the result \texttt{x+y}
+\end{center}
+
+Unless tupling is explicity required, all functions in Haskell are normally defined in curried form.
+\\
+
+All binary functions (functions with type \texttt{a -> b -> c}) can be written as infix functions.
+
+\begin{center}
+    \texttt{1 + 2} or \texttt{(+) 1 2}
+
+    \texttt{mod 3 2} or \texttt{3 `mod` 2}
+\end{center}
+\\
+
+As in most programming languages functions can be defined using conditional expressions:
+
+\begin{center}
+    \texttt{abs :: Int -> Int}
+
+    \texttt{abs n = if n >= 0 then n else -n}
+\end{center}
+
+Conditional expressions can be nested. Conditional expressions must always have an else branch in order to avoid ambiguity.
+\\
+
+An alternative to conditionals is to use guards. Guards can make definitions involving multiple conditions easier to read. The catch all condition is \texttt{otherwise} which will be used if no other condition matches the pattern.
+
+Functions can often be defined in many different ways using pattern matching. Some of these ways are more compact. For example:
+
+\begin{center}
+    \texttt{(\&\&) :: Bool -> Bool -> Bool}
+
+    \texttt{True \&\& True = True}
+
+    \texttt{True \&\& False = False}
+
+    \texttt{False \&\& True = False}
+
+    \texttt{False \&\& False = False}
+
+\end{center}
+
+Can be defined more compactly by:
+
+\begin{center}
+    \texttt{True \&\& True = True}
+
+    \texttt{\_ \&\& \_ = False}
+\end{center}
+
+However this third version is more efficient as it avoids evaluating the second argument is the first is False:
+
+\begin{center}
+    \texttt{True \&\& b = b}
+
+    \texttt{False \&\& \_ = False}
+\end{center}
+
+The underscore symbol is a wildcard pattern that matches any argument value.
+
+Patterns are matched in order, so take care in the order of patterns in the definition. Patterns cannot repeat variables, for example \texttt{b \&\& b = b} gives an error.
+
+\subsection{Polymorphism}
+
+Although Haskell is strictly typed, it also allows for polymorphic typing. Functions can take a value of any type \texttt{a} and return any other type. \texttt{a} is called a type variable. This is known as parametric polymorphism.
+
+Many functions defined in the standard prelude are polymorphic. For example, \texttt{head :: [a] -> a} takes a list and returns the first element.
+
+Parametric polymorphism is where we can write a single implementation of a function that applies generically and identically to values of any type. This differs to other types such as ad-hoc (write multiple implementations, one for each types) and subtype (All subtypes can use a supertype's implementation.)
+
+This is akin to Java's generics and C++'s templates.
+\\
+
+Some polymorphic functions only apply to types that satisfy certain constraints. For example, (+) works on all types as long as that type is a number type.
+
+\begin{center}
+
+    \texttt{(+) :: Num a => a -> a -> a}
+
+\end{center}
+
+This constraint is called a class constraint. An expression of type with one or more such constraints is called overloaded. Constrained type variables can be instantiated with any types that satisfy the constraints.
+
+Haskell has a number of type classes. For example \texttt{Num} (Numeric types), \texttt{Eq} (Equality Types) and \texttt{Ord} (Ordered types)
+
+\begin{center}
+
+    \texttt{(+) :: Num a => a -> a -> a}
+
+    \texttt{(==) :: Eq a => a -> a -> Bool}
+
+    \texttt{(<) :: Ord a => a -> a -> Bool}
+
+\end{center}
+\\
+
+In functional programming, class and instance have different meaning to OO programming:
+
+\begin{itemize}
+    \item \textbf{Class} -- A collection of types that support certain, specified, overloaded operations called methods
+    \item \textbf{Instance} -- A concrete type that belongs to a class and provides implementations of the required methods.
+\end{itemize}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=4in]{haskell/images/define-class.png}
+\end{figure}
+
+Classes can provide default implementations. Once example is the \texttt{Eq} requiring both (==) and (/=). We can define (/=) in terms of (==) so the instance only needs to implement (==).
+
+\end{document}
