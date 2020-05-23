@@ -1,0 +1,70 @@
+\documentclass[../java.tex]{subfiles}
+
+\begin{document}
+
+Not only is Haskell a pure functional language, it is also evaluated lazily. This allows us to work with infinite data structures. Lazy evaluation is where expressions are not evaluated when they are bound to variables, instead their evaluation is deferred until their result is needed by other computations.
+\\
+
+Haskell's basic method of computation is the application of functions to arguments. As long as all expression evaluations terminate, the order we choose to do things doesn't matter.
+
+We can represent a function call and its arguments in Haskell as a graph. Nodes are either terminal or compound. The latter are called reducible expressions (redexes). For example, in this expression:
+
+\begin{center}
+
+    \texttt{mult :: (Int, Int) -> Int}
+
+    \texttt{mult (x,y) = x*y}
+
+    \texttt{mult (1+2, 3+4)}
+
+\end{center}
+
+1,2,3,4 are terminal expressions and \texttt{(+)} and \texttt{mult} are reducible expressions.
+\\
+
+There are two modes of evaluation, bottom up or top down in the expression tree.  This is known as innermost and outermost evaluation respectively. For finite expressions, both innermost and outermost evaluation terminates. However, for infinite expressions, innermost evaluation will fail to terminate sometimes. Therefore, Haskell will use outermost evaluation.
+\\
+
+Call by name is the evaluation strategy for Haskell (also known as lazy evaluation). It involves outermost evaluation where functions are applied before their arguments are evaluated.
+\\
+
+Straightforward implementation of call-by-name can lead to inefficiency in the number of times an argument is evaluated. To avoid this, Haskell implements the sharing of arguments. This is akin to memoisation or rewriting the evaluation tree into a graph.
+\\
+
+An expression graph is in Normal form if it contains no redexes, is finite and is acyclic. In other words, no sub-expression could be evaluated any further.
+
+An expression graph is in Weak Head Normal Form if it is in normal form or the topmost node in the expression graph is a constructor. This allows for cycles.
+
+For example, the following expression is in weak head normal form:
+
+\begin{center}
+
+    \texttt{ones = 1 : ones}
+
+\end{center}
+\\
+
+When evaluating an expression, apply reduction rules outermost first. Evaluate children left to right. Stop whne the graph is WHNF.
+
+\textit{For example, if the left argument of \texttt{(\&\&)} is False, then entire graph evaluates to }False. This is akin to short circuiting
+\\
+
+Most languages have one place where they do lazy evaluation in the short circuiting of Boolean Expressions. This avoids evaluating unnecessary expressions. Another place is generators where they only yield the next value when needed.
+\\
+
+Some functions in Haskell are strict. These are functions which require its arguments to be evaluated before being applied, even when using outermost evaluation. By default Haskell uses lazy evaluation, but strict function application is done using the \texttt{(\$!)} operator.
+
+\begin{center}
+
+    \texttt{(\$!) :: (a -> b) -> a -> b}
+
+    \texttt{f \$! x} Evaluates \texttt{x} then apply \texttt{f}
+
+\end{center}
+
+Lazy evaluation can require a large amount of space to generate the expression graph. In contrast, strict evaluation always evaluates the summation immediately used constant space (compared to $O(n)$)
+\\
+
+Strict evaluation can be useful for time saving in large expressions due to saving space. For example, when folding over a large sequence.
+
+\end{document}

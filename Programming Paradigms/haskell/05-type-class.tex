@@ -1,0 +1,199 @@
+\documentclass[../haskell.tex]{subfiles}
+
+\begin{document}
+
+So far we've only used built-in data types such as lists and tuples. It can sometimes make sense to define new data types. There are a number of reasons why we may do this:
+
+\begin{itemize}
+    \item Hide Complexity
+    \item Build new Abstractions
+    \item Type Safety
+\end{itemize}
+
+Haskell has three ways to do this: \texttt{type}, \texttt{data} and \texttt{newtype} ( \texttt{newtype} is not covered. )
+\\
+
+A new name for an existing type can be defined using a type declaration.
+
+\begin{center}
+    
+    \texttt{type String = [Char]}
+
+    \texttt{vowels :: String -> [Char]}
+
+\end{center}
+
+There is no type distinction, objects of type \texttt{String} and \texttt{[Char]} are completely interchangeable.
+\\
+
+These type declarations are mainly to make the semantics of our code cleaner. This is akin to C's \texttt{typedef}.
+
+\begin{center}
+
+    \texttt{type Pos = (Int, Int)}
+
+    \texttt{origin :: Pos}
+
+    \texttt{origin = (0, 0)}
+
+    \texttt{left :: Pos -> Pos}
+
+    \texttt{left (i,j) = (i-1, j)}
+
+\end{center}
+
+Just like function definitions, type declarations can be parameterised over type variables.
+
+\begin{center}
+
+    \texttt{type Pair a = (a,a)}
+
+    \texttt{mult :: Pair Int -> Int}
+
+    \texttt{mult (m,n) = m*n}
+
+    \texttt{dup :: a -> Pair a}
+
+    \texttt{dup x = (x,x)}
+
+\end{center}
+
+We are not allowed to have class constraints in the definition nor recursive types.
+\\
+
+We can introduce a completely new type by specifying allowed values using a data declaration:
+
+\begin{center}
+
+    \texttt{data Bool = False | True}
+
+\end{center}
+
+The two values are called constructors for the type \texttt{Bool}. Both the type name and the constructor names must begin with an upper-case letter.
+
+Once defined, we can use these types exactly like built in ones.
+
+The constructors in data declarations can take arbitrarily many parameters.
+
+\begin{center}
+
+    \texttt{data Shape = Circle Float | Rectangle Float Float}
+
+    \texttt{area :: Shape -> Float}
+
+    \texttt{area (Circle r) = pi * r\^2}
+
+    \texttt{area (Rectangle x y) = x * y}
+
+\end{center}
+
+We can also make our data declarations polymorphic with appropriate type variables.
+
+\begin{center}
+
+    \texttt{data Maybe a = Nothing | Just a}
+
+    \texttt{safehead :: [a] -> Maybe a}
+
+    \texttt{safehead :: [] = Nothing}
+
+    \texttt{safehead (x:\_) = Just x}
+
+\end{center}
+
+Data declarations can also refer to themselves.
+
+\begin{center}
+
+    \texttt{data Nat = Zero | Succ Nat}
+
+\end{center}
+
+This type contains the infinite sequence of values \texttt{Zero}, \texttt{Succ Zero}, \texttt{Succ (Succ Zero)},...
+
+We could use this to implement a representation of natural numbers and arithmetic. This kind of recursive typing allows for very succint definitions definitions of data structures.
+
+\begin{center}
+
+    \texttt{data BTree a = Empty | Node a (BTree a) (BTree a)}
+
+    \texttt{btree = Node 1 (Node 2 (Node 3 Empty Empty) Empty) (Node 5 Empty Empty)}
+
+\end{center}
+
+Under the hood, Haskell's \texttt{data} declarations make Algebraic data types. This is a type where we specify the shape of each element. THe two algebraic operations are sum and product.
+
+\begin{itemize}
+    \item \textbf{Sum Type} -- An alternation in the form \texttt{data Foo = A | B}
+    \item \textbf{Product Type} -- A combination in the form \texttt{data Pair = P Int Double}
+\end{itemize}
+\\
+
+Almost all languages have product types. They are just ordered bags of things. In Python we can use tuples or classes. In C we can use structs. In Java, classes.
+
+Sum types are less common although new languages are catching on such as Rust. These are useful for type safety and compiler warnings as it is easy to prove that every option is handled.
+\\
+
+Classes make it easier to add new kinds of things, just add a subclass. This is hard to do in Algebraic data types as we need a new constructor and update all functions that use the data type.
+
+Classes however, make it hard to add new operations on existing things as we need to change the superclass and potentially update all subclasses. Algebraic data types make this simple as we can simply just write a new function.
+\\
+
+When designing software, a good aim is to hide the implementation of data structures. In OO based languages we do this with classes and inheritance. The idea is that calling code doesn't know the internals and only relies on interface. As a result, if we change the implementation the client code still works.
+\\
+
+In Haskell, we can realise this idea with generic higher order functions and type classes. This allows us to use existing functions on our new data types by simply implementing the required interface for the type class that function requires.
+
+For example, mapping a function over a list, linked list and binary tree all have the same function function except for the type name of the container. Mapping already exists as a function for list, so if we can make a Container type class to capture this pattern we can use map on our new data structures. Haskell calls this type class \texttt{Functor}:
+
+\begin{center}
+    
+    \texttt{class Functor c where}
+
+    \texttt{fmap :: (a -> b) -> c a -> c b}
+
+\end{center}
+
+If a type implements the \texttt{Functor} interface, it defines how to transform the elements.
+
+For example:
+
+\begin{center}
+
+    \texttt{data BinaryTree a = Leaf a | Node a (BinaryTree a) (BinaryTree a)}
+
+    \texttt{instance Functor BinaryTree where}
+
+    \texttt{fmap f (Leaf a) = Leaf (f a)}
+    
+    \texttt{fmap f (Node a l r) = Node (f a) (fmap f l) (fmal f r)}
+
+\end{center}
+
+Now we can implement functions using the \texttt{Functor} type class.
+
+\begin{center}
+
+    \texttt{add1 :: (Functor c, Num a) => c a -> c a}
+
+    \texttt{add1 = fmap (+1)}
+
+\end{center}
+
+And this function will work on any type that implements the \texttt{Functor} interface.
+\\
+
+Not all types that take a parameter are \texttt{Functor}. The type must obey the Functor laws:
+
+\begin{itemize}
+    \item \texttt{fmap id c == c}. Mapping the identity function over a structure should return the structure untouched.
+    \item \texttt{fmap f (fmap g c) == fmap (f . g) c}. Mapping over a container should distribute over function composition. Since the structure is unchanged it shouldn't matter whether we do this in two passes or one.
+\end{itemize}
+\\
+
+\texttt{Foldable} provides a further interface, if I can combine an \texttt{a} and a \texttt{b} to produce a new \texttt{b} then, given a start value and a container of \texttt{a}s, I can turn it into \texttt{b}.
+\\
+
+Haskell provides many type classes in the standard library. If you implement a new data type, it is worthwhile thinking if it satisfies any of these interfaces.
+
+\end{document}
